@@ -32,7 +32,7 @@ export const registerFormInputs: FormInput[] = [
     labelTranslationId: translationPrefix + ".emailLabel",
     inputType: "email",
     validation: {
-      required: true,
+      required: false,
       maxLength: 60,
     },
   },

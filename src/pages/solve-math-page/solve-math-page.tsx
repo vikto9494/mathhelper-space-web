@@ -183,9 +183,10 @@ const SolveMathPage: React.FC = () => {
       for (let idx = 0; idx < solutions.length; idx++) {
         const solution = solutions[idx];
         const checkRes = checkTex(
-          solution,
-          taskSet.tasks[idx].originalExpressionTex,
-          taskSet.tasks[idx].goalExpressionTex
+            solution,
+            taskSet.tasks[idx].originalExpressionStructureString,
+            taskSet.tasks[idx].goalExpressionStructureString,
+            rulePacks?.flatMap((rulePackConstructorReceivedForm: RulePackConstructorReceivedForm) => {return rulePackConstructorReceivedForm.rules!;})
         );
         if (checkRes.errorMessage) {
           await sendLog(prepareDataForLogging("loose", solution, taskSet, idx));

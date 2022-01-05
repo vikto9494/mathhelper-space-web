@@ -93,6 +93,7 @@ export const checkTex = (
   rules?: Array<RuleConstructorReceivedForm>
 ) => {
   try {
+    console.log("checkTex:", fullExpression);
     let expressions;
     if (rules) {
       expressions = rules?.map(function(rule: RuleConstructorReceivedForm){
@@ -120,6 +121,9 @@ export const checkTex = (
     );
   } catch (e: any) {
     console.error("ERROR WHILE CHECKING TEX", e.message, e);
+    console.log("fullExpression:", fullExpression);
+    console.log("start:", start);
+    console.log("end:", end);
     // console.log(getUserLogInPlainText())
   }
 };

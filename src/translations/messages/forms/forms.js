@@ -1,7 +1,7 @@
 const prefix = "forms";
 
 const formsRu = {
-  [prefix + ".emailLabel"]: "Email",
+  [prefix + ".emailLabel"]: "Email (может использоваться для входа)",
   [prefix + ".loginOrEmailLabel"]: "Логин или email",
   [prefix + ".loginLabel"]: "Логин",
   [prefix + ".nameLabel"]: "Имя",
@@ -24,7 +24,7 @@ const formsRu = {
 };
 
 const formsEn = {
-  [prefix + ".emailLabel"]: "Email",
+  [prefix + ".emailLabel"]: "Email (can be used to log in)",
   [prefix + ".loginOrEmailLabel"]: "Login or email",
   [prefix + ".passwordLabel"]: "Password",
   [prefix + ".loginButtonText"]: "Sign in",
