@@ -129,8 +129,12 @@ const MathQuillEditor: React.FC<MathQuillEditorProps> = ({
 
   const actions: { iconUrl: string; latexCmd: string }[] = [
     {
-      iconUrl: require("../../assets/math-symbols/sum.svg").default,
-      latexCmd: "\\sum",
+      iconUrl: require("../../assets/math-symbols/frac.svg").default,
+      latexCmd: "\\frac",
+    },
+    {
+      iconUrl: require("../../assets/math-symbols/pow.svg").default,
+      latexCmd: "^",
     },
     {
       iconUrl: require("../../assets/math-symbols/square-root.svg").default,
@@ -139,6 +143,42 @@ const MathQuillEditor: React.FC<MathQuillEditorProps> = ({
     {
       iconUrl: require("../../assets/math-symbols/pi.svg").default,
       latexCmd: "\\pi",
+    },
+    {
+      iconUrl: require("../../assets/math-symbols/sum.svg").default,
+      latexCmd: "\\sum",
+    },
+    {
+      iconUrl: require("../../assets/math-symbols/prod.svg").default,
+      latexCmd: "\\prod",
+    },
+    {
+      iconUrl: require("../../assets/math-symbols/neg.svg").default,
+      latexCmd: "\\neg",
+    },
+    {
+      iconUrl: require("../../assets/math-symbols/and.svg").default,
+      latexCmd: "\\wedge",
+    },
+    {
+      iconUrl: require("../../assets/math-symbols/or.svg").default,
+      latexCmd: "\\vee",
+    },
+    {
+      iconUrl: require("../../assets/math-symbols/xor.svg").default,
+      latexCmd: "\\oplus",
+    },
+    {
+      iconUrl: require("../../assets/math-symbols/alleq.svg").default,
+      latexCmd: "\\equiv",
+    },
+    {
+      iconUrl: require("../../assets/math-symbols/implic.svg").default,
+      latexCmd: "\\implies",
+    },
+    {
+      iconUrl: require("../../assets/math-symbols/setminus.svg").default,
+      latexCmd: "\\setminus",
     },
   ];
 

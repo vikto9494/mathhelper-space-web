@@ -291,7 +291,7 @@ const SolveMathPage: React.FC = () => {
                 setMathField(mathField);
               }}
               style={{
-                minWidth: "40rem",
+                minWidth: "42rem",
                 maxWidth: window.innerWidth - 100 + "px",
               }}
             />
