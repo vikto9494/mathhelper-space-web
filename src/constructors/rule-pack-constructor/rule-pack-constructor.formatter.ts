@@ -39,6 +39,11 @@ class RulePackConstructorFormatter {
         return formattedRule;
       });
     }
+
+    res.otherCheckSolutionData = JSON.stringify(data.otherCheckSolutionData);
+    res.otherAutoGenerationData = JSON.stringify(data.otherAutoGenerationData);
+    res.otherData = JSON.stringify(data.otherData);
+
     return res;
   }
 
@@ -81,6 +86,11 @@ class RulePackConstructorFormatter {
         return formattedRule;
       });
     }
+
+    res.otherCheckSolutionData = JSON.parse(data.otherCheckSolutionData);
+    res.otherAutoGenerationData = JSON.parse(data.otherAutoGenerationData);
+    res.otherData = JSON.parse(data.otherData);
+
     // @ts-ignore
     return res;
   }

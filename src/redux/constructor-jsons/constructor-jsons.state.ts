@@ -52,6 +52,9 @@ const CONSTRUCTOR_JSONS_INITIAL_STATE: ConstructorJSONs = {
         simpleAdditional: "true",
       },
     ],
+    otherCheckSolutionData: null,
+    otherAutoGenerationData: null,
+    otherData: null
   },
   taskSet: {
     code: "",

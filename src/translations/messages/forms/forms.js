@@ -1,7 +1,7 @@
 const prefix = "forms";
 
 const formsRu = {
-  [prefix + ".emailLabel"]: "Email (может использоваться для входа)",
+  [prefix + ".emailLabel"]: "Email (можно использовать для входа)",
   [prefix + ".loginOrEmailLabel"]: "Логин или email",
   [prefix + ".loginLabel"]: "Логин",
   [prefix + ".nameLabel"]: "Имя",

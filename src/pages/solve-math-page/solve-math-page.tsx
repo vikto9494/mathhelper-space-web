@@ -11,7 +11,7 @@ import ActionButton from "../../components/action-button/action-button.component
 import AppSpinner from "../../components/app-spinner/app-spinner";
 import TexEditorActionsTab from "../../components/tex-editor-actions-tab/tex-editor-actions-tab";
 // utils
-import { checkTex } from "../../utils/kotlin-lib-functions";
+import {checkTexSolutionInFrontFormat} from "../../utils/kotlin-lib-functions";
 import { getAuthToken } from "../../utils/local-storage/auth-token";
 import TaskSetConstructorRequestsHandler from "../../constructors/task-set-constructor/task-set-constructor.requests-handler";
 import { TaskSetConstructorReceivedForm } from "../../constructors/task-set-constructor/task-set-constructor.types";
@@ -89,11 +89,10 @@ const SolveMathPage: React.FC = () => {
   // USER ACTIONS
   const onCheckTex = (solutionInTex: string): void => {
     if (taskSet?.tasks[currentTaskIdx]) {
-      const res = checkTex(
+      const res = checkTexSolutionInFrontFormat(
         solutionInTex,
-        taskSet?.tasks[currentTaskIdx].originalExpressionStructureString,
-        taskSet?.tasks[currentTaskIdx].goalExpressionStructureString,
-        rulePacks?.flatMap((rulePackConstructorReceivedForm: RulePackConstructorReceivedForm) => {return rulePackConstructorReceivedForm.rules!;})
+        taskSet?.tasks[currentTaskIdx],
+        rulePacks
       );
       if (res.errorMessage) {
         setSuccessMessages((prevState) => {
@@ -182,11 +181,10 @@ const SolveMathPage: React.FC = () => {
       let correctSolutions = 0;
       for (let idx = 0; idx < solutions.length; idx++) {
         const solution = solutions[idx];
-        const checkRes = checkTex(
+        const checkRes = checkTexSolutionInFrontFormat(
             solution,
-            taskSet.tasks[idx].originalExpressionStructureString,
-            taskSet.tasks[idx].goalExpressionStructureString,
-            rulePacks?.flatMap((rulePackConstructorReceivedForm: RulePackConstructorReceivedForm) => {return rulePackConstructorReceivedForm.rules!;})
+            taskSet?.tasks[idx],
+            rulePacks
         );
         if (checkRes.errorMessage) {
           await sendLog(prepareDataForLogging("loose", solution, taskSet, idx));

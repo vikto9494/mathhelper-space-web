@@ -16,6 +16,10 @@ export interface RulePackConstructorReceivedForm {
   subjectType: string;
   rulePacks?: RulePackLink[];
   rules?: RuleConstructorReceivedForm[];
+
+  otherCheckSolutionData: any;
+  otherAutoGenerationData: any;
+  otherData: any;
 }
 
 export interface RulePackConstructorInputs {
@@ -30,6 +34,10 @@ export interface RulePackConstructorInputs {
   subjectType: string;
   rulePacks?: string[];
   rules?: RuleConstructorInputs[];
+
+  otherCheckSolutionData: any;
+  otherAutoGenerationData: any;
+  otherData: any;
 }
 
 export interface RulePackConstructorSendForm {
@@ -44,6 +52,10 @@ export interface RulePackConstructorSendForm {
   subjectType: string;
   rulePacks?: { rulePackCode: string }[];
   rules?: RuleConstructorSendForm[];
+
+  otherCheckSolutionData: any;
+  otherAutoGenerationData: any;
+  otherData: any;
 }
 
 export interface RulePackLink {

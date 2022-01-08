@@ -171,6 +171,24 @@ const RulePackConstructor = ({
       isMulti: false,
       options: SUBJECT_TYPE_OPTIONS,
     },
+    {
+      name: `otherCheckSolutionData`,
+      label: "Дополнительная информация о проверке решения",
+      type: "text",
+      isTextArea: true,
+    },
+    {
+      name: `otherAutoGenerationData`,
+      label: "Дополнительная информация об автогенерации",
+      type: "text",
+      isTextArea: true,
+    },
+    {
+      name: `otherData`,
+      label: "Дополнительная информация",
+      type: "text",
+      isTextArea: true,
+    },
   ];
 
   const actionButtons: ActionButtonProps[] = [
