@@ -1,7 +1,8 @@
 // libs and hooks
-import React, { Dispatch, useEffect, useState } from "react";
+import React, { Dispatch, useEffect, useRef, useState } from "react";
 import { FormProvider, useForm } from "react-hook-form";
 import { useParams } from "react-router-dom";
+import { CSVLink } from "react-csv";
 // custom hooks
 import useCreationMode from "../hooks/useCreationType";
 // lib components
@@ -20,7 +21,7 @@ import {
   NamespaceConstructorInputs,
   NamespaceGrantType,
 } from "./namespace-constructor.types";
-import { ConstructorCreationMode } from "../common-types";
+import { ConstructorCreationMode, ReportStatisticsEntity } from "../common-types";
 import {
   ConstructorJSONType,
   UpdateNamespaceJSONAction,
@@ -88,6 +89,11 @@ const NamespaceConstructorComponent = ({
 
   // watch in order to conditionally render dependent fields
   const grantType: NamespaceGrantType = watch("grantType");
+
+  // ref for csv download link component
+  const csvLinkRef = useRef<CSVLink & HTMLAnchorElement & { link: HTMLAnchorElement }>(null);
+  // namespace report data
+  const [namespaceReportData, setNamespaceReportData] = useState<ReportStatisticsEntity[]>([]);
 
   const inputs: ConstructorFormInput[] = [
     {
@@ -230,13 +236,33 @@ const NamespaceConstructorComponent = ({
           </button>
           <button
             type="button"
-            className="btn"
+            className="btn u-mr-sm"
             onClick={() => {
               console.log(getValues());
             }}
           >
             log values
           </button>
+          <button
+            type="button"
+            className="btn"
+            onClick={() => {
+              NamespaceConstructorRequestHandler.getReport(namespaceCode).then((v: ReportStatisticsEntity[]) => {
+                console.log("ReportStatisticsEntity", v);
+                setNamespaceReportData(v);
+                csvLinkRef?.current?.link.click();
+              });
+            }}
+          >
+            Скачать отчет
+          </button>
+          <CSVLink
+            className="hidden"
+            target="_blank"
+            data={namespaceReportData}
+            filename={`namespace_${namespaceCode}_report.csv`}
+            ref={csvLinkRef}
+          />
         </form>
       </FormProvider>
     );

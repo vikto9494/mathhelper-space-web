@@ -1,5 +1,5 @@
 // libs and hooks
-import React, { Dispatch, useEffect, useState } from "react";
+import React, { Dispatch, useEffect, useRef, useState } from "react";
 import { FormProvider, useFieldArray, useForm } from "react-hook-form";
 import { Link, useParams } from "react-router-dom";
 // custom hooks
@@ -44,7 +44,7 @@ import {
   ConstructorJSONType,
   UpdateTaskSetJSONAction,
 } from "../../redux/constructor-jsons/constructor-jsons.types";
-import { ConstructorCreationMode } from "../common-types";
+import { ConstructorCreationMode, ReportStatisticsEntity } from "../common-types";
 import {
   TaskSetConstructorInputs,
   VisualizationMode,
@@ -74,6 +74,7 @@ import "./task-set-constructor.styles.scss";
 import { AxiosError } from "axios";
 import translate from "../../translations/translate";
 import AppSpinner from "../../components/app-spinner/app-spinner";
+import { CSVLink } from "react-csv";
 
 // creating context with FieldArray functions that will be used in task constructors
 // @ts-ignore
@@ -150,6 +151,11 @@ const TaskSetConstructor = ({
   const [showSpinner, setShowSpinner] = useState<boolean>(
     creationMode !== ConstructorCreationMode.CREATE
   );
+
+  // ref for csv download link component
+  const csvLinkRef = useRef<CSVLink & HTMLAnchorElement & { link: HTMLAnchorElement }>(null);
+  // taskset report data
+  const [tasksetReportData, setTasksetReportData] = useState<ReportStatisticsEntity[]>([]);
 
   const inputs: ConstructorFormInput[] = [
     {
@@ -543,6 +549,26 @@ const TaskSetConstructor = ({
                     {titleAndSubmitButtonText}
                   </button>
                   {renderSolveMathLinkButton()}
+                  <button
+                    type="button"
+                    className="btn u-mt-sm"
+                    onClick={() => {
+                      TaskSetConstructorRequestsHandler.getReport(taskSetCode).then((v: ReportStatisticsEntity[]) => {
+                        console.log("ReportStatisticsEntity", v);
+                        setTasksetReportData(v);
+                        csvLinkRef?.current?.link.click();
+                      });
+                    }}
+                  >
+                    Скачать отчет
+                  </button>
+                  <CSVLink
+                    className="hidden"
+                    target="_blank"
+                    data={tasksetReportData}
+                    filename={`taskset_${taskSetCode}_report.csv`}
+                    ref={csvLinkRef}
+                  />
                 </form>
               </TasksFieldArrayActionsContext.Provider>
             </FormProvider>

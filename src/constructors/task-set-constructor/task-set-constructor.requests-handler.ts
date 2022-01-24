@@ -2,7 +2,7 @@
 import axios, { AxiosError, AxiosResponse } from "axios";
 // utils
 import { getAuthToken } from "../../utils/local-storage/auth-token";
-import { ConstructorCreationMode } from "../common-types";
+import { ConstructorCreationMode, ReportStatisticsEntity } from "../common-types";
 // types
 import {
   TaskSetConstructorLinkReceivedForm,
@@ -15,6 +15,7 @@ import { TaskConstructorReceivedForm } from "../task-constructor/task-constructo
 
 class TaskSetConstructorRequestsHandler {
   private static url = process.env.REACT_APP_SERVER_API + "/taskset";
+  private static logRootUrl = process.env.REACT_APP_SERVER_API + "/log/";
 
   public static async getAll(): Promise<TaskSetConstructorReceivedForm[]> {
     return axios({
@@ -120,6 +121,26 @@ class TaskSetConstructorRequestsHandler {
         throw e;
       });
   }
+
+  public static async getReport(tasksetCode: String): Promise<ReportStatisticsEntity[]> {
+    return axios({
+      method: "get",
+      url: this.logRootUrl + `statistics_for_report?taskset=${tasksetCode}`,
+      headers: {
+        Authorization: "Bearer " + getAuthToken(),
+      },
+    }).then((res: AxiosResponse<ReportStatisticsEntity[]>) => {
+      return res.data;
+    }).catch((e: AxiosError) => {
+      console.error(
+        `Error trying to get taskset report. Taskset code: ${tasksetCode}`,
+        e.response,
+        e.message
+      );
+      throw e;
+    });
+  }
+
 }
 
 export default TaskSetConstructorRequestsHandler;

@@ -46,7 +46,7 @@ const NavigationBar: React.FC<NavigationBarProps> = ({
   axios.interceptors.response.use(function (config) {
     return config;
   }, (error) => {
-    if (error.response.status == 401) {
+    if (error.response && error.response.status === 401) {
       setShowUnauthorizedModal(true);
     }
     return Promise.reject(error);
@@ -137,9 +137,9 @@ const NavigationBar: React.FC<NavigationBarProps> = ({
         setShowModal={(status: boolean) => setShowLoginRegisterModal(status)}
       />
       <UnauthorizedModal
-          showModal={showUnauthorizedModal}
-          setShowModal={(status: boolean) => setShowUnauthorizedModal(status)}
-          setShowAuthModal={(status: boolean) => setShowLoginRegisterModal(status)}/>
+        showModal={showUnauthorizedModal}
+        setShowModal={(status: boolean) => setShowUnauthorizedModal(status)}
+        setShowAuthModal={(status: boolean) => setShowLoginRegisterModal(status)} />
     </div>
   );
 };

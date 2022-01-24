@@ -2,7 +2,7 @@
 import axios, { AxiosError, AxiosResponse } from "axios";
 // utils
 import { getAuthToken } from "../../utils/local-storage/auth-token";
-import { ConstructorCreationMode } from "../common-types";
+import { ConstructorCreationMode, ReportStatisticsEntity } from "../common-types";
 // types
 import {
   NamespaceReceivedForm,
@@ -11,6 +11,7 @@ import {
 
 class NamespaceConstructorRequestHandler {
   private static url = process.env.REACT_APP_SERVER_API + "/namespace/";
+  private static logRootUrl = process.env.REACT_APP_SERVER_API + "/log/";
 
   public static async getAll(): Promise<NamespaceReceivedForm[]> {
     return axios({
@@ -73,6 +74,25 @@ class NamespaceConstructorRequestHandler {
         );
         throw e;
       });
+  }
+
+  public static async getReport(namespaceCode: String): Promise<ReportStatisticsEntity[]> {
+    return axios({
+      method: "get",
+      url: this.logRootUrl + `statistics_for_report?namespace=${namespaceCode}`,
+      headers: {
+        Authorization: "Bearer " + getAuthToken(),
+      },
+    }).then((res: AxiosResponse<ReportStatisticsEntity[]>) => {
+      return res.data;
+    }).catch((e: AxiosError) => {
+      console.error(
+        `Error trying to get namespace report. Namespace code: ${namespaceCode}`,
+        e.response,
+        e.message
+      );
+      throw e;
+    });
   }
 }
 
