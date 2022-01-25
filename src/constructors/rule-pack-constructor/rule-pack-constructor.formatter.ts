@@ -40,9 +40,22 @@ class RulePackConstructorFormatter {
       });
     }
 
-    res.otherCheckSolutionData = JSON.stringify(data.otherCheckSolutionData);
-    res.otherAutoGenerationData = JSON.stringify(data.otherAutoGenerationData);
-    res.otherData = JSON.stringify(data.otherData);
+    [
+      "otherCheckSolutionData",
+      "otherAutoGenerationData",
+      "otherData",
+    ].forEach((key: string) => {
+      const fieldValue = (data as any)[key];
+      if (fieldValue != null) {
+        console.log(`field ${key} is not null and blank, it is: `, fieldValue);
+        (res as any)[key] = fieldValue
+      }
+    });
+
+
+    // res.otherCheckSolutionData = JSON.stringify(data.otherCheckSolutionData);
+    // res.otherAutoGenerationData = JSON.stringify(data.otherAutoGenerationData);
+    // res.otherData = JSON.stringify(data.otherData);
 
     return res;
   }
@@ -87,9 +100,19 @@ class RulePackConstructorFormatter {
       });
     }
 
-    res.otherCheckSolutionData = JSON.parse(data.otherCheckSolutionData);
-    res.otherAutoGenerationData = JSON.parse(data.otherAutoGenerationData);
-    res.otherData = JSON.parse(data.otherData);
+    [
+      "otherCheckSolutionData",
+      "otherAutoGenerationData",
+      "otherData",
+    ].forEach((key: string) => {
+      const fieldValue = (data as any)[key];
+      if (fieldValue === "") {
+        (res as any)[key] = null;
+      } else if (fieldValue != null) {
+        console.log(`field ${key} is not null and blank, it is: `, fieldValue);
+        (res as any)[key] = fieldValue
+      }
+    });
 
     // @ts-ignore
     return res;

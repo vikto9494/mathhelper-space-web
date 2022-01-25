@@ -12,9 +12,10 @@ export const addLastEditedConstructorItemToLocalStorage = (
   name: LastEditedConstructorItemsInLocalStorage,
   val: LastEditedConstructorItemInLocalStorageProps,
 ): void => {
-  const items: LastEditedConstructorItemInLocalStorageProps[] | null = localStorage.getItem(name)
+  const item = localStorage.getItem(name);
+  const items: LastEditedConstructorItemInLocalStorageProps[] | null = (item && item.length > 0 && item.startsWith("{"))
     ? // @ts-ignore
-    JSON.parse(localStorage.getItem(name))
+    JSON.parse(item)
      : null;
   // console.log("addLastEditedConstructorItemToLocalStorage");
   // console.log(name);
@@ -41,5 +42,5 @@ export const getLastEditedConstructorItemsFromLocalStorage = (
   name: LastEditedConstructorItemsInLocalStorage
 ): LastEditedConstructorItemInLocalStorageProps[] | null => {
   const item = localStorage.getItem(name);
-  return item ? JSON.parse(item) : null;
+  return (item && item.length > 0 && item.startsWith("{")) ? JSON.parse(item) : null;
 };

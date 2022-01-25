@@ -107,11 +107,11 @@ if (typeof kotlin === 'undefined') {
   var toList_1 = Kotlin.kotlin.collections.toList_abgq59$;
   var isFinite = Kotlin.kotlin.isFinite_yrwdxr$;
   var isInfinite = Kotlin.kotlin.isInfinite_yrwdxr$;
+  var sortWith = Kotlin.kotlin.collections.sortWith_nqfjgj$;
   var first_0 = Kotlin.kotlin.text.first_gw00vp$;
   var last_0 = Kotlin.kotlin.text.last_gw00vp$;
   var get_lastIndex_0 = Kotlin.kotlin.text.get_lastIndex_gw00vp$;
   var repeat = Kotlin.kotlin.text.repeat_94bcnn$;
-  var sortWith = Kotlin.kotlin.collections.sortWith_nqfjgj$;
   var max = Kotlin.kotlin.collections.max_exjks8$;
   var contains_1 = Kotlin.kotlin.collections.contains_mjy6jw$;
   var StringBuilder = Kotlin.kotlin.text.StringBuilder;
@@ -453,12 +453,21 @@ if (typeof kotlin === 'undefined') {
       shortErrorDescription = '0';
     return checkSolutionInTexWithCompiledConfiguration(originalTexSolution, compiledConfiguration, startExpressionIdentifier, targetFactPattern, comparisonSign, additionalFactsIdentifiers, endExpressionIdentifier, targetFactIdentifier, shortErrorDescription);
   }
-  function checkSolutionInTexITR_JS(originalTexSolution, taskITR, rulePacksITR, shortErrorDescription, skipTrivialCheck) {
+  function createCompiledConfigurationFromITR_JS(taskITR, rulePacksITR, comparisonSettings) {
+    if (comparisonSettings === void 0)
+      comparisonSettings = new ComparisonSettings();
+    return createCompiledConfigurationFromITR(taskITR, rulePacksITR, comparisonSettings);
+  }
+  function checkSolutionInTexITR_JS(originalTexSolution, taskITR, rulePacksITR, shortErrorDescription, skipTrivialCheck, comparisonSettings, inputCompiledConfiguration) {
     if (shortErrorDescription === void 0)
       shortErrorDescription = '0';
     if (skipTrivialCheck === void 0)
       skipTrivialCheck = false;
-    return checkSolutionInTexITR(originalTexSolution, taskITR, rulePacksITR, shortErrorDescription, skipTrivialCheck);
+    if (comparisonSettings === void 0)
+      comparisonSettings = new ComparisonSettings();
+    if (inputCompiledConfiguration === void 0)
+      inputCompiledConfiguration = null;
+    return checkSolutionInTexITR(originalTexSolution, taskITR, rulePacksITR, shortErrorDescription, skipTrivialCheck, comparisonSettings, inputCompiledConfiguration);
   }
   function getParsedExpressionByMathML(mathML) {
     var expressionTreeParser = new ExpressionTreeParser(mathML);
@@ -1450,7 +1459,7 @@ if (typeof kotlin === 'undefined') {
       functionConfiguration = new FunctionConfiguration(toSet(destination));
     }if (compiledConfiguration === void 0)
       compiledConfiguration = new CompiledConfiguration(void 0, functionConfiguration);
-    return new ExpressionSubstitution(!isBlank(left) ? stringToExpression(left, void 0, void 0, void 0, compiledConfiguration) : new ExpressionNode(NodeType$EMPTY_getInstance(), ''), !isBlank(right) ? stringToExpression(right, void 0, void 0, void 0, compiledConfiguration) : new ExpressionNode(NodeType$EMPTY_getInstance(), ''), void 0, basedOnTaskContext, !isBlank(code) ? code : "'" + stringToStructureString(left, void 0, void 0, void 0, compiledConfiguration) + "'->'" + stringToStructureString(right, void 0, void 0, void 0, compiledConfiguration) + "'", nameEn, nameRu, void 0, void 0, matchJumbledAndNested, priority);
+    return new ExpressionSubstitution(!isBlank(left) ? stringToExpression(left, void 0, void 0, void 0, compiledConfiguration) : new ExpressionNode(NodeType$EMPTY_getInstance(), ''), !isBlank(right) ? stringToExpression(right, void 0, void 0, void 0, compiledConfiguration) : new ExpressionNode(NodeType$EMPTY_getInstance(), ''), void 0, basedOnTaskContext, !isBlank(code) ? code : "'" + stringToStructureString(left, void 0, void 0, void 0, compiledConfiguration) + "'->'" + stringToStructureString(right, void 0, void 0, void 0, compiledConfiguration) + "'", nameEn, nameRu, void 0, void 0, void 0, matchJumbledAndNested, priority);
   }
   function expressionSubstitutionFromStructureStrings(leftStructureString, rightStructureString, basedOnTaskContext, matchJumbledAndNested, simpleAdditional, isExtending, priority, code, nameEn, nameRu, normalizationType, weight, weightInTaskAutoGeneration, useWhenPostprocessGeneratedExpression) {
     if (leftStructureString === void 0)
@@ -1481,7 +1490,7 @@ if (typeof kotlin === 'undefined') {
       weightInTaskAutoGeneration = 1.0;
     if (useWhenPostprocessGeneratedExpression === void 0)
       useWhenPostprocessGeneratedExpression = false;
-    return new ExpressionSubstitution(!isBlank(leftStructureString) ? structureStringToExpression(leftStructureString) : new ExpressionNode(NodeType$EMPTY_getInstance(), ''), !isBlank(rightStructureString) ? structureStringToExpression(rightStructureString) : new ExpressionNode(NodeType$EMPTY_getInstance(), ''), weight, basedOnTaskContext, !isBlank(code) ? code : "'" + leftStructureString + "'->'" + rightStructureString + "'", nameEn, nameRu, void 0, void 0, matchJumbledAndNested, priority, void 0, simpleAdditional, isExtending, normalizationType, weightInTaskAutoGeneration, useWhenPostprocessGeneratedExpression);
+    return new ExpressionSubstitution(!isBlank(leftStructureString) ? structureStringToExpression(leftStructureString) : new ExpressionNode(NodeType$EMPTY_getInstance(), ''), !isBlank(rightStructureString) ? structureStringToExpression(rightStructureString) : new ExpressionNode(NodeType$EMPTY_getInstance(), ''), weight, basedOnTaskContext, !isBlank(code) ? code : "'" + leftStructureString + "'->'" + rightStructureString + "'", nameEn, nameRu, void 0, void 0, void 0, matchJumbledAndNested, priority, void 0, simpleAdditional, isExtending, normalizationType, weightInTaskAutoGeneration, useWhenPostprocessGeneratedExpression);
   }
   function expressionSubstitutionFromRuleITR(ruleITR) {
     var tmp$, tmp$_0, tmp$_1, tmp$_2, tmp$_3, tmp$_4, tmp$_5, tmp$_6, tmp$_7, tmp$_8, tmp$_9, tmp$_10, tmp$_11;
@@ -1999,207 +2008,210 @@ if (typeof kotlin === 'undefined') {
     var tmp$, tmp$_0, tmp$_1, tmp$_2, tmp$_3, tmp$_4, tmp$_5, tmp$_6, tmp$_7, tmp$_8, tmp$_9, tmp$_10, tmp$_11;
     return new TaskITR(taskCreationType != null ? taskCreationType : 'manual', code, 1, namespaceCode, nameEn, nameRu, descriptionShortEn, descriptionShortRu, descriptionEn, descriptionRu, subjectType, (tmp$ = tags != null ? toMutableSet(tags) : null) != null ? tmp$ : LinkedHashSet_init(), (tmp$_0 = originalExpression != null ? toStructureStructureString(originalExpression, subjectType != null ? subjectType : '') : null) != null ? tmp$_0 : '', void 0, void 0, goalType, (tmp$_1 = goalExpression != null ? toStructureStructureString(goalExpression, subjectType != null ? subjectType : '') : null) != null ? tmp$_1 : '', void 0, void 0, goalPattern, goalNumberProperty, otherGoalData != null ? Kotlin.isType(tmp$_2 = JsonParser$Companion_getInstance().parseMap_61zpoe$(otherGoalData), Map) ? tmp$_2 : throwCCE() : null, rulePacks != null ? toList(rulePacks) : null, rules != null ? toList(rules) : null, stepsNumber, time, difficulty, (tmp$_3 = solution != null ? toStructureStructureString(solution, subjectType != null ? subjectType : '') : null) != null ? tmp$_3 : '', solutionsStepsTree != null ? Kotlin.isType(tmp$_4 = JsonParser$Companion_getInstance().parseMap_61zpoe$(solutionsStepsTree), Map) ? tmp$_4 : throwCCE() : null, hints != null ? Kotlin.isType(tmp$_7 = JsonParser$Companion_getInstance().parseMap_61zpoe$(hints), Map) ? tmp$_7 : throwCCE() : null, otherCheckSolutionData != null ? Kotlin.isType(tmp$_8 = JsonParser$Companion_getInstance().parseMap_61zpoe$(otherCheckSolutionData), Map) ? tmp$_8 : throwCCE() : null, countOfAutoGeneratedTasks, otherAutoGenerationData != null ? Kotlin.isType(tmp$_9 = JsonParser$Companion_getInstance().parseMap_61zpoe$(otherAutoGenerationData), Map) ? tmp$_9 : throwCCE() : null, interestingFacts != null ? Kotlin.isType(tmp$_5 = JsonParser$Companion_getInstance().parseMap_61zpoe$(interestingFacts), Map) ? tmp$_5 : throwCCE() : null, otherAwardData != null ? Kotlin.isType(tmp$_10 = JsonParser$Companion_getInstance().parseMap_61zpoe$(otherAwardData), Map) ? tmp$_10 : throwCCE() : null, nextRecommendedTasks != null ? Kotlin.isType(tmp$_6 = JsonParser$Companion_getInstance().parseMap_61zpoe$(nextRecommendedTasks), Map) ? tmp$_6 : throwCCE() : null, otherData != null ? Kotlin.isType(tmp$_11 = JsonParser$Companion_getInstance().parseMap_61zpoe$(otherData), Map) ? tmp$_11 : throwCCE() : null);
   }
-  function checkSolutionInTexITR$lambda() {
+  function createCompiledConfigurationFromITR$lambda() {
     return 'build verification settings';
   }
-  function checkSolutionInTexITR$lambda_0() {
+  function createCompiledConfigurationFromITR$lambda_0() {
     return "'setTheory' is added to scopeFilter";
   }
-  function checkSolutionInTexITR$lambda_1() {
+  function createCompiledConfigurationFromITR$lambda_1() {
     return 'functionConfiguration rules cleaned';
   }
-  function checkSolutionInTexITR$lambda$lambda(it) {
+  function createCompiledConfigurationFromITR$lambda$lambda(it) {
     var tmp$, tmp$_0;
     return ensureNotNull(it.code) + ' : ' + toString((tmp$ = it.rules) != null ? tmp$.size : null) + ' rules : ' + toString((tmp$_0 = it.rulePacks) != null ? tmp$_0.size : null) + ' rulePacks';
   }
-  function checkSolutionInTexITR$lambda_2(closure$rulePacksITR) {
+  function createCompiledConfigurationFromITR$lambda_2(closure$rulePacksITR) {
     return function () {
-      return 'rulePacksITR: ' + joinToString_0(closure$rulePacksITR, void 0, void 0, void 0, void 0, void 0, checkSolutionInTexITR$lambda$lambda);
+      return 'rulePacksITR: ' + joinToString_0(closure$rulePacksITR, void 0, void 0, void 0, void 0, void 0, createCompiledConfigurationFromITR$lambda$lambda);
     };
   }
-  function checkSolutionInTexITR$lambda$lambda_0(it) {
+  function createCompiledConfigurationFromITR$lambda$lambda_0(it) {
     var tmp$, tmp$_0;
     return ensureNotNull(it.code) + ' : ' + toString((tmp$ = it.rules) != null ? tmp$.size : null) + ' rules : ' + toString((tmp$_0 = it.rulePacks) != null ? tmp$_0.size : null) + ' rulePacks';
   }
-  function checkSolutionInTexITR$lambda_3(closure$rulePacksMap) {
+  function createCompiledConfigurationFromITR$lambda_3(closure$rulePacksMap) {
     return function () {
-      return 'rulePacksMap: ' + joinToString(closure$rulePacksMap.values, void 0, void 0, void 0, void 0, void 0, checkSolutionInTexITR$lambda$lambda_0);
+      return 'rulePacksMap: ' + joinToString(closure$rulePacksMap.values, void 0, void 0, void 0, void 0, void 0, createCompiledConfigurationFromITR$lambda$lambda_0);
     };
   }
-  function checkSolutionInTexITR$lambda$lambda_1(it) {
+  function createCompiledConfigurationFromITR$lambda$lambda_1(it) {
     return ensureNotNull(it.rulePackCode);
   }
-  function checkSolutionInTexITR$lambda_4(closure$taskITR) {
+  function createCompiledConfigurationFromITR$lambda_4(closure$taskITR) {
     return function () {
       var tmp$;
-      return 'taskRulePacks: ' + toString((tmp$ = closure$taskITR.rulePacks) != null ? joinToString(tmp$, void 0, void 0, void 0, void 0, void 0, checkSolutionInTexITR$lambda$lambda_1) : null);
+      return 'taskRulePacks: ' + toString((tmp$ = closure$taskITR.rulePacks) != null ? joinToString(tmp$, void 0, void 0, void 0, void 0, void 0, createCompiledConfigurationFromITR$lambda$lambda_1) : null);
     };
   }
-  function checkSolutionInTexITR$lambda$lambda_2(it) {
+  function createCompiledConfigurationFromITR$lambda$lambda_2(it) {
     return it.getIdentifier();
   }
-  function checkSolutionInTexITR$lambda_5(closure$functionConfiguration) {
+  function createCompiledConfigurationFromITR$lambda_5(closure$functionConfiguration) {
     return function () {
-      return 'notChangesOnVariablesInComparisonFunction: ' + joinToString(closure$functionConfiguration.notChangesOnVariablesInComparisonFunction, void 0, void 0, void 0, void 0, void 0, checkSolutionInTexITR$lambda$lambda_2);
+      return 'notChangesOnVariablesInComparisonFunction: ' + joinToString(closure$functionConfiguration.notChangesOnVariablesInComparisonFunction, void 0, void 0, void 0, void 0, void 0, createCompiledConfigurationFromITR$lambda$lambda_2);
     };
   }
-  function checkSolutionInTexITR$lambda$lambda_3(it) {
+  function createCompiledConfigurationFromITR$lambda$lambda_3(it) {
     return it.getIdentifier();
   }
-  function checkSolutionInTexITR$lambda_6(closure$functionConfiguration) {
+  function createCompiledConfigurationFromITR$lambda_6(closure$functionConfiguration) {
     return function () {
-      return 'notChangesOnVariablesInComparisonFunctionWithoutTransformations: ' + joinToString(closure$functionConfiguration.notChangesOnVariablesInComparisonFunctionWithoutTransformations, void 0, void 0, void 0, void 0, void 0, checkSolutionInTexITR$lambda$lambda_3);
+      return 'notChangesOnVariablesInComparisonFunctionWithoutTransformations: ' + joinToString(closure$functionConfiguration.notChangesOnVariablesInComparisonFunctionWithoutTransformations, void 0, void 0, void 0, void 0, void 0, createCompiledConfigurationFromITR$lambda$lambda_3);
     };
   }
-  function checkSolutionInTexITR$lambda_7() {
+  function createCompiledConfigurationFromITR$lambda_7() {
     return 'expression substitutions handing';
   }
-  function checkSolutionInTexITR$lambda_8(closure$substitution) {
+  function createCompiledConfigurationFromITR$lambda_8(closure$substitution) {
     return function () {
       return "substitution '" + closure$substitution.code + "' added to expressionTreeAutogeneratedTransformationRuleIdentifiers";
     };
   }
-  function checkSolutionInTexITR$lambda_9(closure$substitution) {
+  function createCompiledConfigurationFromITR$lambda_9(closure$substitution) {
     return function () {
       return "substitution '" + closure$substitution.code + "' added to compiledExpressionTreeTransformationRules and compiledExpressionSimpleAdditionalTreeTransformationRules";
     };
   }
-  function checkSolutionInTexITR$lambda_10(closure$substitution) {
+  function createCompiledConfigurationFromITR$lambda_10(closure$substitution) {
     return function () {
       return "substitution '" + closure$substitution.code + "' added to compiledExpressionTreeTransformationRules";
     };
   }
-  function checkSolutionInTexITR(originalTexSolution, taskITR, rulePacksITR, shortErrorDescription, skipTrivialCheck, inputCompiledConfiguration) {
+  function createCompiledConfigurationFromITR(taskITR, rulePacksITR, comparisonSettings) {
+    if (comparisonSettings === void 0)
+      comparisonSettings = new ComparisonSettings();
+    var tmp$, tmp$_0, tmp$_1, tmp$_2, tmp$_3, tmp$_4, tmp$_5, tmp$_6;
+    log_1.addMessage_cte53e$(createCompiledConfigurationFromITR$lambda, void 0, 0);
+    var scopeFilter = LinkedHashSet_init();
+    if (contains(listOf_0(['set', 'logic']), taskITR.subjectType)) {
+      log_1.addMessage_cte53e$(createCompiledConfigurationFromITR$lambda_0, void 0, 1);
+      scopeFilter.add_11rb$('setTheory');
+    }var functionConfiguration = new FunctionConfiguration(scopeFilter);
+    var tmp$_7 = ((tmp$ = taskITR.rules) != null ? !tmp$.isEmpty() : null) === true;
+    if (!tmp$_7) {
+      tmp$_7 = ((tmp$_0 = taskITR.rulePacks) != null ? !tmp$_0.isEmpty() : null) === true;
+    }if (tmp$_7) {
+      functionConfiguration.treeTransformationRules = ArrayList_init();
+      functionConfiguration.taskContextTreeTransformationRules = ArrayList_init();
+      log_1.addMessage_cte53e$(createCompiledConfigurationFromITR$lambda_1, void 0, 1);
+    }var expressionSubstitutions = ArrayList_init();
+    if ((tmp$_1 = taskITR.rules) != null) {
+      var tmp$_8;
+      tmp$_8 = tmp$_1.iterator();
+      while (tmp$_8.hasNext()) {
+        var element = tmp$_8.next();
+        expressionSubstitutions.add_11rb$(expressionSubstitutionFromRuleITR(element));
+      }
+    }log_1.addMessage_cte53e$(createCompiledConfigurationFromITR$lambda_2(rulePacksITR), void 0, 1);
+    var destination = ArrayList_init();
+    var tmp$_9;
+    for (tmp$_9 = 0; tmp$_9 !== rulePacksITR.length; ++tmp$_9) {
+      var element_0 = rulePacksITR[tmp$_9];
+      if (element_0.code != null)
+        destination.add_11rb$(element_0);
+    }
+    var capacity = coerceAtLeast(mapCapacity(collectionSizeOrDefault(destination, 10)), 16);
+    var destination_0 = LinkedHashMap_init(capacity);
+    var tmp$_10;
+    tmp$_10 = destination.iterator();
+    while (tmp$_10.hasNext()) {
+      var element_1 = tmp$_10.next();
+      destination_0.put_xwzc9p$(ensureNotNull(element_1.code), element_1);
+    }
+    var rulePacksMap = destination_0;
+    log_1.addMessage_cte53e$(createCompiledConfigurationFromITR$lambda_3(rulePacksMap), void 0, 1);
+    log_1.addMessage_cte53e$(createCompiledConfigurationFromITR$lambda_4(taskITR), void 0, 1);
+    var allRulePackCodes = LinkedHashSet_init();
+    if ((tmp$_2 = taskITR.rulePacks) != null) {
+      var tmp$_11;
+      tmp$_11 = tmp$_2.iterator();
+      while (tmp$_11.hasNext()) {
+        var element_2 = tmp$_11.next();
+        var key = element_2.rulePackCode;
+        var tmp$_12;
+        var rulePack = (Kotlin.isType(tmp$_12 = rulePacksMap, Map) ? tmp$_12 : throwCCE()).get_11rb$(key);
+        if (rulePack != null) {
+          allRulePackCodes.addAll_brywnq$(getRulePackCodesFromTree(rulePack, rulePacksMap));
+        }}
+    }var notChangesOnVariablesInComparisonFunctionSet = LinkedHashSet_init();
+    var notChangesOnVariablesInComparisonFunctionWithoutTransformationsSet = LinkedHashSet_init();
+    var tmp$_13;
+    tmp$_13 = allRulePackCodes.iterator();
+    while (tmp$_13.hasNext()) {
+      var element_3 = tmp$_13.next();
+      var tmp$_14, tmp$_15, tmp$_16;
+      var rulePack_0 = rulePacksMap.get_11rb$(element_3);
+      if (rulePack_0 != null) {
+        if ((tmp$_14 = rulePack_0.rules) != null) {
+          var tmp$_17;
+          tmp$_17 = tmp$_14.iterator();
+          while (tmp$_17.hasNext()) {
+            var element_4 = tmp$_17.next();
+            expressionSubstitutions.add_11rb$(expressionSubstitutionFromRuleITR(element_4));
+          }
+        }if (rulePack_0.otherCheckSolutionData != null && Kotlin.isType(rulePack_0.otherCheckSolutionData.get_11rb$(notChangesOnVariablesInComparisonFunctionJsonName), List)) {
+          notChangesOnVariablesInComparisonFunctionSet.addAll_brywnq$(Kotlin.isType(tmp$_15 = rulePack_0.otherCheckSolutionData.get_11rb$(notChangesOnVariablesInComparisonFunctionJsonName), List) ? tmp$_15 : throwCCE());
+        }if (rulePack_0.otherCheckSolutionData != null && Kotlin.isType(rulePack_0.otherCheckSolutionData.get_11rb$(notChangesOnVariablesInComparisonFunctionWithoutTransformationsJsonName), List)) {
+          notChangesOnVariablesInComparisonFunctionWithoutTransformationsSet.addAll_brywnq$(Kotlin.isType(tmp$_16 = rulePack_0.otherCheckSolutionData.get_11rb$(notChangesOnVariablesInComparisonFunctionWithoutTransformationsJsonName), List) ? tmp$_16 : throwCCE());
+        }}}
+    functionConfiguration.notChangesOnVariablesInComparisonFunction = toList_0(notChangesOnVariablesInComparisonFunctionSet);
+    functionConfiguration.notChangesOnVariablesInComparisonFunctionWithoutTransformations = toList_0(notChangesOnVariablesInComparisonFunctionWithoutTransformationsSet);
+    if (taskITR.otherCheckSolutionData != null && Kotlin.isType(taskITR.otherCheckSolutionData.get_11rb$(notChangesOnVariablesInComparisonFunctionJsonName), List)) {
+      functionConfiguration.notChangesOnVariablesInComparisonFunction = Kotlin.isType(tmp$_3 = taskITR.otherCheckSolutionData.get_11rb$(notChangesOnVariablesInComparisonFunctionJsonName), List) ? tmp$_3 : throwCCE();
+    }if (taskITR.otherCheckSolutionData != null && Kotlin.isType(taskITR.otherCheckSolutionData.get_11rb$(notChangesOnVariablesInComparisonFunctionWithoutTransformationsJsonName), List)) {
+      functionConfiguration.notChangesOnVariablesInComparisonFunctionWithoutTransformations = Kotlin.isType(tmp$_4 = taskITR.otherCheckSolutionData.get_11rb$(notChangesOnVariablesInComparisonFunctionWithoutTransformationsJsonName), List) ? tmp$_4 : throwCCE();
+    }log_1.addMessage_cte53e$(createCompiledConfigurationFromITR$lambda_5(functionConfiguration), void 0, 1);
+    log_1.addMessage_cte53e$(createCompiledConfigurationFromITR$lambda_6(functionConfiguration), void 0, 1);
+    var compiledConfiguration = new CompiledConfiguration(void 0, functionConfiguration, comparisonSettings, void 0, void 0, void 0, void 0, void 0, void 0, void 0, (tmp$_5 = taskITR.subjectType) != null ? tmp$_5 : '');
+    if (!expressionSubstitutions.isEmpty()) {
+      compiledConfiguration.compiledExpressionTreeTransformationRules.clear();
+      log_1.addMessage_cte53e$(createCompiledConfigurationFromITR$lambda_7, void 0, 1);
+      var handledCodesHashSet = HashSet_init();
+      tmp$_6 = expressionSubstitutions.iterator();
+      while (tmp$_6.hasNext()) {
+        var substitution = tmp$_6.next();
+        if (handledCodesHashSet.contains_11rb$(substitution.code))
+          continue;
+        handledCodesHashSet.add_11rb$(substitution.code);
+        if (substitution.left.nodeType === NodeType$EMPTY_getInstance() || substitution.right.nodeType === NodeType$EMPTY_getInstance()) {
+          if (substitution.code.length > 0) {
+            log_1.addMessage_cte53e$(createCompiledConfigurationFromITR$lambda_8(substitution), void 0, 2);
+            compiledConfiguration.expressionTreeAutogeneratedTransformationRuleIdentifiers.put_xwzc9p$(substitution.code, substitution);
+          }} else {
+          compiledConfiguration.compiledExpressionTreeTransformationRules.add_11rb$(substitution);
+          if (substitution.simpleAdditional) {
+            log_1.addMessage_cte53e$(createCompiledConfigurationFromITR$lambda_9(substitution), void 0, 2);
+            compiledConfiguration.compiledExpressionSimpleAdditionalTreeTransformationRules.add_11rb$(substitution);
+          } else {
+            log_1.addMessage_cte53e$(createCompiledConfigurationFromITR$lambda_10(substitution), void 0, 2);
+          }
+        }
+      }
+    }var tmp$_18;
+    tmp$_18 = allRulePackCodes.iterator();
+    while (tmp$_18.hasNext()) {
+      var element_5 = tmp$_18.next();
+      var rulePack_1 = rulePacksMap.get_11rb$(element_5);
+      if (rulePack_1 != null) {
+        compiledConfiguration.setInfoFromAdditionalParams_zb9t93$(rulePack_1.otherCheckSolutionData);
+      }}
+    compiledConfiguration.setInfoFromAdditionalParams_zb9t93$(taskITR.otherCheckSolutionData);
+    return compiledConfiguration;
+  }
+  function checkSolutionInTexITR(originalTexSolution, taskITR, rulePacksITR, shortErrorDescription, skipTrivialCheck, comparisonSettings, inputCompiledConfiguration) {
     if (shortErrorDescription === void 0)
       shortErrorDescription = '0';
     if (skipTrivialCheck === void 0)
       skipTrivialCheck = false;
+    if (comparisonSettings === void 0)
+      comparisonSettings = new ComparisonSettings();
     if (inputCompiledConfiguration === void 0)
       inputCompiledConfiguration = null;
-    var tmp$, tmp$_0, tmp$_1, tmp$_2, tmp$_3, tmp$_4, tmp$_5, tmp$_6, tmp$_7, tmp$_8, tmp$_9, tmp$_10;
+    var tmp$, tmp$_0, tmp$_1;
     log_1.clear();
-    if (inputCompiledConfiguration != null) {
-      tmp$_7 = inputCompiledConfiguration;
-    } else {
-      log_1.addMessage_cte53e$(checkSolutionInTexITR$lambda, void 0, 0);
-      var scopeFilter = LinkedHashSet_init();
-      if (contains(listOf_0(['set', 'logic']), taskITR.subjectType)) {
-        log_1.addMessage_cte53e$(checkSolutionInTexITR$lambda_0, void 0, 1);
-        scopeFilter.add_11rb$('setTheory');
-      }var functionConfiguration = new FunctionConfiguration(scopeFilter);
-      var tmp$_11 = ((tmp$ = taskITR.rules) != null ? !tmp$.isEmpty() : null) === true;
-      if (!tmp$_11) {
-        tmp$_11 = ((tmp$_0 = taskITR.rulePacks) != null ? !tmp$_0.isEmpty() : null) === true;
-      }if (tmp$_11) {
-        functionConfiguration.treeTransformationRules = ArrayList_init();
-        functionConfiguration.taskContextTreeTransformationRules = ArrayList_init();
-        log_1.addMessage_cte53e$(checkSolutionInTexITR$lambda_1, void 0, 1);
-      }var expressionSubstitutions = ArrayList_init();
-      if ((tmp$_1 = taskITR.rules) != null) {
-        var tmp$_12;
-        tmp$_12 = tmp$_1.iterator();
-        while (tmp$_12.hasNext()) {
-          var element = tmp$_12.next();
-          expressionSubstitutions.add_11rb$(expressionSubstitutionFromRuleITR(element));
-        }
-      }log_1.addMessage_cte53e$(checkSolutionInTexITR$lambda_2(rulePacksITR), void 0, 1);
-      var destination = ArrayList_init();
-      var tmp$_13;
-      for (tmp$_13 = 0; tmp$_13 !== rulePacksITR.length; ++tmp$_13) {
-        var element_0 = rulePacksITR[tmp$_13];
-        if (element_0.code != null)
-          destination.add_11rb$(element_0);
-      }
-      var capacity = coerceAtLeast(mapCapacity(collectionSizeOrDefault(destination, 10)), 16);
-      var destination_0 = LinkedHashMap_init(capacity);
-      var tmp$_14;
-      tmp$_14 = destination.iterator();
-      while (tmp$_14.hasNext()) {
-        var element_1 = tmp$_14.next();
-        destination_0.put_xwzc9p$(ensureNotNull(element_1.code), element_1);
-      }
-      var rulePacksMap = destination_0;
-      log_1.addMessage_cte53e$(checkSolutionInTexITR$lambda_3(rulePacksMap), void 0, 1);
-      log_1.addMessage_cte53e$(checkSolutionInTexITR$lambda_4(taskITR), void 0, 1);
-      var allRulePackCodes = LinkedHashSet_init();
-      if ((tmp$_2 = taskITR.rulePacks) != null) {
-        var tmp$_15;
-        tmp$_15 = tmp$_2.iterator();
-        while (tmp$_15.hasNext()) {
-          var element_2 = tmp$_15.next();
-          var key = element_2.rulePackCode;
-          var tmp$_16;
-          var rulePack = (Kotlin.isType(tmp$_16 = rulePacksMap, Map) ? tmp$_16 : throwCCE()).get_11rb$(key);
-          if (rulePack != null) {
-            allRulePackCodes.addAll_brywnq$(getRulePackCodesFromTree(rulePack, rulePacksMap));
-          }}
-      }var notChangesOnVariablesInComparisonFunctionSet = LinkedHashSet_init();
-      var notChangesOnVariablesInComparisonFunctionWithoutTransformationsSet = LinkedHashSet_init();
-      var tmp$_17;
-      tmp$_17 = allRulePackCodes.iterator();
-      while (tmp$_17.hasNext()) {
-        var element_3 = tmp$_17.next();
-        var tmp$_18, tmp$_19, tmp$_20;
-        var rulePack_0 = rulePacksMap.get_11rb$(element_3);
-        if (rulePack_0 != null) {
-          if ((tmp$_18 = rulePack_0.rules) != null) {
-            var tmp$_21;
-            tmp$_21 = tmp$_18.iterator();
-            while (tmp$_21.hasNext()) {
-              var element_4 = tmp$_21.next();
-              expressionSubstitutions.add_11rb$(expressionSubstitutionFromRuleITR(element_4));
-            }
-          }if (rulePack_0.otherCheckSolutionData != null && Kotlin.isType(rulePack_0.otherCheckSolutionData.get_11rb$(notChangesOnVariablesInComparisonFunctionJsonName), List)) {
-            notChangesOnVariablesInComparisonFunctionSet.addAll_brywnq$(Kotlin.isType(tmp$_19 = rulePack_0.otherCheckSolutionData.get_11rb$(notChangesOnVariablesInComparisonFunctionJsonName), List) ? tmp$_19 : throwCCE());
-          }if (rulePack_0.otherCheckSolutionData != null && Kotlin.isType(rulePack_0.otherCheckSolutionData.get_11rb$(notChangesOnVariablesInComparisonFunctionWithoutTransformationsJsonName), List)) {
-            notChangesOnVariablesInComparisonFunctionWithoutTransformationsSet.addAll_brywnq$(Kotlin.isType(tmp$_20 = rulePack_0.otherCheckSolutionData.get_11rb$(notChangesOnVariablesInComparisonFunctionWithoutTransformationsJsonName), List) ? tmp$_20 : throwCCE());
-          }}}
-      functionConfiguration.notChangesOnVariablesInComparisonFunction = toList_0(notChangesOnVariablesInComparisonFunctionSet);
-      functionConfiguration.notChangesOnVariablesInComparisonFunctionWithoutTransformations = toList_0(notChangesOnVariablesInComparisonFunctionWithoutTransformationsSet);
-      if (taskITR.otherCheckSolutionData != null && Kotlin.isType(taskITR.otherCheckSolutionData.get_11rb$(notChangesOnVariablesInComparisonFunctionJsonName), List)) {
-        functionConfiguration.notChangesOnVariablesInComparisonFunction = Kotlin.isType(tmp$_3 = taskITR.otherCheckSolutionData.get_11rb$(notChangesOnVariablesInComparisonFunctionJsonName), List) ? tmp$_3 : throwCCE();
-      }if (taskITR.otherCheckSolutionData != null && Kotlin.isType(taskITR.otherCheckSolutionData.get_11rb$(notChangesOnVariablesInComparisonFunctionWithoutTransformationsJsonName), List)) {
-        functionConfiguration.notChangesOnVariablesInComparisonFunctionWithoutTransformations = Kotlin.isType(tmp$_4 = taskITR.otherCheckSolutionData.get_11rb$(notChangesOnVariablesInComparisonFunctionWithoutTransformationsJsonName), List) ? tmp$_4 : throwCCE();
-      }log_1.addMessage_cte53e$(checkSolutionInTexITR$lambda_5(functionConfiguration), void 0, 1);
-      log_1.addMessage_cte53e$(checkSolutionInTexITR$lambda_6(functionConfiguration), void 0, 1);
-      var compiledConfiguration = new CompiledConfiguration(void 0, functionConfiguration, void 0, void 0, void 0, void 0, void 0, void 0, void 0, void 0, (tmp$_5 = taskITR.subjectType) != null ? tmp$_5 : '');
-      if (!expressionSubstitutions.isEmpty()) {
-        compiledConfiguration.compiledExpressionTreeTransformationRules.clear();
-        log_1.addMessage_cte53e$(checkSolutionInTexITR$lambda_7, void 0, 1);
-        var handledCodesHashSet = HashSet_init();
-        tmp$_6 = expressionSubstitutions.iterator();
-        while (tmp$_6.hasNext()) {
-          var substitution = tmp$_6.next();
-          if (handledCodesHashSet.contains_11rb$(substitution.code))
-            continue;
-          handledCodesHashSet.add_11rb$(substitution.code);
-          if (substitution.left.nodeType === NodeType$EMPTY_getInstance() || substitution.right.nodeType === NodeType$EMPTY_getInstance()) {
-            if (substitution.code.length > 0) {
-              log_1.addMessage_cte53e$(checkSolutionInTexITR$lambda_8(substitution), void 0, 2);
-              compiledConfiguration.expressionTreeAutogeneratedTransformationRuleIdentifiers.put_xwzc9p$(substitution.code, substitution);
-            }} else {
-            compiledConfiguration.compiledExpressionTreeTransformationRules.add_11rb$(substitution);
-            if (substitution.simpleAdditional) {
-              log_1.addMessage_cte53e$(checkSolutionInTexITR$lambda_9(substitution), void 0, 2);
-              compiledConfiguration.compiledExpressionSimpleAdditionalTreeTransformationRules.add_11rb$(substitution);
-            } else {
-              log_1.addMessage_cte53e$(checkSolutionInTexITR$lambda_10(substitution), void 0, 2);
-            }
-          }
-        }
-      }var tmp$_22;
-      tmp$_22 = allRulePackCodes.iterator();
-      while (tmp$_22.hasNext()) {
-        var element_5 = tmp$_22.next();
-        var rulePack_1 = rulePacksMap.get_11rb$(element_5);
-        if (rulePack_1 != null) {
-          compiledConfiguration.setInfoFromAdditionalParams_zb9t93$(rulePack_1.otherCheckSolutionData);
-        }}
-      compiledConfiguration.setInfoFromAdditionalParams_zb9t93$(taskITR.otherCheckSolutionData);
-      tmp$_7 = compiledConfiguration;
-    }
-    var finalCompiledConfiguration = tmp$_7;
-    return checkFactsInTex(originalTexSolution, (tmp$_8 = taskITR.originalExpressionStructureString) != null ? tmp$_8 : '', (tmp$_9 = taskITR.goalExpressionStructureString) != null ? tmp$_9 : '', '', (tmp$_10 = taskITR.goalPattern) != null ? tmp$_10 : '', '', '', shortErrorDescription, skipTrivialCheck, finalCompiledConfiguration, taskITR.otherGoalData);
+    var finalCompiledConfiguration = inputCompiledConfiguration != null ? inputCompiledConfiguration : createCompiledConfigurationFromITR(taskITR, rulePacksITR, comparisonSettings);
+    return checkFactsInTex(originalTexSolution, (tmp$ = taskITR.originalExpressionStructureString) != null ? tmp$ : '', (tmp$_0 = taskITR.goalExpressionStructureString) != null ? tmp$_0 : '', '', (tmp$_1 = taskITR.goalPattern) != null ? tmp$_1 : '', '', '', shortErrorDescription, skipTrivialCheck, finalCompiledConfiguration, taskITR.otherGoalData);
   }
   function checkSolutionInTex(originalTexSolution, startExpressionIdentifier, targetFactPattern, additionalFactsIdentifiers, endExpressionIdentifier, targetFactIdentifier, comparisonSign, wellKnownFunctions, wellKnownFunctionsString, unlimitedWellKnownFunctions, unlimitedWellKnownFunctionsString, expressionTransformationRules, expressionTransformationRulesString, taskContextExpressionTransformationRules, rulePacks, maxExpressionTransformationWeight, maxDistBetweenDiffSteps, scopeFilter, shortErrorDescription, skipTrivialCheck, otherGoalData, subjectType) {
     if (startExpressionIdentifier === void 0)
@@ -5428,7 +5440,7 @@ if (typeof kotlin === 'undefined') {
       return listOf_0([new SplittingString('='), new SplittingString('<='), new SplittingString('>='), new SplittingString('<'), new SplittingString('>'), new SplittingString('\\lt'), new SplittingString('\\le', listOf('\\left')), new SplittingString('\\gt'), new SplittingString('\\ge')]);
     }
   }
-  function ComparisonSettings(maxTransformationWeight, maxBustCount, maxExpressionTransformationWeight, maxExpressionBustCount, isComparisonWithRules, compareExpressionsWithProbabilityRulesWhenComparingExpressions, compareExpressionsWithProbabilityRulesWhenComparingFacts, compareExpressionsAndFactsWithProbabilityRules, useTestingToCompareFunctionArgumentsInProbabilityComparison, useOldSimpleProbabilityTesting, defaultComparisonType, minNumberOfPointsForEquality, justInDomainsIntersection, allowedPartOfErrorTests, testWithUndefinedResultIncreasingCoef, maxDistBetweenDiffSteps) {
+  function ComparisonSettings(maxTransformationWeight, maxBustCount, maxExpressionTransformationWeight, maxExpressionBustCount, isComparisonWithRules, compareExpressionsWithProbabilityRulesWhenComparingExpressions, compareExpressionsWithProbabilityRulesWhenComparingFacts, compareExpressionsAndFactsWithProbabilityRules, useTestingToCompareFunctionArgumentsInProbabilityComparison, useOldSimpleProbabilityTesting, useTransformationsSortingInExpressionComparison, defaultComparisonType, minNumberOfPointsForEquality, justInDomainsIntersection, allowedPartOfErrorTests, testWithUndefinedResultIncreasingCoef, maxDistBetweenDiffSteps) {
     if (maxTransformationWeight === void 0)
       maxTransformationWeight = 1.0;
     if (maxBustCount === void 0)
@@ -5449,6 +5461,8 @@ if (typeof kotlin === 'undefined') {
       useTestingToCompareFunctionArgumentsInProbabilityComparison = true;
     if (useOldSimpleProbabilityTesting === void 0)
       useOldSimpleProbabilityTesting = true;
+    if (useTransformationsSortingInExpressionComparison === void 0)
+      useTransformationsSortingInExpressionComparison = true;
     if (defaultComparisonType === void 0)
       defaultComparisonType = ComparisonType$EQUAL_getInstance();
     if (minNumberOfPointsForEquality === void 0)
@@ -5471,6 +5485,7 @@ if (typeof kotlin === 'undefined') {
     this.compareExpressionsAndFactsWithProbabilityRules = compareExpressionsAndFactsWithProbabilityRules;
     this.useTestingToCompareFunctionArgumentsInProbabilityComparison = useTestingToCompareFunctionArgumentsInProbabilityComparison;
     this.useOldSimpleProbabilityTesting = useOldSimpleProbabilityTesting;
+    this.useTransformationsSortingInExpressionComparison = useTransformationsSortingInExpressionComparison;
     this.defaultComparisonType = defaultComparisonType;
     this.minNumberOfPointsForEquality = minNumberOfPointsForEquality;
     this.justInDomainsIntersection = justInDomainsIntersection;
@@ -5514,28 +5529,31 @@ if (typeof kotlin === 'undefined') {
     return this.useOldSimpleProbabilityTesting;
   };
   ComparisonSettings.prototype.component11 = function () {
-    return this.defaultComparisonType;
+    return this.useTransformationsSortingInExpressionComparison;
   };
   ComparisonSettings.prototype.component12 = function () {
-    return this.minNumberOfPointsForEquality;
+    return this.defaultComparisonType;
   };
   ComparisonSettings.prototype.component13 = function () {
-    return this.justInDomainsIntersection;
+    return this.minNumberOfPointsForEquality;
   };
   ComparisonSettings.prototype.component14 = function () {
-    return this.allowedPartOfErrorTests;
+    return this.justInDomainsIntersection;
   };
   ComparisonSettings.prototype.component15 = function () {
-    return this.testWithUndefinedResultIncreasingCoef;
+    return this.allowedPartOfErrorTests;
   };
   ComparisonSettings.prototype.component16 = function () {
+    return this.testWithUndefinedResultIncreasingCoef;
+  };
+  ComparisonSettings.prototype.component17 = function () {
     return this.maxDistBetweenDiffSteps;
   };
-  ComparisonSettings.prototype.copy_sqomsb$ = function (maxTransformationWeight, maxBustCount, maxExpressionTransformationWeight, maxExpressionBustCount, isComparisonWithRules, compareExpressionsWithProbabilityRulesWhenComparingExpressions, compareExpressionsWithProbabilityRulesWhenComparingFacts, compareExpressionsAndFactsWithProbabilityRules, useTestingToCompareFunctionArgumentsInProbabilityComparison, useOldSimpleProbabilityTesting, defaultComparisonType, minNumberOfPointsForEquality, justInDomainsIntersection, allowedPartOfErrorTests, testWithUndefinedResultIncreasingCoef, maxDistBetweenDiffSteps) {
-    return new ComparisonSettings(maxTransformationWeight === void 0 ? this.maxTransformationWeight : maxTransformationWeight, maxBustCount === void 0 ? this.maxBustCount : maxBustCount, maxExpressionTransformationWeight === void 0 ? this.maxExpressionTransformationWeight : maxExpressionTransformationWeight, maxExpressionBustCount === void 0 ? this.maxExpressionBustCount : maxExpressionBustCount, isComparisonWithRules === void 0 ? this.isComparisonWithRules : isComparisonWithRules, compareExpressionsWithProbabilityRulesWhenComparingExpressions === void 0 ? this.compareExpressionsWithProbabilityRulesWhenComparingExpressions : compareExpressionsWithProbabilityRulesWhenComparingExpressions, compareExpressionsWithProbabilityRulesWhenComparingFacts === void 0 ? this.compareExpressionsWithProbabilityRulesWhenComparingFacts : compareExpressionsWithProbabilityRulesWhenComparingFacts, compareExpressionsAndFactsWithProbabilityRules === void 0 ? this.compareExpressionsAndFactsWithProbabilityRules : compareExpressionsAndFactsWithProbabilityRules, useTestingToCompareFunctionArgumentsInProbabilityComparison === void 0 ? this.useTestingToCompareFunctionArgumentsInProbabilityComparison : useTestingToCompareFunctionArgumentsInProbabilityComparison, useOldSimpleProbabilityTesting === void 0 ? this.useOldSimpleProbabilityTesting : useOldSimpleProbabilityTesting, defaultComparisonType === void 0 ? this.defaultComparisonType : defaultComparisonType, minNumberOfPointsForEquality === void 0 ? this.minNumberOfPointsForEquality : minNumberOfPointsForEquality, justInDomainsIntersection === void 0 ? this.justInDomainsIntersection : justInDomainsIntersection, allowedPartOfErrorTests === void 0 ? this.allowedPartOfErrorTests : allowedPartOfErrorTests, testWithUndefinedResultIncreasingCoef === void 0 ? this.testWithUndefinedResultIncreasingCoef : testWithUndefinedResultIncreasingCoef, maxDistBetweenDiffSteps === void 0 ? this.maxDistBetweenDiffSteps : maxDistBetweenDiffSteps);
+  ComparisonSettings.prototype.copy_nj3mno$ = function (maxTransformationWeight, maxBustCount, maxExpressionTransformationWeight, maxExpressionBustCount, isComparisonWithRules, compareExpressionsWithProbabilityRulesWhenComparingExpressions, compareExpressionsWithProbabilityRulesWhenComparingFacts, compareExpressionsAndFactsWithProbabilityRules, useTestingToCompareFunctionArgumentsInProbabilityComparison, useOldSimpleProbabilityTesting, useTransformationsSortingInExpressionComparison, defaultComparisonType, minNumberOfPointsForEquality, justInDomainsIntersection, allowedPartOfErrorTests, testWithUndefinedResultIncreasingCoef, maxDistBetweenDiffSteps) {
+    return new ComparisonSettings(maxTransformationWeight === void 0 ? this.maxTransformationWeight : maxTransformationWeight, maxBustCount === void 0 ? this.maxBustCount : maxBustCount, maxExpressionTransformationWeight === void 0 ? this.maxExpressionTransformationWeight : maxExpressionTransformationWeight, maxExpressionBustCount === void 0 ? this.maxExpressionBustCount : maxExpressionBustCount, isComparisonWithRules === void 0 ? this.isComparisonWithRules : isComparisonWithRules, compareExpressionsWithProbabilityRulesWhenComparingExpressions === void 0 ? this.compareExpressionsWithProbabilityRulesWhenComparingExpressions : compareExpressionsWithProbabilityRulesWhenComparingExpressions, compareExpressionsWithProbabilityRulesWhenComparingFacts === void 0 ? this.compareExpressionsWithProbabilityRulesWhenComparingFacts : compareExpressionsWithProbabilityRulesWhenComparingFacts, compareExpressionsAndFactsWithProbabilityRules === void 0 ? this.compareExpressionsAndFactsWithProbabilityRules : compareExpressionsAndFactsWithProbabilityRules, useTestingToCompareFunctionArgumentsInProbabilityComparison === void 0 ? this.useTestingToCompareFunctionArgumentsInProbabilityComparison : useTestingToCompareFunctionArgumentsInProbabilityComparison, useOldSimpleProbabilityTesting === void 0 ? this.useOldSimpleProbabilityTesting : useOldSimpleProbabilityTesting, useTransformationsSortingInExpressionComparison === void 0 ? this.useTransformationsSortingInExpressionComparison : useTransformationsSortingInExpressionComparison, defaultComparisonType === void 0 ? this.defaultComparisonType : defaultComparisonType, minNumberOfPointsForEquality === void 0 ? this.minNumberOfPointsForEquality : minNumberOfPointsForEquality, justInDomainsIntersection === void 0 ? this.justInDomainsIntersection : justInDomainsIntersection, allowedPartOfErrorTests === void 0 ? this.allowedPartOfErrorTests : allowedPartOfErrorTests, testWithUndefinedResultIncreasingCoef === void 0 ? this.testWithUndefinedResultIncreasingCoef : testWithUndefinedResultIncreasingCoef, maxDistBetweenDiffSteps === void 0 ? this.maxDistBetweenDiffSteps : maxDistBetweenDiffSteps);
   };
   ComparisonSettings.prototype.toString = function () {
-    return 'ComparisonSettings(maxTransformationWeight=' + Kotlin.toString(this.maxTransformationWeight) + (', maxBustCount=' + Kotlin.toString(this.maxBustCount)) + (', maxExpressionTransformationWeight=' + Kotlin.toString(this.maxExpressionTransformationWeight)) + (', maxExpressionBustCount=' + Kotlin.toString(this.maxExpressionBustCount)) + (', isComparisonWithRules=' + Kotlin.toString(this.isComparisonWithRules)) + (', compareExpressionsWithProbabilityRulesWhenComparingExpressions=' + Kotlin.toString(this.compareExpressionsWithProbabilityRulesWhenComparingExpressions)) + (', compareExpressionsWithProbabilityRulesWhenComparingFacts=' + Kotlin.toString(this.compareExpressionsWithProbabilityRulesWhenComparingFacts)) + (', compareExpressionsAndFactsWithProbabilityRules=' + Kotlin.toString(this.compareExpressionsAndFactsWithProbabilityRules)) + (', useTestingToCompareFunctionArgumentsInProbabilityComparison=' + Kotlin.toString(this.useTestingToCompareFunctionArgumentsInProbabilityComparison)) + (', useOldSimpleProbabilityTesting=' + Kotlin.toString(this.useOldSimpleProbabilityTesting)) + (', defaultComparisonType=' + Kotlin.toString(this.defaultComparisonType)) + (', minNumberOfPointsForEquality=' + Kotlin.toString(this.minNumberOfPointsForEquality)) + (', justInDomainsIntersection=' + Kotlin.toString(this.justInDomainsIntersection)) + (', allowedPartOfErrorTests=' + Kotlin.toString(this.allowedPartOfErrorTests)) + (', testWithUndefinedResultIncreasingCoef=' + Kotlin.toString(this.testWithUndefinedResultIncreasingCoef)) + (', maxDistBetweenDiffSteps=' + Kotlin.toString(this.maxDistBetweenDiffSteps)) + ')';
+    return 'ComparisonSettings(maxTransformationWeight=' + Kotlin.toString(this.maxTransformationWeight) + (', maxBustCount=' + Kotlin.toString(this.maxBustCount)) + (', maxExpressionTransformationWeight=' + Kotlin.toString(this.maxExpressionTransformationWeight)) + (', maxExpressionBustCount=' + Kotlin.toString(this.maxExpressionBustCount)) + (', isComparisonWithRules=' + Kotlin.toString(this.isComparisonWithRules)) + (', compareExpressionsWithProbabilityRulesWhenComparingExpressions=' + Kotlin.toString(this.compareExpressionsWithProbabilityRulesWhenComparingExpressions)) + (', compareExpressionsWithProbabilityRulesWhenComparingFacts=' + Kotlin.toString(this.compareExpressionsWithProbabilityRulesWhenComparingFacts)) + (', compareExpressionsAndFactsWithProbabilityRules=' + Kotlin.toString(this.compareExpressionsAndFactsWithProbabilityRules)) + (', useTestingToCompareFunctionArgumentsInProbabilityComparison=' + Kotlin.toString(this.useTestingToCompareFunctionArgumentsInProbabilityComparison)) + (', useOldSimpleProbabilityTesting=' + Kotlin.toString(this.useOldSimpleProbabilityTesting)) + (', useTransformationsSortingInExpressionComparison=' + Kotlin.toString(this.useTransformationsSortingInExpressionComparison)) + (', defaultComparisonType=' + Kotlin.toString(this.defaultComparisonType)) + (', minNumberOfPointsForEquality=' + Kotlin.toString(this.minNumberOfPointsForEquality)) + (', justInDomainsIntersection=' + Kotlin.toString(this.justInDomainsIntersection)) + (', allowedPartOfErrorTests=' + Kotlin.toString(this.allowedPartOfErrorTests)) + (', testWithUndefinedResultIncreasingCoef=' + Kotlin.toString(this.testWithUndefinedResultIncreasingCoef)) + (', maxDistBetweenDiffSteps=' + Kotlin.toString(this.maxDistBetweenDiffSteps)) + ')';
   };
   ComparisonSettings.prototype.hashCode = function () {
     var result = 0;
@@ -5549,6 +5567,7 @@ if (typeof kotlin === 'undefined') {
     result = result * 31 + Kotlin.hashCode(this.compareExpressionsAndFactsWithProbabilityRules) | 0;
     result = result * 31 + Kotlin.hashCode(this.useTestingToCompareFunctionArgumentsInProbabilityComparison) | 0;
     result = result * 31 + Kotlin.hashCode(this.useOldSimpleProbabilityTesting) | 0;
+    result = result * 31 + Kotlin.hashCode(this.useTransformationsSortingInExpressionComparison) | 0;
     result = result * 31 + Kotlin.hashCode(this.defaultComparisonType) | 0;
     result = result * 31 + Kotlin.hashCode(this.minNumberOfPointsForEquality) | 0;
     result = result * 31 + Kotlin.hashCode(this.justInDomainsIntersection) | 0;
@@ -5558,7 +5577,7 @@ if (typeof kotlin === 'undefined') {
     return result;
   };
   ComparisonSettings.prototype.equals = function (other) {
-    return this === other || (other !== null && (typeof other === 'object' && (Object.getPrototypeOf(this) === Object.getPrototypeOf(other) && (Kotlin.equals(this.maxTransformationWeight, other.maxTransformationWeight) && Kotlin.equals(this.maxBustCount, other.maxBustCount) && Kotlin.equals(this.maxExpressionTransformationWeight, other.maxExpressionTransformationWeight) && Kotlin.equals(this.maxExpressionBustCount, other.maxExpressionBustCount) && Kotlin.equals(this.isComparisonWithRules, other.isComparisonWithRules) && Kotlin.equals(this.compareExpressionsWithProbabilityRulesWhenComparingExpressions, other.compareExpressionsWithProbabilityRulesWhenComparingExpressions) && Kotlin.equals(this.compareExpressionsWithProbabilityRulesWhenComparingFacts, other.compareExpressionsWithProbabilityRulesWhenComparingFacts) && Kotlin.equals(this.compareExpressionsAndFactsWithProbabilityRules, other.compareExpressionsAndFactsWithProbabilityRules) && Kotlin.equals(this.useTestingToCompareFunctionArgumentsInProbabilityComparison, other.useTestingToCompareFunctionArgumentsInProbabilityComparison) && Kotlin.equals(this.useOldSimpleProbabilityTesting, other.useOldSimpleProbabilityTesting) && Kotlin.equals(this.defaultComparisonType, other.defaultComparisonType) && Kotlin.equals(this.minNumberOfPointsForEquality, other.minNumberOfPointsForEquality) && Kotlin.equals(this.justInDomainsIntersection, other.justInDomainsIntersection) && Kotlin.equals(this.allowedPartOfErrorTests, other.allowedPartOfErrorTests) && Kotlin.equals(this.testWithUndefinedResultIncreasingCoef, other.testWithUndefinedResultIncreasingCoef) && Kotlin.equals(this.maxDistBetweenDiffSteps, other.maxDistBetweenDiffSteps)))));
+    return this === other || (other !== null && (typeof other === 'object' && (Object.getPrototypeOf(this) === Object.getPrototypeOf(other) && (Kotlin.equals(this.maxTransformationWeight, other.maxTransformationWeight) && Kotlin.equals(this.maxBustCount, other.maxBustCount) && Kotlin.equals(this.maxExpressionTransformationWeight, other.maxExpressionTransformationWeight) && Kotlin.equals(this.maxExpressionBustCount, other.maxExpressionBustCount) && Kotlin.equals(this.isComparisonWithRules, other.isComparisonWithRules) && Kotlin.equals(this.compareExpressionsWithProbabilityRulesWhenComparingExpressions, other.compareExpressionsWithProbabilityRulesWhenComparingExpressions) && Kotlin.equals(this.compareExpressionsWithProbabilityRulesWhenComparingFacts, other.compareExpressionsWithProbabilityRulesWhenComparingFacts) && Kotlin.equals(this.compareExpressionsAndFactsWithProbabilityRules, other.compareExpressionsAndFactsWithProbabilityRules) && Kotlin.equals(this.useTestingToCompareFunctionArgumentsInProbabilityComparison, other.useTestingToCompareFunctionArgumentsInProbabilityComparison) && Kotlin.equals(this.useOldSimpleProbabilityTesting, other.useOldSimpleProbabilityTesting) && Kotlin.equals(this.useTransformationsSortingInExpressionComparison, other.useTransformationsSortingInExpressionComparison) && Kotlin.equals(this.defaultComparisonType, other.defaultComparisonType) && Kotlin.equals(this.minNumberOfPointsForEquality, other.minNumberOfPointsForEquality) && Kotlin.equals(this.justInDomainsIntersection, other.justInDomainsIntersection) && Kotlin.equals(this.allowedPartOfErrorTests, other.allowedPartOfErrorTests) && Kotlin.equals(this.testWithUndefinedResultIncreasingCoef, other.testWithUndefinedResultIncreasingCoef) && Kotlin.equals(this.maxDistBetweenDiffSteps, other.maxDistBetweenDiffSteps)))));
   };
   function GradientDescentComparisonConfiguration(startPointsCount, iterationCount, ternarySearchLeftBorder, ternarySearchRightBorder, ternarySearchIterationCount, ternarySearchAlpha, ternarySearchBeta) {
     if (startPointsCount === void 0)
@@ -9458,7 +9477,7 @@ if (typeof kotlin === 'undefined') {
   }
   function LogicRulePacks$Companion() {
     LogicRulePacks$Companion_instance = this;
-    this.defaultLogicRulePacks = listOf_0([new RulePackITR('LogicBase', void 0, void 0, 'Basic Boolean Logic', '\u041E\u0441\u043D\u043E\u0432\u043D\u044B \u0431\u0443\u043B\u0435\u0432\u043E\u0439 \u043B\u043E\u0433\u0438\u043A\u0438', "Basic operations, it's definitions and properties", '\u041E\u0441\u043D\u043E\u0432\u043D\u044B\u0435 \u043E\u043F\u0435\u0440\u0430\u0446\u0438\u0438, \u0438\u0445 \u043E\u043F\u0440\u0435\u0434\u0435\u043B\u0435\u043D\u0438\u044F \u0438 \u0441\u0432\u043E\u0439\u0441\u0442\u0432\u0430', 'Boolean Algebra Conjunction, Disjunction, Negation, Implication, Exclusive Or, Equivalence', '\u0411\u0443\u043B\u0435\u0432\u0430 \u0430\u043B\u0433\u0435\u0431\u0440\u0430: \u043A\u043E\u043D\u044A\u044E\u043D\u043A\u0446\u0438\u044F, \u0434\u0438\u0437\u044A\u044E\u043D\u043A\u0446\u0438\u044F, \u043E\u0442\u0440\u0438\u0446\u0430\u043D\u0438\u0435, \u0438\u043C\u043F\u043B\u0438\u043A\u0430\u0446\u0438\u044F, \u0438\u0441\u043A\u043B\u044E\u0447\u0430\u044E\u0449\u0435\u0435 \u0438\u043B\u0438, \u044D\u043A\u0432\u0438\u0432\u0430\u043B\u0435\u043D\u0446\u0438\u044F', 'logic', void 0, listOf_0([new RuleITR('', 'De Morgan Law', '\u0417\u0430\u043A\u043E\u043D \u0434\u0435 \u041C\u043E\u0440\u0433\u0430\u043D\u0430', void 0, void 0, void 0, void 0, '(not(and(A;B)))', '(or(not(A);not(B)))', 15, false, false, false, false), new RuleITR('', 'De Morgan Law', '\u0417\u0430\u043A\u043E\u043D \u0434\u0435 \u041C\u043E\u0440\u0433\u0430\u043D\u0430', void 0, void 0, void 0, void 0, '(or(not(A);not(B)))', '(not(and(A;B)))', 10, false, false, false, false), new RuleITR('', 'De Morgan Law', '\u0417\u0430\u043A\u043E\u043D \u0434\u0435 \u041C\u043E\u0440\u0433\u0430\u043D\u0430', void 0, void 0, void 0, void 0, '(not(or(A;B)))', '(and(not(A);not(B)))', 15, false, false, false, false), new RuleITR('', 'De Morgan Law', '\u0417\u0430\u043A\u043E\u043D \u0434\u0435 \u041C\u043E\u0440\u0433\u0430\u043D\u0430', void 0, void 0, void 0, void 0, '(and(not(A);not(B)))', '(not(or(A;B)))', 10, false, false, false, false), new RuleITR('', void 0, void 0, void 0, void 0, void 0, void 0, '(not(not(a)))', '(a)', 5, false, false, false, false), new RuleITR('', void 0, void 0, void 0, void 0, void 0, void 0, '(a)', '(not(not(a)))', 89, true, false, false, false), new RuleITR('', void 0, void 0, void 0, void 0, void 0, void 0, '(or(a;a))', '(a)', 5, false, false, false, false), new RuleITR('', void 0, void 0, void 0, void 0, void 0, void 0, '(a)', '(or(a;a))', 90, true, false, false, false), new RuleITR('', void 0, void 0, void 0, void 0, void 0, void 0, '(and(a;a))', '(a)', 5, false, false, false, false), new RuleITR('', void 0, void 0, void 0, void 0, void 0, void 0, '(a)', '(and(a;a))', 90, true, false, false, false), new RuleITR('', void 0, void 0, void 0, void 0, void 0, void 0, '(and(a;b))', '(and(b;a))', 40, true, false, false, false), new RuleITR('', void 0, void 0, void 0, void 0, void 0, void 0, '(or(a;b))', '(or(b;a))', 40, true, false, false, false), new RuleITR('', void 0, void 0, void 0, void 0, void 0, void 0, '(a)', '(and(a;1))', 90, true, false, false, false), new RuleITR('', void 0, void 0, void 0, void 0, void 0, void 0, '(a)', '(or(a;0))', 90, true, false, false, false), new RuleITR('', void 0, void 0, void 0, void 0, void 0, void 0, '(or(A;not(A)))', '(1)', 5, false, false, false, false), new RuleITR('', void 0, void 0, void 0, void 0, void 0, void 0, '(or(not(A);A))', '(1)', 5, false, false, false, false), new RuleITR('', void 0, void 0, void 0, void 0, void 0, void 0, '(and(A;not(A)))', '(0)', 5, false, false, false, false), new RuleITR('', void 0, void 0, void 0, void 0, void 0, void 0, '(and(not(A);A))', '(0)', 5, false, false, false, false), new RuleITR('', void 0, void 0, void 0, void 0, void 0, void 0, '(or(A;1))', '(1)', 5, false, false, false, false), new RuleITR('', void 0, void 0, void 0, void 0, void 0, void 0, '(or(1;A))', '(1)', 5, false, false, false, false), new RuleITR('', void 0, void 0, void 0, void 0, void 0, void 0, '(and(A;1))', '(A)', 5, false, false, false, false), new RuleITR('', void 0, void 0, void 0, void 0, void 0, void 0, '(and(1;A))', '(A)', 5, false, false, false, false), new RuleITR('', void 0, void 0, void 0, void 0, void 0, void 0, '(or(A;0))', '(A)', 5, false, false, false, false), new RuleITR('', void 0, void 0, void 0, void 0, void 0, void 0, '(or(0;A))', '(A)', 5, false, false, false, false), new RuleITR('', void 0, void 0, void 0, void 0, void 0, void 0, '(and(A;0))', '(0)', 5, false, false, false, false), new RuleITR('', void 0, void 0, void 0, void 0, void 0, void 0, '(and(0;A))', '(0)', 5, false, false, false, false), new RuleITR('', void 0, void 0, void 0, void 0, void 0, void 0, '(not(0))', '(1)', 5, false, false, false, false), new RuleITR('', void 0, void 0, void 0, void 0, void 0, void 0, '(not(1))', '(0)', 5, false, false, false, false), new RuleITR('SimpleComputation', void 0, void 0, void 0, void 0, void 0, void 0, '', '', 5, false, false, false, false), new RuleITR('ZeroComputation', void 0, void 0, void 0, void 0, void 0, void 0, '', '', 5, false, false, false, false), new RuleITR('ParentBracketsExpansion', void 0, void 0, void 0, void 0, void 0, void 0, '', '', 30, false, false, false, false), new RuleITR('ArgumentsSwap', void 0, void 0, void 0, void 0, void 0, void 0, '', '', 40, false, false, false, false), new RuleITR('ArgumentsPermutation', void 0, void 0, void 0, void 0, void 0, void 0, '', '', 40, false, false, false, false), new RuleITR('OpeningBrackets', void 0, void 0, void 0, void 0, void 0, void 0, '', '', 30, false, false, false, false), new RuleITR('ArgumentsPermutationInOriginalOrder', void 0, void 0, void 0, void 0, void 0, void 0, '', '', 41, false, false, false, false), new RuleITR('ReduceArithmetic', void 0, void 0, void 0, void 0, void 0, void 0, '', '', 10, false, false, false, false), new RuleITR('TwoSidesArithmeticReduce', void 0, void 0, void 0, void 0, void 0, void 0, '', '', 10, false, false, false, false), new RuleITR('', void 0, void 0, void 0, void 0, void 0, void 0, '(or(not(A);B))', '(implic(A;B))', 35, false, false, false, false), new RuleITR('', void 0, void 0, void 0, void 0, void 0, void 0, '(or(B;not(A)))', '(implic(A;B))', 35, false, false, false, false), new RuleITR('', void 0, void 0, void 0, void 0, void 0, void 0, '(implic(A;B))', '(or(not(A);B))', 35, false, false, false, false), new RuleITR('', void 0, void 0, void 0, void 0, void 0, void 0, '(implic(0;A))', '(1)', 5, false, false, false, false), new RuleITR('', void 0, void 0, void 0, void 0, void 0, void 0, '(implic(A;1))', '(1)', 5, false, false, false, false), new RuleITR('', void 0, void 0, void 0, void 0, void 0, void 0, '(implic(A;0))', '(not(A))', 5, false, false, false, false), new RuleITR('', void 0, void 0, void 0, void 0, void 0, void 0, '(implic(1;A))', '(A)', 5, false, false, false, false), new RuleITR('', void 0, void 0, void 0, void 0, void 0, void 0, '(A)', '(implic(1;A))', 91, true, false, false, false), new RuleITR('', void 0, void 0, void 0, void 0, void 0, void 0, '(xor(A;B))', '(or(and(not(A);B);and(A;not(B))))', 30, true, false, false, false), new RuleITR('', void 0, void 0, void 0, void 0, void 0, void 0, '(or(and(not(A);B);and(A;not(B))))', '(xor(A;B))', 30, true, false, false, false), new RuleITR('', void 0, void 0, void 0, void 0, void 0, void 0, '(alleq(A;B))', '(or(and(A;B);and(not(A);not(B))))', 30, true, false, false, false), new RuleITR('', void 0, void 0, void 0, void 0, void 0, void 0, '(or(and(A;B);and(not(A);not(B))))', '(alleq(A;B))', 30, true, false, false, false), new RuleITR('', void 0, void 0, void 0, void 0, void 0, void 0, '(xor(A;0))', '(A)', 5, false, false, false, false), new RuleITR('', void 0, void 0, void 0, void 0, void 0, void 0, '(xor(A;1))', '(not(A))', 5, false, false, false, false), new RuleITR('', void 0, void 0, void 0, void 0, void 0, void 0, '(xor(0;A))', '(A)', 5, false, false, false, false), new RuleITR('', void 0, void 0, void 0, void 0, void 0, void 0, '(xor(1;A))', '(not(A))', 5, false, false, false, false), new RuleITR('', void 0, void 0, void 0, void 0, void 0, void 0, '(alleq(0;A))', '(not(A))', 5, false, false, false, false), new RuleITR('', void 0, void 0, void 0, void 0, void 0, void 0, '(alleq(A;1))', '(A)', 5, false, false, false, false), new RuleITR('', void 0, void 0, void 0, void 0, void 0, void 0, '(alleq(A;0))', '(not(A))', 5, false, false, false, false), new RuleITR('', void 0, void 0, void 0, void 0, void 0, void 0, '(alleq(1;A))', '(A)', 5, false, false, false, false), new RuleITR('', void 0, void 0, void 0, void 0, void 0, void 0, '(A)', '(xor(A;0))', 91, true, false, false, false), new RuleITR('', void 0, void 0, void 0, void 0, void 0, void 0, '(A)', '(alleq(1;A))', 91, true, false, false, false), new RuleITR('', void 0, void 0, void 0, void 0, void 0, void 0, '(not(A))', '(xor(A;1))', 91, true, false, false, false), new RuleITR('', void 0, void 0, void 0, void 0, void 0, void 0, '(not(A))', '(alleq(0;A))', 91, true, false, false, false)])), new RulePackITR('RelativeComplement', void 0, void 0, 'Relative Complement', '\u041B\u043E\u0433\u0438\u0447\u0435\u0441\u043A\u043E\u0435 \u0434\u043E\u043F\u043E\u043B\u043D\u0435\u043D\u0438\u0435', 'Definition and basic properties', '\u041E\u043F\u0440\u0435\u0434\u0435\u043B\u0435\u043D\u0438\u0435 \u0438 \u043E\u0441\u043D\u043E\u0432\u043D\u044B\u0435 \u0441\u0432\u043E\u0439\u0441\u0442\u0432\u0430', 'Boolean Algebra Conjunction, Disjunction, Negation, Implication, Exclusive Or, Equivalence, Relative Complement', '\u0411\u0443\u043B\u0435\u0432\u0430 \u0430\u043B\u0433\u0435\u0431\u0440\u0430: \u043A\u043E\u043D\u044A\u044E\u043D\u043A\u0446\u0438\u044F, \u0434\u0438\u0437\u044A\u044E\u043D\u043A\u0446\u0438\u044F, \u043E\u0442\u0440\u0438\u0446\u0430\u043D\u0438\u0435, \u0438\u043C\u043F\u043B\u0438\u043A\u0430\u0446\u0438\u044F, \u0438\u0441\u043A\u043B\u044E\u0447\u0430\u044E\u0449\u0435\u0435 \u0438\u043B\u0438, \u044D\u043A\u0432\u0438\u0432\u0430\u043B\u0435\u043D\u0446\u0438\u044F, \u0434\u043E\u043F\u043E\u043B\u043D\u0435\u043D\u0438\u0435', 'logic', listOf(new RulePackLinkITR(void 0, 'LogicBase')), listOf_0([new RuleITR('', void 0, void 0, void 0, void 0, void 0, void 0, '(and(A;not(B)))', '(set-(A;B))', 35, false, false, false, false), new RuleITR('', void 0, void 0, void 0, void 0, void 0, void 0, '(and(not(B);A))', '(set-(A;B))', 35, false, false, false, false), new RuleITR('', void 0, void 0, void 0, void 0, void 0, void 0, '(set-(A;B))', '(and(A;not(B)))', 35, false, false, false, false), new RuleITR('', void 0, void 0, void 0, void 0, void 0, void 0, '(set-(A;B))', '(not(implic(A;B)))', 35, false, false, false, false), new RuleITR('', void 0, void 0, void 0, void 0, void 0, void 0, '(not(implic(A;B)))', '(set-(A;B))', 35, false, false, false, false), new RuleITR('', void 0, void 0, void 0, void 0, void 0, void 0, '(implic(A;B))', '(not(set-(A;B)))', 35, false, false, false, false), new RuleITR('', void 0, void 0, void 0, void 0, void 0, void 0, '(not(set-(A;B)))', '(implic(A;B))', 35, false, false, false, false), new RuleITR('', void 0, void 0, void 0, void 0, void 0, void 0, '(set-(A;0))', '(A)', 5, false, false, false, false), new RuleITR('', void 0, void 0, void 0, void 0, void 0, void 0, '(set-(A;1))', '(0)', 5, false, false, false, false), new RuleITR('', void 0, void 0, void 0, void 0, void 0, void 0, '(set-(0;A))', '(0)', 5, false, false, false, false), new RuleITR('', void 0, void 0, void 0, void 0, void 0, void 0, '(set-(1;A))', '(not(A))', 5, false, false, false, false), new RuleITR('', void 0, void 0, void 0, void 0, void 0, void 0, '(A)', '(set-(A;0))', 91, true, false, false, false)])), new RulePackITR('LogicNotAnd', void 0, void 0, 'Negation of Conjunction', '\u041E\u0442\u0440\u0438\u0446\u0430\u043D\u0438\u0435 \u043A\u043E\u043D\u044A\u044E\u043D\u043A\u0446\u0438\u0438 (\u0428\u0442\u0440\u0438\u0445 \u0428\u0435\u0444\u0444\u0435\u0440\u0430)', 'Definition and basic properties', '\u041E\u043F\u0440\u0435\u0434\u0435\u043B\u0435\u043D\u0438\u0435 \u0438 \u043E\u0441\u043D\u043E\u0432\u043D\u044B\u0435 \u0441\u0432\u043E\u0439\u0441\u0442\u0432\u0430', 'Boolean Algebra Conjunction, Disjunction, Negation, Implication, Exclusive Or, Equivalence, Negation of Conjunction', '\u0411\u0443\u043B\u0435\u0432\u0430 \u0430\u043B\u0433\u0435\u0431\u0440\u0430: \u043A\u043E\u043D\u044A\u044E\u043D\u043A\u0446\u0438\u044F, \u0434\u0438\u0437\u044A\u044E\u043D\u043A\u0446\u0438\u044F, \u043E\u0442\u0440\u0438\u0446\u0430\u043D\u0438\u0435, \u0438\u043C\u043F\u043B\u0438\u043A\u0430\u0446\u0438\u044F, \u0438\u0441\u043A\u043B\u044E\u0447\u0430\u044E\u0449\u0435\u0435 \u0438\u043B\u0438, \u044D\u043A\u0432\u0438\u0432\u0430\u043B\u0435\u043D\u0446\u0438\u044F, \u043E\u0442\u0440\u0438\u0446\u0430\u043D\u0438\u0435 \u043A\u043E\u043D\u044A\u044E\u043D\u043A\u0446\u0438\u0438', 'logic', listOf(new RulePackLinkITR(void 0, 'LogicBase')), listOf_0([new RuleITR('', void 0, void 0, void 0, void 0, void 0, void 0, '(nand(A;B))', '(not(and(A;B)))', 35, false, false, false, false), new RuleITR('', void 0, void 0, void 0, void 0, void 0, void 0, '(not(and(A;B)))', '(nand(A;B))', 35, false, false, false, false)])), new RulePackITR('LogicNotOr', void 0, void 0, 'Negation of Disjunction', '\u041E\u0442\u0440\u0438\u0446\u0430\u043D\u0438\u0435 \u0434\u0438\u0437\u044A\u044E\u043D\u043A\u0446\u0438\u0438 (\u0421\u0442\u0440\u0435\u043B\u043A\u0430 \u041F\u0438\u0440\u0441\u0430)', 'Definition and basic properties', '\u041E\u043F\u0440\u0435\u0434\u0435\u043B\u0435\u043D\u0438\u0435 \u0438 \u043E\u0441\u043D\u043E\u0432\u043D\u044B\u0435 \u0441\u0432\u043E\u0439\u0441\u0442\u0432\u0430', 'Boolean Algebra Conjunction, Disjunction, Negation, Implication, Exclusive Or, Equivalence, Negation of Disjunction', '\u0411\u0443\u043B\u0435\u0432\u0430 \u0430\u043B\u0433\u0435\u0431\u0440\u0430: \u043A\u043E\u043D\u044A\u044E\u043D\u043A\u0446\u0438\u044F, \u0434\u0438\u0437\u044A\u044E\u043D\u043A\u0446\u0438\u044F, \u043E\u0442\u0440\u0438\u0446\u0430\u043D\u0438\u0435, \u0438\u043C\u043F\u043B\u0438\u043A\u0430\u0446\u0438\u044F, \u0438\u0441\u043A\u043B\u044E\u0447\u0430\u044E\u0449\u0435\u0435 \u0438\u043B\u0438, \u044D\u043A\u0432\u0438\u0432\u0430\u043B\u0435\u043D\u0446\u0438\u044F, \u043E\u0442\u0440\u0438\u0446\u0430\u043D\u0438\u0435 \u0434\u0438\u0437\u044A\u044E\u043D\u043A\u0446\u0438\u0438', 'logic', listOf(new RulePackLinkITR(void 0, 'LogicBase')), listOf_0([new RuleITR('', void 0, void 0, void 0, void 0, void 0, void 0, '(nor(A;B))', '(not(or(A;B)))', 35, false, false, false, false), new RuleITR('', void 0, void 0, void 0, void 0, void 0, void 0, '(not(or(A;B)))', '(nor(A;B))', 35, false, false, false, false)])), new RulePackITR('LogicAbsorptionLaw', void 0, void 0, 'Absorption Law', '\u0417\u0430\u043A\u043E\u043D \u043F\u043E\u0433\u043B\u043E\u0449\u0435\u043D\u0438\u044F', 'Law and basic properties in Boolean Algebra', '\u0417\u0430\u043A\u043E\u043D \u0438 \u043E\u0441\u043D\u043E\u0432\u043D\u044B\u0435 \u0441\u0432\u043E\u0439\u0441\u0442\u0432\u0430 \u0432 \u0431\u0443\u043B\u0435\u0432\u043E\u0439 \u0430\u043B\u0433\u0435\u0431\u0440\u0435', void 0, void 0, 'logic', listOf(new RulePackLinkITR(void 0, 'LogicBase')), listOf_0([new RuleITR('', void 0, void 0, void 0, void 0, void 0, void 0, '(and(A;or(A;B)))', '(A)', 6, false, false, false, false), new RuleITR('', void 0, void 0, void 0, void 0, void 0, void 0, '(or(A;and(A;B)))', '(A)', 6, false, false, false, false), new RuleITR('', void 0, void 0, void 0, void 0, void 0, void 0, '(and(A;or(B;A)))', '(A)', 6, false, false, false, false), new RuleITR('', void 0, void 0, void 0, void 0, void 0, void 0, '(or(A;and(B;A)))', '(A)', 6, false, false, false, false), new RuleITR('', void 0, void 0, void 0, void 0, void 0, void 0, '(and(or(A;B);A))', '(A)', 6, false, false, false, false), new RuleITR('', void 0, void 0, void 0, void 0, void 0, void 0, '(or(and(A;B);A))', '(A)', 6, false, false, false, false), new RuleITR('', void 0, void 0, void 0, void 0, void 0, void 0, '(and(or(B;A);A))', '(A)', 6, false, false, false, false), new RuleITR('', void 0, void 0, void 0, void 0, void 0, void 0, '(or(and(B;A);A))', '(A)', 6, false, false, false, false), new RuleITR('', void 0, void 0, void 0, void 0, void 0, void 0, '(A)', '(and(A;or(A;B)))', 90, true, false, false, false), new RuleITR('', void 0, void 0, void 0, void 0, void 0, void 0, '(A)', '(or(A;and(A;B)))', 90, true, false, false, false), new RuleITR('SetComplicatingExtension', void 0, void 0, void 0, void 0, void 0, void 0, '', '', 92, false, false, false, false)])), new RulePackITR('LogicResolution', void 0, void 0, 'Resolution', '\u041C\u0435\u0442\u043E\u0434 \u0440\u0435\u0437\u043E\u043B\u044E\u0446\u0438\u0439', 'Rules for proof by Resolution method', '\u043F\u0440\u0430\u0432\u0438\u043B\u0430 \u0434\u043B\u044F \u0434\u043E\u043A\u0430\u0437\u0430\u0442\u0435\u043B\u044C\u0441\u0442\u0432 \u043C\u0435\u0442\u043E\u0434\u043E\u043C \u0440\u0435\u0437\u043E\u043B\u044E\u0446\u0438\u0439', void 0, void 0, 'logic', listOf(new RulePackLinkITR(void 0, 'LogicBase')), listOf_0([new RuleITR('', void 0, void 0, void 0, void 0, void 0, void 0, '(and(not(A);A))', '(0)', 5, false, false, false, false), new RuleITR('', void 0, void 0, void 0, void 0, void 0, void 0, '(and(A;not(A)))', '(0)', 5, false, false, false, false), new RuleITR('', void 0, void 0, void 0, void 0, void 0, void 0, '(and(or(A;X);not(A)))', '(and(X;or(A;X);not(A)))', 10, false, false, false, false), new RuleITR('', void 0, void 0, void 0, void 0, void 0, void 0, '(and(not(A);or(A;X)))', '(and(X;not(A);or(A;X)))', 10, false, false, false, false), new RuleITR('', void 0, void 0, void 0, void 0, void 0, void 0, '(and(or(not(A);X);A))', '(and(X;or(not(A);X);A))', 10, false, false, false, false), new RuleITR('', void 0, void 0, void 0, void 0, void 0, void 0, '(and(A;or(not(A);X)))', '(and(X;A;or(not(A);X)))', 10, false, false, false, false), new RuleITR('', void 0, void 0, void 0, void 0, void 0, void 0, '(and(or(A;X);or(not(A);Y)))', '(and(or(X;Y);or(A;X);or(not(A);Y)))', 10, false, false, false, false), new RuleITR('', void 0, void 0, void 0, void 0, void 0, void 0, '(and(or(not(A);X);or(A;Y)))', '(and(or(X;Y);or(not(A);X);or(A;Y)))', 10, false, false, false, false), new RuleITR('', void 0, void 0, void 0, void 0, void 0, void 0, '(and(not(A);A;C))', '(0)', 5, false, false, false, false), new RuleITR('', void 0, void 0, void 0, void 0, void 0, void 0, '(and(A;not(A);C))', '(0)', 5, false, false, false, false), new RuleITR('', void 0, void 0, void 0, void 0, void 0, void 0, '(and(or(A;X);not(A);C))', '(and(X;or(A;X);not(A);C))', 10, false, false, false, false), new RuleITR('', void 0, void 0, void 0, void 0, void 0, void 0, '(and(not(A);or(A;X);C))', '(and(X;not(A);or(A;X);C))', 10, false, false, false, false), new RuleITR('', void 0, void 0, void 0, void 0, void 0, void 0, '(and(or(not(A);X);A;C))', '(and(X;or(not(A);X);A;C))', 10, false, false, false, false), new RuleITR('', void 0, void 0, void 0, void 0, void 0, void 0, '(and(A;or(not(A);X);C))', '(and(X;A;or(not(A);X);C))', 10, false, false, false, false), new RuleITR('', void 0, void 0, void 0, void 0, void 0, void 0, '(and(or(A;X);or(not(A);Y);C))', '(and(or(X;Y);or(A;X);or(not(A);Y);C))', 10, false, false, false, false), new RuleITR('', void 0, void 0, void 0, void 0, void 0, void 0, '(and(or(not(A);X);or(A;Y);C))', '(and(or(X;Y);or(not(A);X);or(A;Y);C))', 10, false, false, false, false), new RuleITR('', void 0, void 0, void 0, void 0, void 0, void 0, '(and(not(A);A;C;D))', '(0)', 5, false, false, false, false), new RuleITR('', void 0, void 0, void 0, void 0, void 0, void 0, '(and(A;not(A);C;D))', '(0)', 5, false, false, false, false), new RuleITR('', void 0, void 0, void 0, void 0, void 0, void 0, '(and(or(A;X);not(A);C;D))', '(and(X;or(A;X);not(A);C;D))', 10, false, false, false, false), new RuleITR('', void 0, void 0, void 0, void 0, void 0, void 0, '(and(not(A);or(A;X);C;D))', '(and(X;not(A);or(A;X);C;D))', 10, false, false, false, false), new RuleITR('', void 0, void 0, void 0, void 0, void 0, void 0, '(and(or(not(A);X);A;C;D))', '(and(X;or(not(A);X);A;C;D))', 10, false, false, false, false), new RuleITR('', void 0, void 0, void 0, void 0, void 0, void 0, '(and(A;or(not(A);X);C;D))', '(and(X;A;or(not(A);X);C;D))', 10, false, false, false, false), new RuleITR('', void 0, void 0, void 0, void 0, void 0, void 0, '(and(or(A;X);or(not(A);Y);C;D))', '(and(or(X;Y);or(A;X);or(not(A);Y);C;D))', 10, false, false, false, false), new RuleITR('', void 0, void 0, void 0, void 0, void 0, void 0, '(and(or(not(A);X);or(A;Y);C;D))', '(and(or(X;Y);or(not(A);X);or(A;Y);C;D))', 10, false, false, false, false), new RuleITR('', void 0, void 0, void 0, void 0, void 0, void 0, '(and(not(A);A;C;D;E))', '(0)', 5, false, false, false, false), new RuleITR('', void 0, void 0, void 0, void 0, void 0, void 0, '(and(A;not(A);C;D;E))', '(0)', 5, false, false, false, false), new RuleITR('', void 0, void 0, void 0, void 0, void 0, void 0, '(and(or(A;X);not(A);C;D;E))', '(and(X;or(A;X);not(A);C;D;E))', 10, false, false, false, false), new RuleITR('', void 0, void 0, void 0, void 0, void 0, void 0, '(and(not(A);or(A;X);C;D;E))', '(and(X;not(A);or(A;X);C;D;E))', 10, false, false, false, false), new RuleITR('', void 0, void 0, void 0, void 0, void 0, void 0, '(and(or(not(A);X);A;C;D;E))', '(and(X;or(not(A);X);A;C;D;E))', 10, false, false, false, false), new RuleITR('', void 0, void 0, void 0, void 0, void 0, void 0, '(and(A;or(not(A);X);C;D;E))', '(and(X;A;or(not(A);X);C;D;E))', 10, false, false, false, false), new RuleITR('', void 0, void 0, void 0, void 0, void 0, void 0, '(and(or(A;X);or(not(A);Y);C;D;E))', '(and(or(X;Y);or(A;X);or(not(A);Y);C;D;E))', 10, false, false, false, false), new RuleITR('', void 0, void 0, void 0, void 0, void 0, void 0, '(and(or(not(A);X);or(A;Y);C;D;E))', '(and(or(X;Y);or(not(A);X);or(A;Y);C;D;E))', 10, false, false, false, false), new RuleITR('', void 0, void 0, void 0, void 0, void 0, void 0, '(and(not(A);A;C;D;E;F))', '(0)', 5, false, false, false, false), new RuleITR('', void 0, void 0, void 0, void 0, void 0, void 0, '(and(A;not(A);C;D;E;F))', '(0)', 5, false, false, false, false), new RuleITR('', void 0, void 0, void 0, void 0, void 0, void 0, '(and(or(A;X);not(A);C;D;E;F))', '(and(X;or(A;X);not(A);C;D;E;F))', 10, false, false, false, false), new RuleITR('', void 0, void 0, void 0, void 0, void 0, void 0, '(and(not(A);or(A;X);C;D;E;F))', '(and(X;not(A);or(A;X);C;D;E;F))', 10, false, false, false, false), new RuleITR('', void 0, void 0, void 0, void 0, void 0, void 0, '(and(or(not(A);X);A;C;D;E;F))', '(and(X;or(not(A);X);A;C;D;E;F))', 10, false, false, false, false), new RuleITR('', void 0, void 0, void 0, void 0, void 0, void 0, '(and(A;or(not(A);X);C;D;E;F))', '(and(X;A;or(not(A);X);C;D;E;F))', 10, false, false, false, false), new RuleITR('', void 0, void 0, void 0, void 0, void 0, void 0, '(and(or(A;X);or(not(A);Y);C;D;E;F))', '(and(or(X;Y);or(A;X);or(not(A);Y);C;D;E;F))', 10, false, false, false, false), new RuleITR('', void 0, void 0, void 0, void 0, void 0, void 0, '(and(or(not(A);X);or(A;Y);C;D;E;F))', '(and(or(X;Y);or(not(A);X);or(A;Y);C;D;E;F))', 10, false, false, false, false), new RuleITR('', void 0, void 0, void 0, void 0, void 0, void 0, '(and(not(A);A;C;D;E;F;G))', '(0)', 5, false, false, false, false), new RuleITR('', void 0, void 0, void 0, void 0, void 0, void 0, '(and(A;not(A);C;D;E;F;G))', '(0)', 5, false, false, false, false), new RuleITR('', void 0, void 0, void 0, void 0, void 0, void 0, '(and(or(A;X);not(A);C;D;E;F;G))', '(and(X;or(A;X);not(A);C;D;E;F;G))', 10, false, false, false, false), new RuleITR('', void 0, void 0, void 0, void 0, void 0, void 0, '(and(not(A);or(A;X);C;D;E;F;G))', '(and(X;not(A);or(A;X);C;D;E;F;G))', 10, false, false, false, false), new RuleITR('', void 0, void 0, void 0, void 0, void 0, void 0, '(and(or(not(A);X);A;C;D;E;F;G))', '(and(X;or(not(A);X);A;C;D;E;F;G))', 10, false, false, false, false), new RuleITR('', void 0, void 0, void 0, void 0, void 0, void 0, '(and(A;or(not(A);X);C;D;E;F;G))', '(and(X;A;or(not(A);X);C;D;E;F;G))', 10, false, false, false, false), new RuleITR('', void 0, void 0, void 0, void 0, void 0, void 0, '(and(or(A;X);or(not(A);Y);C;D;E;F;G))', '(and(or(X;Y);or(A;X);or(not(A);Y);C;D;E;F;G))', 10, false, false, false, false), new RuleITR('', void 0, void 0, void 0, void 0, void 0, void 0, '(and(or(not(A);X);or(A;Y);C;D;E;F;G))', '(and(or(X;Y);or(not(A);X);or(A;Y);C;D;E;F;G))', 10, false, false, false, false), new RuleITR('', void 0, void 0, void 0, void 0, void 0, void 0, '(and(not(A);A;C;D;E;F;G;H))', '(0)', 5, false, false, false, false), new RuleITR('', void 0, void 0, void 0, void 0, void 0, void 0, '(and(A;not(A);C;D;E;F;G;H))', '(0)', 5, false, false, false, false), new RuleITR('', void 0, void 0, void 0, void 0, void 0, void 0, '(and(or(A;X);not(A);C;D;E;F;G;H))', '(and(X;or(A;X);not(A);C;D;E;F;G;H))', 10, false, false, false, false), new RuleITR('', void 0, void 0, void 0, void 0, void 0, void 0, '(and(not(A);or(A;X);C;D;E;F;G;H))', '(and(X;not(A);or(A;X);C;D;E;F;G;H))', 10, false, false, false, false), new RuleITR('', void 0, void 0, void 0, void 0, void 0, void 0, '(and(or(not(A);X);A;C;D;E;F;G;H))', '(and(X;or(not(A);X);A;C;D;E;F;G;H))', 10, false, false, false, false), new RuleITR('', void 0, void 0, void 0, void 0, void 0, void 0, '(and(A;or(not(A);X);C;D;E;F;G;H))', '(and(X;A;or(not(A);X);C;D;E;F;G;H))', 10, false, false, false, false), new RuleITR('', void 0, void 0, void 0, void 0, void 0, void 0, '(and(or(A;X);or(not(A);Y);C;D;E;F;G;H))', '(and(or(X;Y);or(A;X);or(not(A);Y);C;D;E;F;G;H))', 10, false, false, false, false), new RuleITR('', void 0, void 0, void 0, void 0, void 0, void 0, '(and(or(not(A);X);or(A;Y);C;D;E;F;G;H))', '(and(or(X;Y);or(not(A);X);or(A;Y);C;D;E;F;G;H))', 10, false, false, false, false), new RuleITR('', void 0, void 0, void 0, void 0, void 0, void 0, '(and(not(A);A;C;D;E;F;G;H;I))', '(0)', 5, false, false, false, false), new RuleITR('', void 0, void 0, void 0, void 0, void 0, void 0, '(and(A;not(A);C;D;E;F;G;H;I))', '(0)', 5, false, false, false, false), new RuleITR('', void 0, void 0, void 0, void 0, void 0, void 0, '(and(or(A;X);not(A);C;D;E;F;G;H;I))', '(and(X;or(A;X);not(A);C;D;E;F;G;H;I))', 10, false, false, false, false), new RuleITR('', void 0, void 0, void 0, void 0, void 0, void 0, '(and(not(A);or(A;X);C;D;E;F;G;H;I))', '(and(X;not(A);or(A;X);C;D;E;F;G;H;I))', 10, false, false, false, false), new RuleITR('', void 0, void 0, void 0, void 0, void 0, void 0, '(and(or(not(A);X);A;C;D;E;F;G;H;I))', '(and(X;or(not(A);X);A;C;D;E;F;G;H;I))', 10, false, false, false, false), new RuleITR('', void 0, void 0, void 0, void 0, void 0, void 0, '(and(A;or(not(A);X);C;D;E;F;G;H;I))', '(and(X;A;or(not(A);X);C;D;E;F;G;H;I))', 10, false, false, false, false), new RuleITR('', void 0, void 0, void 0, void 0, void 0, void 0, '(and(or(A;X);or(not(A);Y);C;D;E;F;G;H;I))', '(and(or(X;Y);or(A;X);or(not(A);Y);C;D;E;F;G;H;I))', 10, false, false, false, false), new RuleITR('', void 0, void 0, void 0, void 0, void 0, void 0, '(and(or(not(A);X);or(A;Y);C;D;E;F;G;H;I))', '(and(or(X;Y);or(not(A);X);or(A;Y);C;D;E;F;G;H;I))', 10, false, false, false, false)]))]);
+    this.defaultLogicRulePacks = listOf_0([new RulePackITR('LogicBase', void 0, void 0, 'Basic Boolean Logic', '\u041E\u0441\u043D\u043E\u0432\u043D\u044B \u0431\u0443\u043B\u0435\u0432\u043E\u0439 \u043B\u043E\u0433\u0438\u043A\u0438', "Basic operations, it's definitions and properties", '\u041E\u0441\u043D\u043E\u0432\u043D\u044B\u0435 \u043E\u043F\u0435\u0440\u0430\u0446\u0438\u0438, \u0438\u0445 \u043E\u043F\u0440\u0435\u0434\u0435\u043B\u0435\u043D\u0438\u044F \u0438 \u0441\u0432\u043E\u0439\u0441\u0442\u0432\u0430', 'Boolean Algebra Conjunction, Disjunction, Negation, Implication, Exclusive Or, Equivalence', '\u0411\u0443\u043B\u0435\u0432\u0430 \u0430\u043B\u0433\u0435\u0431\u0440\u0430: \u043A\u043E\u043D\u044A\u044E\u043D\u043A\u0446\u0438\u044F, \u0434\u0438\u0437\u044A\u044E\u043D\u043A\u0446\u0438\u044F, \u043E\u0442\u0440\u0438\u0446\u0430\u043D\u0438\u0435, \u0438\u043C\u043F\u043B\u0438\u043A\u0430\u0446\u0438\u044F, \u0438\u0441\u043A\u043B\u044E\u0447\u0430\u044E\u0449\u0435\u0435 \u0438\u043B\u0438, \u044D\u043A\u0432\u0438\u0432\u0430\u043B\u0435\u043D\u0446\u0438\u044F', 'logic', void 0, listOf_0([new RuleITR('', 'De Morgan Law', '\u0417\u0430\u043A\u043E\u043D \u0434\u0435 \u041C\u043E\u0440\u0433\u0430\u043D\u0430', void 0, void 0, void 0, void 0, '(not(and(A;B)))', '(or(not(A);not(B)))', 15, false, false, false, false), new RuleITR('', 'De Morgan Law', '\u0417\u0430\u043A\u043E\u043D \u0434\u0435 \u041C\u043E\u0440\u0433\u0430\u043D\u0430', void 0, void 0, void 0, void 0, '(or(not(A);not(B)))', '(not(and(A;B)))', 10, false, false, false, false), new RuleITR('', 'De Morgan Law', '\u0417\u0430\u043A\u043E\u043D \u0434\u0435 \u041C\u043E\u0440\u0433\u0430\u043D\u0430', void 0, void 0, void 0, void 0, '(not(or(A;B)))', '(and(not(A);not(B)))', 15, false, false, false, false), new RuleITR('', 'De Morgan Law', '\u0417\u0430\u043A\u043E\u043D \u0434\u0435 \u041C\u043E\u0440\u0433\u0430\u043D\u0430', void 0, void 0, void 0, void 0, '(and(not(A);not(B)))', '(not(or(A;B)))', 10, false, false, false, false), new RuleITR('', 'De Morgan Law', '\u0417\u0430\u043A\u043E\u043D \u0434\u0435 \u041C\u043E\u0440\u0433\u0430\u043D\u0430', void 0, void 0, void 0, void 0, '(and(A;B))', '(not(or(not(A);not(B))))', 15, false, false, false, false), new RuleITR('', 'De Morgan Law', '\u0417\u0430\u043A\u043E\u043D \u0434\u0435 \u041C\u043E\u0440\u0433\u0430\u043D\u0430', void 0, void 0, void 0, void 0, '(not(or(not(A);not(B))))', '(and(A;B))', 10, false, false, false, false), new RuleITR('', 'De Morgan Law', '\u0417\u0430\u043A\u043E\u043D \u0434\u0435 \u041C\u043E\u0440\u0433\u0430\u043D\u0430', void 0, void 0, void 0, void 0, '(or(A;B))', '(not(and(not(A);not(B))))', 15, false, false, false, false), new RuleITR('', 'De Morgan Law', '\u0417\u0430\u043A\u043E\u043D \u0434\u0435 \u041C\u043E\u0440\u0433\u0430\u043D\u0430', void 0, void 0, void 0, void 0, '(not(and(not(A);not(B))))', '(or(A;B))', 10, false, false, false, false), new RuleITR('', void 0, void 0, void 0, void 0, void 0, void 0, '(not(not(a)))', '(a)', 5, false, false, false, false), new RuleITR('', void 0, void 0, void 0, void 0, void 0, void 0, '(a)', '(not(not(a)))', 89, true, false, false, false), new RuleITR('', void 0, void 0, void 0, void 0, void 0, void 0, '(or(a;a))', '(a)', 5, false, false, false, false), new RuleITR('', void 0, void 0, void 0, void 0, void 0, void 0, '(a)', '(or(a;a))', 90, true, false, false, false), new RuleITR('', void 0, void 0, void 0, void 0, void 0, void 0, '(and(a;a))', '(a)', 5, false, false, false, false), new RuleITR('', void 0, void 0, void 0, void 0, void 0, void 0, '(a)', '(and(a;a))', 90, true, false, false, false), new RuleITR('', void 0, void 0, void 0, void 0, void 0, void 0, '(and(a;b))', '(and(b;a))', 40, true, false, false, false), new RuleITR('', void 0, void 0, void 0, void 0, void 0, void 0, '(or(a;b))', '(or(b;a))', 40, true, false, false, false), new RuleITR('', void 0, void 0, void 0, void 0, void 0, void 0, '(a)', '(and(a;1))', 90, true, false, false, false), new RuleITR('', void 0, void 0, void 0, void 0, void 0, void 0, '(a)', '(or(a;0))', 90, true, false, false, false), new RuleITR('', void 0, void 0, void 0, void 0, void 0, void 0, '(or(A;not(A)))', '(1)', 5, false, false, false, false), new RuleITR('', void 0, void 0, void 0, void 0, void 0, void 0, '(or(not(A);A))', '(1)', 5, false, false, false, false), new RuleITR('', void 0, void 0, void 0, void 0, void 0, void 0, '(and(A;not(A)))', '(0)', 5, false, false, false, false), new RuleITR('', void 0, void 0, void 0, void 0, void 0, void 0, '(and(not(A);A))', '(0)', 5, false, false, false, false), new RuleITR('', void 0, void 0, void 0, void 0, void 0, void 0, '(or(A;1))', '(1)', 5, false, false, false, false), new RuleITR('', void 0, void 0, void 0, void 0, void 0, void 0, '(or(1;A))', '(1)', 5, false, false, false, false), new RuleITR('', void 0, void 0, void 0, void 0, void 0, void 0, '(and(A;1))', '(A)', 5, false, false, false, false), new RuleITR('', void 0, void 0, void 0, void 0, void 0, void 0, '(and(1;A))', '(A)', 5, false, false, false, false), new RuleITR('', void 0, void 0, void 0, void 0, void 0, void 0, '(or(A;0))', '(A)', 5, false, false, false, false), new RuleITR('', void 0, void 0, void 0, void 0, void 0, void 0, '(or(0;A))', '(A)', 5, false, false, false, false), new RuleITR('', void 0, void 0, void 0, void 0, void 0, void 0, '(and(A;0))', '(0)', 5, false, false, false, false), new RuleITR('', void 0, void 0, void 0, void 0, void 0, void 0, '(and(0;A))', '(0)', 5, false, false, false, false), new RuleITR('', void 0, void 0, void 0, void 0, void 0, void 0, '(not(0))', '(1)', 5, false, false, false, false), new RuleITR('', void 0, void 0, void 0, void 0, void 0, void 0, '(not(1))', '(0)', 5, false, false, false, false), new RuleITR('SimpleComputation', void 0, void 0, void 0, void 0, void 0, void 0, '', '', 5, false, false, false, false), new RuleITR('ZeroComputation', void 0, void 0, void 0, void 0, void 0, void 0, '', '', 5, false, false, false, false), new RuleITR('ParentBracketsExpansion', void 0, void 0, void 0, void 0, void 0, void 0, '', '', 30, false, false, false, false), new RuleITR('ArgumentsSwap', void 0, void 0, void 0, void 0, void 0, void 0, '', '', 40, false, false, false, false), new RuleITR('ArgumentsPermutation', void 0, void 0, void 0, void 0, void 0, void 0, '', '', 40, false, false, false, false), new RuleITR('OpeningBrackets', void 0, void 0, void 0, void 0, void 0, void 0, '', '', 30, false, false, false, false), new RuleITR('ArgumentsPermutationInOriginalOrder', void 0, void 0, void 0, void 0, void 0, void 0, '', '', 41, false, false, false, false), new RuleITR('ReduceArithmetic', void 0, void 0, void 0, void 0, void 0, void 0, '', '', 10, false, false, false, false), new RuleITR('TwoSidesArithmeticReduce', void 0, void 0, void 0, void 0, void 0, void 0, '', '', 10, false, false, false, false), new RuleITR('', void 0, void 0, void 0, void 0, void 0, void 0, '(or(not(A);B))', '(implic(A;B))', 35, false, false, false, false), new RuleITR('', void 0, void 0, void 0, void 0, void 0, void 0, '(or(B;not(A)))', '(implic(A;B))', 35, false, false, false, false), new RuleITR('', void 0, void 0, void 0, void 0, void 0, void 0, '(implic(A;B))', '(or(not(A);B))', 35, false, false, false, false), new RuleITR('', void 0, void 0, void 0, void 0, void 0, void 0, '(implic(0;A))', '(1)', 5, false, false, false, false), new RuleITR('', void 0, void 0, void 0, void 0, void 0, void 0, '(implic(A;1))', '(1)', 5, false, false, false, false), new RuleITR('', void 0, void 0, void 0, void 0, void 0, void 0, '(implic(A;0))', '(not(A))', 5, false, false, false, false), new RuleITR('', void 0, void 0, void 0, void 0, void 0, void 0, '(implic(1;A))', '(A)', 5, false, false, false, false), new RuleITR('', void 0, void 0, void 0, void 0, void 0, void 0, '(A)', '(implic(1;A))', 91, true, false, false, false), new RuleITR('', void 0, void 0, void 0, void 0, void 0, void 0, '(xor(A;B))', '(or(and(not(A);B);and(A;not(B))))', 30, true, false, false, false), new RuleITR('', void 0, void 0, void 0, void 0, void 0, void 0, '(or(and(not(A);B);and(A;not(B))))', '(xor(A;B))', 30, true, false, false, false), new RuleITR('', void 0, void 0, void 0, void 0, void 0, void 0, '(alleq(A;B))', '(or(and(A;B);and(not(A);not(B))))', 30, true, false, false, false), new RuleITR('', void 0, void 0, void 0, void 0, void 0, void 0, '(or(and(A;B);and(not(A);not(B))))', '(alleq(A;B))', 30, true, false, false, false), new RuleITR('', void 0, void 0, void 0, void 0, void 0, void 0, '(xor(A;0))', '(A)', 5, false, false, false, false), new RuleITR('', void 0, void 0, void 0, void 0, void 0, void 0, '(xor(A;1))', '(not(A))', 5, false, false, false, false), new RuleITR('', void 0, void 0, void 0, void 0, void 0, void 0, '(xor(0;A))', '(A)', 5, false, false, false, false), new RuleITR('', void 0, void 0, void 0, void 0, void 0, void 0, '(xor(1;A))', '(not(A))', 5, false, false, false, false), new RuleITR('', void 0, void 0, void 0, void 0, void 0, void 0, '(alleq(0;A))', '(not(A))', 5, false, false, false, false), new RuleITR('', void 0, void 0, void 0, void 0, void 0, void 0, '(alleq(A;1))', '(A)', 5, false, false, false, false), new RuleITR('', void 0, void 0, void 0, void 0, void 0, void 0, '(alleq(A;0))', '(not(A))', 5, false, false, false, false), new RuleITR('', void 0, void 0, void 0, void 0, void 0, void 0, '(alleq(1;A))', '(A)', 5, false, false, false, false), new RuleITR('', void 0, void 0, void 0, void 0, void 0, void 0, '(A)', '(xor(A;0))', 91, true, false, false, false), new RuleITR('', void 0, void 0, void 0, void 0, void 0, void 0, '(A)', '(alleq(1;A))', 91, true, false, false, false), new RuleITR('', void 0, void 0, void 0, void 0, void 0, void 0, '(not(A))', '(xor(A;1))', 91, true, false, false, false), new RuleITR('', void 0, void 0, void 0, void 0, void 0, void 0, '(not(A))', '(alleq(0;A))', 91, true, false, false, false)])), new RulePackITR('RelativeComplement', void 0, void 0, 'Relative Complement', '\u041B\u043E\u0433\u0438\u0447\u0435\u0441\u043A\u043E\u0435 \u0434\u043E\u043F\u043E\u043B\u043D\u0435\u043D\u0438\u0435', 'Definition and basic properties', '\u041E\u043F\u0440\u0435\u0434\u0435\u043B\u0435\u043D\u0438\u0435 \u0438 \u043E\u0441\u043D\u043E\u0432\u043D\u044B\u0435 \u0441\u0432\u043E\u0439\u0441\u0442\u0432\u0430', 'Boolean Algebra Conjunction, Disjunction, Negation, Implication, Exclusive Or, Equivalence, Relative Complement', '\u0411\u0443\u043B\u0435\u0432\u0430 \u0430\u043B\u0433\u0435\u0431\u0440\u0430: \u043A\u043E\u043D\u044A\u044E\u043D\u043A\u0446\u0438\u044F, \u0434\u0438\u0437\u044A\u044E\u043D\u043A\u0446\u0438\u044F, \u043E\u0442\u0440\u0438\u0446\u0430\u043D\u0438\u0435, \u0438\u043C\u043F\u043B\u0438\u043A\u0430\u0446\u0438\u044F, \u0438\u0441\u043A\u043B\u044E\u0447\u0430\u044E\u0449\u0435\u0435 \u0438\u043B\u0438, \u044D\u043A\u0432\u0438\u0432\u0430\u043B\u0435\u043D\u0446\u0438\u044F, \u0434\u043E\u043F\u043E\u043B\u043D\u0435\u043D\u0438\u0435', 'logic', listOf(new RulePackLinkITR(void 0, 'LogicBase')), listOf_0([new RuleITR('', void 0, void 0, void 0, void 0, void 0, void 0, '(and(A;not(B)))', '(set-(A;B))', 35, false, false, false, false), new RuleITR('', void 0, void 0, void 0, void 0, void 0, void 0, '(and(not(B);A))', '(set-(A;B))', 35, false, false, false, false), new RuleITR('', void 0, void 0, void 0, void 0, void 0, void 0, '(set-(A;B))', '(and(A;not(B)))', 35, false, false, false, false), new RuleITR('', void 0, void 0, void 0, void 0, void 0, void 0, '(set-(A;B))', '(not(implic(A;B)))', 35, false, false, false, false), new RuleITR('', void 0, void 0, void 0, void 0, void 0, void 0, '(not(implic(A;B)))', '(set-(A;B))', 35, false, false, false, false), new RuleITR('', void 0, void 0, void 0, void 0, void 0, void 0, '(implic(A;B))', '(not(set-(A;B)))', 35, false, false, false, false), new RuleITR('', void 0, void 0, void 0, void 0, void 0, void 0, '(not(set-(A;B)))', '(implic(A;B))', 35, false, false, false, false), new RuleITR('', void 0, void 0, void 0, void 0, void 0, void 0, '(set-(A;0))', '(A)', 5, false, false, false, false), new RuleITR('', void 0, void 0, void 0, void 0, void 0, void 0, '(set-(A;1))', '(0)', 5, false, false, false, false), new RuleITR('', void 0, void 0, void 0, void 0, void 0, void 0, '(set-(0;A))', '(0)', 5, false, false, false, false), new RuleITR('', void 0, void 0, void 0, void 0, void 0, void 0, '(set-(1;A))', '(not(A))', 5, false, false, false, false), new RuleITR('', void 0, void 0, void 0, void 0, void 0, void 0, '(A)', '(set-(A;0))', 91, true, false, false, false)])), new RulePackITR('LogicNotAnd', void 0, void 0, 'Negation of Conjunction', '\u041E\u0442\u0440\u0438\u0446\u0430\u043D\u0438\u0435 \u043A\u043E\u043D\u044A\u044E\u043D\u043A\u0446\u0438\u0438 (\u0428\u0442\u0440\u0438\u0445 \u0428\u0435\u0444\u0444\u0435\u0440\u0430)', 'Definition and basic properties', '\u041E\u043F\u0440\u0435\u0434\u0435\u043B\u0435\u043D\u0438\u0435 \u0438 \u043E\u0441\u043D\u043E\u0432\u043D\u044B\u0435 \u0441\u0432\u043E\u0439\u0441\u0442\u0432\u0430', 'Boolean Algebra Conjunction, Disjunction, Negation, Implication, Exclusive Or, Equivalence, Negation of Conjunction', '\u0411\u0443\u043B\u0435\u0432\u0430 \u0430\u043B\u0433\u0435\u0431\u0440\u0430: \u043A\u043E\u043D\u044A\u044E\u043D\u043A\u0446\u0438\u044F, \u0434\u0438\u0437\u044A\u044E\u043D\u043A\u0446\u0438\u044F, \u043E\u0442\u0440\u0438\u0446\u0430\u043D\u0438\u0435, \u0438\u043C\u043F\u043B\u0438\u043A\u0430\u0446\u0438\u044F, \u0438\u0441\u043A\u043B\u044E\u0447\u0430\u044E\u0449\u0435\u0435 \u0438\u043B\u0438, \u044D\u043A\u0432\u0438\u0432\u0430\u043B\u0435\u043D\u0446\u0438\u044F, \u043E\u0442\u0440\u0438\u0446\u0430\u043D\u0438\u0435 \u043A\u043E\u043D\u044A\u044E\u043D\u043A\u0446\u0438\u0438', 'logic', listOf(new RulePackLinkITR(void 0, 'LogicBase')), listOf_0([new RuleITR('', void 0, void 0, void 0, void 0, void 0, void 0, '(nand(A;B))', '(not(and(A;B)))', 35, false, false, false, false), new RuleITR('', void 0, void 0, void 0, void 0, void 0, void 0, '(not(and(A;B)))', '(nand(A;B))', 35, false, false, false, false)])), new RulePackITR('LogicNotOr', void 0, void 0, 'Negation of Disjunction', '\u041E\u0442\u0440\u0438\u0446\u0430\u043D\u0438\u0435 \u0434\u0438\u0437\u044A\u044E\u043D\u043A\u0446\u0438\u0438 (\u0421\u0442\u0440\u0435\u043B\u043A\u0430 \u041F\u0438\u0440\u0441\u0430)', 'Definition and basic properties', '\u041E\u043F\u0440\u0435\u0434\u0435\u043B\u0435\u043D\u0438\u0435 \u0438 \u043E\u0441\u043D\u043E\u0432\u043D\u044B\u0435 \u0441\u0432\u043E\u0439\u0441\u0442\u0432\u0430', 'Boolean Algebra Conjunction, Disjunction, Negation, Implication, Exclusive Or, Equivalence, Negation of Disjunction', '\u0411\u0443\u043B\u0435\u0432\u0430 \u0430\u043B\u0433\u0435\u0431\u0440\u0430: \u043A\u043E\u043D\u044A\u044E\u043D\u043A\u0446\u0438\u044F, \u0434\u0438\u0437\u044A\u044E\u043D\u043A\u0446\u0438\u044F, \u043E\u0442\u0440\u0438\u0446\u0430\u043D\u0438\u0435, \u0438\u043C\u043F\u043B\u0438\u043A\u0430\u0446\u0438\u044F, \u0438\u0441\u043A\u043B\u044E\u0447\u0430\u044E\u0449\u0435\u0435 \u0438\u043B\u0438, \u044D\u043A\u0432\u0438\u0432\u0430\u043B\u0435\u043D\u0446\u0438\u044F, \u043E\u0442\u0440\u0438\u0446\u0430\u043D\u0438\u0435 \u0434\u0438\u0437\u044A\u044E\u043D\u043A\u0446\u0438\u0438', 'logic', listOf(new RulePackLinkITR(void 0, 'LogicBase')), listOf_0([new RuleITR('', void 0, void 0, void 0, void 0, void 0, void 0, '(nor(A;B))', '(not(or(A;B)))', 35, false, false, false, false), new RuleITR('', void 0, void 0, void 0, void 0, void 0, void 0, '(not(or(A;B)))', '(nor(A;B))', 35, false, false, false, false)])), new RulePackITR('LogicAbsorptionLaw', void 0, void 0, 'Absorption Law', '\u0417\u0430\u043A\u043E\u043D \u043F\u043E\u0433\u043B\u043E\u0449\u0435\u043D\u0438\u044F', 'Law and basic properties in Boolean Algebra', '\u0417\u0430\u043A\u043E\u043D \u0438 \u043E\u0441\u043D\u043E\u0432\u043D\u044B\u0435 \u0441\u0432\u043E\u0439\u0441\u0442\u0432\u0430 \u0432 \u0431\u0443\u043B\u0435\u0432\u043E\u0439 \u0430\u043B\u0433\u0435\u0431\u0440\u0435', void 0, void 0, 'logic', listOf(new RulePackLinkITR(void 0, 'LogicBase')), listOf_0([new RuleITR('', void 0, void 0, void 0, void 0, void 0, void 0, '(and(A;or(A;B)))', '(A)', 6, false, false, false, false), new RuleITR('', void 0, void 0, void 0, void 0, void 0, void 0, '(or(A;and(A;B)))', '(A)', 6, false, false, false, false), new RuleITR('', void 0, void 0, void 0, void 0, void 0, void 0, '(and(A;or(B;A)))', '(A)', 6, false, false, false, false), new RuleITR('', void 0, void 0, void 0, void 0, void 0, void 0, '(or(A;and(B;A)))', '(A)', 6, false, false, false, false), new RuleITR('', void 0, void 0, void 0, void 0, void 0, void 0, '(and(or(A;B);A))', '(A)', 6, false, false, false, false), new RuleITR('', void 0, void 0, void 0, void 0, void 0, void 0, '(or(and(A;B);A))', '(A)', 6, false, false, false, false), new RuleITR('', void 0, void 0, void 0, void 0, void 0, void 0, '(and(or(B;A);A))', '(A)', 6, false, false, false, false), new RuleITR('', void 0, void 0, void 0, void 0, void 0, void 0, '(or(and(B;A);A))', '(A)', 6, false, false, false, false), new RuleITR('', void 0, void 0, void 0, void 0, void 0, void 0, '(A)', '(and(A;or(A;B)))', 90, true, false, false, false), new RuleITR('', void 0, void 0, void 0, void 0, void 0, void 0, '(A)', '(or(A;and(A;B)))', 90, true, false, false, false), new RuleITR('SetComplicatingExtension', void 0, void 0, void 0, void 0, void 0, void 0, '', '', 92, false, false, false, false)])), new RulePackITR('LogicResolution', void 0, void 0, 'Resolution', '\u041C\u0435\u0442\u043E\u0434 \u0440\u0435\u0437\u043E\u043B\u044E\u0446\u0438\u0439', 'Rules for proof by Resolution method', '\u043F\u0440\u0430\u0432\u0438\u043B\u0430 \u0434\u043B\u044F \u0434\u043E\u043A\u0430\u0437\u0430\u0442\u0435\u043B\u044C\u0441\u0442\u0432 \u043C\u0435\u0442\u043E\u0434\u043E\u043C \u0440\u0435\u0437\u043E\u043B\u044E\u0446\u0438\u0439', void 0, void 0, 'logic', listOf(new RulePackLinkITR(void 0, 'LogicBase')), listOf_0([new RuleITR('', void 0, void 0, void 0, void 0, void 0, void 0, '(and(not(A);A))', '(0)', 5, false, false, false, false), new RuleITR('', void 0, void 0, void 0, void 0, void 0, void 0, '(and(A;not(A)))', '(0)', 5, false, false, false, false), new RuleITR('', void 0, void 0, void 0, void 0, void 0, void 0, '(and(or(A;X);not(A)))', '(and(X;or(A;X);not(A)))', 10, false, false, false, false), new RuleITR('', void 0, void 0, void 0, void 0, void 0, void 0, '(and(not(A);or(A;X)))', '(and(X;not(A);or(A;X)))', 10, false, false, false, false), new RuleITR('', void 0, void 0, void 0, void 0, void 0, void 0, '(and(or(not(A);X);A))', '(and(X;or(not(A);X);A))', 10, false, false, false, false), new RuleITR('', void 0, void 0, void 0, void 0, void 0, void 0, '(and(A;or(not(A);X)))', '(and(X;A;or(not(A);X)))', 10, false, false, false, false), new RuleITR('', void 0, void 0, void 0, void 0, void 0, void 0, '(and(or(A;X);or(not(A);Y)))', '(and(or(X;Y);or(A;X);or(not(A);Y)))', 10, false, false, false, false), new RuleITR('', void 0, void 0, void 0, void 0, void 0, void 0, '(and(or(not(A);X);or(A;Y)))', '(and(or(X;Y);or(not(A);X);or(A;Y)))', 10, false, false, false, false), new RuleITR('', void 0, void 0, void 0, void 0, void 0, void 0, '(and(not(A);A;C))', '(0)', 5, false, false, false, false), new RuleITR('', void 0, void 0, void 0, void 0, void 0, void 0, '(and(A;not(A);C))', '(0)', 5, false, false, false, false), new RuleITR('', void 0, void 0, void 0, void 0, void 0, void 0, '(and(or(A;X);not(A);C))', '(and(X;or(A;X);not(A);C))', 10, false, false, false, false), new RuleITR('', void 0, void 0, void 0, void 0, void 0, void 0, '(and(not(A);or(A;X);C))', '(and(X;not(A);or(A;X);C))', 10, false, false, false, false), new RuleITR('', void 0, void 0, void 0, void 0, void 0, void 0, '(and(or(not(A);X);A;C))', '(and(X;or(not(A);X);A;C))', 10, false, false, false, false), new RuleITR('', void 0, void 0, void 0, void 0, void 0, void 0, '(and(A;or(not(A);X);C))', '(and(X;A;or(not(A);X);C))', 10, false, false, false, false), new RuleITR('', void 0, void 0, void 0, void 0, void 0, void 0, '(and(or(A;X);or(not(A);Y);C))', '(and(or(X;Y);or(A;X);or(not(A);Y);C))', 10, false, false, false, false), new RuleITR('', void 0, void 0, void 0, void 0, void 0, void 0, '(and(or(not(A);X);or(A;Y);C))', '(and(or(X;Y);or(not(A);X);or(A;Y);C))', 10, false, false, false, false), new RuleITR('', void 0, void 0, void 0, void 0, void 0, void 0, '(and(not(A);A;C;D))', '(0)', 5, false, false, false, false), new RuleITR('', void 0, void 0, void 0, void 0, void 0, void 0, '(and(A;not(A);C;D))', '(0)', 5, false, false, false, false), new RuleITR('', void 0, void 0, void 0, void 0, void 0, void 0, '(and(or(A;X);not(A);C;D))', '(and(X;or(A;X);not(A);C;D))', 10, false, false, false, false), new RuleITR('', void 0, void 0, void 0, void 0, void 0, void 0, '(and(not(A);or(A;X);C;D))', '(and(X;not(A);or(A;X);C;D))', 10, false, false, false, false), new RuleITR('', void 0, void 0, void 0, void 0, void 0, void 0, '(and(or(not(A);X);A;C;D))', '(and(X;or(not(A);X);A;C;D))', 10, false, false, false, false), new RuleITR('', void 0, void 0, void 0, void 0, void 0, void 0, '(and(A;or(not(A);X);C;D))', '(and(X;A;or(not(A);X);C;D))', 10, false, false, false, false), new RuleITR('', void 0, void 0, void 0, void 0, void 0, void 0, '(and(or(A;X);or(not(A);Y);C;D))', '(and(or(X;Y);or(A;X);or(not(A);Y);C;D))', 10, false, false, false, false), new RuleITR('', void 0, void 0, void 0, void 0, void 0, void 0, '(and(or(not(A);X);or(A;Y);C;D))', '(and(or(X;Y);or(not(A);X);or(A;Y);C;D))', 10, false, false, false, false), new RuleITR('', void 0, void 0, void 0, void 0, void 0, void 0, '(and(not(A);A;C;D;E))', '(0)', 5, false, false, false, false), new RuleITR('', void 0, void 0, void 0, void 0, void 0, void 0, '(and(A;not(A);C;D;E))', '(0)', 5, false, false, false, false), new RuleITR('', void 0, void 0, void 0, void 0, void 0, void 0, '(and(or(A;X);not(A);C;D;E))', '(and(X;or(A;X);not(A);C;D;E))', 10, false, false, false, false), new RuleITR('', void 0, void 0, void 0, void 0, void 0, void 0, '(and(not(A);or(A;X);C;D;E))', '(and(X;not(A);or(A;X);C;D;E))', 10, false, false, false, false), new RuleITR('', void 0, void 0, void 0, void 0, void 0, void 0, '(and(or(not(A);X);A;C;D;E))', '(and(X;or(not(A);X);A;C;D;E))', 10, false, false, false, false), new RuleITR('', void 0, void 0, void 0, void 0, void 0, void 0, '(and(A;or(not(A);X);C;D;E))', '(and(X;A;or(not(A);X);C;D;E))', 10, false, false, false, false), new RuleITR('', void 0, void 0, void 0, void 0, void 0, void 0, '(and(or(A;X);or(not(A);Y);C;D;E))', '(and(or(X;Y);or(A;X);or(not(A);Y);C;D;E))', 10, false, false, false, false), new RuleITR('', void 0, void 0, void 0, void 0, void 0, void 0, '(and(or(not(A);X);or(A;Y);C;D;E))', '(and(or(X;Y);or(not(A);X);or(A;Y);C;D;E))', 10, false, false, false, false), new RuleITR('', void 0, void 0, void 0, void 0, void 0, void 0, '(and(not(A);A;C;D;E;F))', '(0)', 5, false, false, false, false), new RuleITR('', void 0, void 0, void 0, void 0, void 0, void 0, '(and(A;not(A);C;D;E;F))', '(0)', 5, false, false, false, false), new RuleITR('', void 0, void 0, void 0, void 0, void 0, void 0, '(and(or(A;X);not(A);C;D;E;F))', '(and(X;or(A;X);not(A);C;D;E;F))', 10, false, false, false, false), new RuleITR('', void 0, void 0, void 0, void 0, void 0, void 0, '(and(not(A);or(A;X);C;D;E;F))', '(and(X;not(A);or(A;X);C;D;E;F))', 10, false, false, false, false), new RuleITR('', void 0, void 0, void 0, void 0, void 0, void 0, '(and(or(not(A);X);A;C;D;E;F))', '(and(X;or(not(A);X);A;C;D;E;F))', 10, false, false, false, false), new RuleITR('', void 0, void 0, void 0, void 0, void 0, void 0, '(and(A;or(not(A);X);C;D;E;F))', '(and(X;A;or(not(A);X);C;D;E;F))', 10, false, false, false, false), new RuleITR('', void 0, void 0, void 0, void 0, void 0, void 0, '(and(or(A;X);or(not(A);Y);C;D;E;F))', '(and(or(X;Y);or(A;X);or(not(A);Y);C;D;E;F))', 10, false, false, false, false), new RuleITR('', void 0, void 0, void 0, void 0, void 0, void 0, '(and(or(not(A);X);or(A;Y);C;D;E;F))', '(and(or(X;Y);or(not(A);X);or(A;Y);C;D;E;F))', 10, false, false, false, false), new RuleITR('', void 0, void 0, void 0, void 0, void 0, void 0, '(and(not(A);A;C;D;E;F;G))', '(0)', 5, false, false, false, false), new RuleITR('', void 0, void 0, void 0, void 0, void 0, void 0, '(and(A;not(A);C;D;E;F;G))', '(0)', 5, false, false, false, false), new RuleITR('', void 0, void 0, void 0, void 0, void 0, void 0, '(and(or(A;X);not(A);C;D;E;F;G))', '(and(X;or(A;X);not(A);C;D;E;F;G))', 10, false, false, false, false), new RuleITR('', void 0, void 0, void 0, void 0, void 0, void 0, '(and(not(A);or(A;X);C;D;E;F;G))', '(and(X;not(A);or(A;X);C;D;E;F;G))', 10, false, false, false, false), new RuleITR('', void 0, void 0, void 0, void 0, void 0, void 0, '(and(or(not(A);X);A;C;D;E;F;G))', '(and(X;or(not(A);X);A;C;D;E;F;G))', 10, false, false, false, false), new RuleITR('', void 0, void 0, void 0, void 0, void 0, void 0, '(and(A;or(not(A);X);C;D;E;F;G))', '(and(X;A;or(not(A);X);C;D;E;F;G))', 10, false, false, false, false), new RuleITR('', void 0, void 0, void 0, void 0, void 0, void 0, '(and(or(A;X);or(not(A);Y);C;D;E;F;G))', '(and(or(X;Y);or(A;X);or(not(A);Y);C;D;E;F;G))', 10, false, false, false, false), new RuleITR('', void 0, void 0, void 0, void 0, void 0, void 0, '(and(or(not(A);X);or(A;Y);C;D;E;F;G))', '(and(or(X;Y);or(not(A);X);or(A;Y);C;D;E;F;G))', 10, false, false, false, false), new RuleITR('', void 0, void 0, void 0, void 0, void 0, void 0, '(and(not(A);A;C;D;E;F;G;H))', '(0)', 5, false, false, false, false), new RuleITR('', void 0, void 0, void 0, void 0, void 0, void 0, '(and(A;not(A);C;D;E;F;G;H))', '(0)', 5, false, false, false, false), new RuleITR('', void 0, void 0, void 0, void 0, void 0, void 0, '(and(or(A;X);not(A);C;D;E;F;G;H))', '(and(X;or(A;X);not(A);C;D;E;F;G;H))', 10, false, false, false, false), new RuleITR('', void 0, void 0, void 0, void 0, void 0, void 0, '(and(not(A);or(A;X);C;D;E;F;G;H))', '(and(X;not(A);or(A;X);C;D;E;F;G;H))', 10, false, false, false, false), new RuleITR('', void 0, void 0, void 0, void 0, void 0, void 0, '(and(or(not(A);X);A;C;D;E;F;G;H))', '(and(X;or(not(A);X);A;C;D;E;F;G;H))', 10, false, false, false, false), new RuleITR('', void 0, void 0, void 0, void 0, void 0, void 0, '(and(A;or(not(A);X);C;D;E;F;G;H))', '(and(X;A;or(not(A);X);C;D;E;F;G;H))', 10, false, false, false, false), new RuleITR('', void 0, void 0, void 0, void 0, void 0, void 0, '(and(or(A;X);or(not(A);Y);C;D;E;F;G;H))', '(and(or(X;Y);or(A;X);or(not(A);Y);C;D;E;F;G;H))', 10, false, false, false, false), new RuleITR('', void 0, void 0, void 0, void 0, void 0, void 0, '(and(or(not(A);X);or(A;Y);C;D;E;F;G;H))', '(and(or(X;Y);or(not(A);X);or(A;Y);C;D;E;F;G;H))', 10, false, false, false, false), new RuleITR('', void 0, void 0, void 0, void 0, void 0, void 0, '(and(not(A);A;C;D;E;F;G;H;I))', '(0)', 5, false, false, false, false), new RuleITR('', void 0, void 0, void 0, void 0, void 0, void 0, '(and(A;not(A);C;D;E;F;G;H;I))', '(0)', 5, false, false, false, false), new RuleITR('', void 0, void 0, void 0, void 0, void 0, void 0, '(and(or(A;X);not(A);C;D;E;F;G;H;I))', '(and(X;or(A;X);not(A);C;D;E;F;G;H;I))', 10, false, false, false, false), new RuleITR('', void 0, void 0, void 0, void 0, void 0, void 0, '(and(not(A);or(A;X);C;D;E;F;G;H;I))', '(and(X;not(A);or(A;X);C;D;E;F;G;H;I))', 10, false, false, false, false), new RuleITR('', void 0, void 0, void 0, void 0, void 0, void 0, '(and(or(not(A);X);A;C;D;E;F;G;H;I))', '(and(X;or(not(A);X);A;C;D;E;F;G;H;I))', 10, false, false, false, false), new RuleITR('', void 0, void 0, void 0, void 0, void 0, void 0, '(and(A;or(not(A);X);C;D;E;F;G;H;I))', '(and(X;A;or(not(A);X);C;D;E;F;G;H;I))', 10, false, false, false, false), new RuleITR('', void 0, void 0, void 0, void 0, void 0, void 0, '(and(or(A;X);or(not(A);Y);C;D;E;F;G;H;I))', '(and(or(X;Y);or(A;X);or(not(A);Y);C;D;E;F;G;H;I))', 10, false, false, false, false), new RuleITR('', void 0, void 0, void 0, void 0, void 0, void 0, '(and(or(not(A);X);or(A;Y);C;D;E;F;G;H;I))', '(and(or(X;Y);or(not(A);X);or(A;Y);C;D;E;F;G;H;I))', 10, false, false, false, false)]))]);
   }
   LogicRulePacks$Companion.prototype.get = function () {
     return this.defaultLogicRulePacks;
@@ -11614,6 +11633,15 @@ if (typeof kotlin === 'undefined') {
   SubstitutionApplicationError.prototype.equals = function (other) {
     return this === other || (other !== null && (typeof other === 'object' && (Object.getPrototypeOf(this) === Object.getPrototypeOf(other) && (Kotlin.equals(this.descriptionEn, other.descriptionEn) && Kotlin.equals(this.descriptionRu, other.descriptionRu) && Kotlin.equals(this.affectedNodeIds, other.affectedNodeIds) && Kotlin.equals(this.expressionNode, other.expressionNode)))));
   };
+  var compareByDescending$lambda_0 = wrapFunction(function () {
+    var compareValues = Kotlin.kotlin.comparisons.compareValues_s00gnj$;
+    return function (closure$selector) {
+      return function (a, b) {
+        var selector = closure$selector;
+        return compareValues(selector(b), selector(a));
+      };
+    };
+  });
   function ExpressionComparator(baseOperationsDefinitions, baseOperationsComputationDouble, baseOperationsComputationComplex, debugMode) {
     ExpressionComparator$Companion_getInstance();
     if (baseOperationsDefinitions === void 0)
@@ -12089,17 +12117,20 @@ if (typeof kotlin === 'undefined') {
       return resultForOperandsInSortedOrder;
     }
   };
-  function ExpressionComparator$compareWithTreeTransformationRulesInternal$lambda() {
-    return "COMPARISON_SIGNS_CONFLICT '";
+  function ExpressionComparator$compareWithTreeTransformationRulesInternal$lambda(it) {
+    return it.second;
   }
   function ExpressionComparator$compareWithTreeTransformationRulesInternal$lambda_0() {
-    return "' in expression vs '";
+    return "COMPARISON_SIGNS_CONFLICT '";
   }
   function ExpressionComparator$compareWithTreeTransformationRulesInternal$lambda_1() {
+    return "' in expression vs '";
+  }
+  function ExpressionComparator$compareWithTreeTransformationRulesInternal$lambda_2() {
     return "' in rule. MSG_CODE_";
   }
   ExpressionComparator.prototype.compareWithTreeTransformationRulesInternal_l7tdci$ = function (leftOriginal, rightOriginal, transformations, maxTransformationWeight, maxBustCount, minTransformationWeight, expressionChainComparisonType, sortOperands, maxDistBetweenDiffSteps) {
-    var tmp$, tmp$_0, tmp$_1, tmp$_2, tmp$_3, tmp$_4, tmp$_5;
+    var tmp$, tmp$_0, tmp$_1, tmp$_2, tmp$_3, tmp$_4, tmp$_5, tmp$_6;
     if (maxTransformationWeight === void 0)
       maxTransformationWeight = this.compiledConfiguration.comparisonSettings.maxExpressionTransformationWeight;
     if (maxBustCount === void 0)
@@ -12159,79 +12190,97 @@ if (typeof kotlin === 'undefined') {
         return true;
       }}if (this.checkOpeningBracketsSubstitutions_f7l7x0$(left, right, expressionChainComparisonType) || this.checkOpeningBracketsSubstitutions_f7l7x0$(right, left, reverse_0(expressionChainComparisonType))) {
       return true;
-    }var functionsInExpression = plus_0(left.getContainedFunctions(), right.getContainedFunctions());
-    var destination = ArrayList_init();
-    var tmp$_6;
-    tmp$_6 = transformations.iterator();
-    while (tmp$_6.hasNext()) {
-      var element = tmp$_6.next();
-      if (element.weight <= maxTransformationWeight)
-        destination.add_11rb$(element);
-    }
-    tmp$_2 = destination.iterator();
+    }var functionsInLeftExpression = left.getContainedFunctions();
+    var functionsInRightExpression = right.getContainedFunctions();
+    var functionsInExpression = plus_0(functionsInLeftExpression, functionsInRightExpression);
+    var filteredTransformations = ArrayList_init();
+    tmp$_2 = transformations.iterator();
     while (tmp$_2.hasNext()) {
-      var originalTransformation = tmp$_2.next();
-      var tmp$_7 = !originalTransformation.basedOnTaskContext;
+      var transformation = tmp$_2.next();
+      if (transformation.weight > maxTransformationWeight) {
+        continue;
+      }var transformationLeftIntersectLeftExpression = intersect(functionsInLeftExpression, transformation.leftFunctions);
+      var transformationLeftIntersectRightExpression = intersect(functionsInRightExpression, transformation.leftFunctions);
+      if (!transformation.leftFunctions.isEmpty() && transformationLeftIntersectLeftExpression.isEmpty() && transformationLeftIntersectRightExpression.isEmpty()) {
+        continue;
+      }var score = 1.0;
+      var transformationRightIntersectLeftExpression = intersect(functionsInLeftExpression, transformation.rightFunctions);
+      var transformationRightIntersectRightExpression = intersect(functionsInRightExpression, transformation.rightFunctions);
+      var tmp$_7 = !transformation.rightFunctions.isEmpty();
       if (tmp$_7) {
-        tmp$_7 = !originalTransformation.leftFunctions.isEmpty();
-      }if (tmp$_7 && intersect(functionsInExpression, originalTransformation.leftFunctions).isEmpty()) {
+        tmp$_7 = !transformation.leftFunctions.isEmpty();
+      }if (tmp$_7) {
+        if (transformationLeftIntersectLeftExpression.isEmpty() && transformationRightIntersectLeftExpression.isEmpty()) {
+          score = 0.0;
+        } else if (transformationLeftIntersectRightExpression.isEmpty() && transformationRightIntersectRightExpression.isEmpty()) {
+          score = 0.0;
+        }}filteredTransformations.add_11rb$(new Pair(transformation, score));
+    }
+    if (this.compiledConfiguration.comparisonSettings.useTransformationsSortingInExpressionComparison) {
+      if (filteredTransformations.size > 1) {
+        sortWith(filteredTransformations, new Comparator(compareByDescending$lambda_0(ExpressionComparator$compareWithTreeTransformationRulesInternal$lambda)));
+      }}tmp$_3 = filteredTransformations.iterator();
+    while (tmp$_3.hasNext()) {
+      var filteredTransformation = tmp$_3.next();
+      var originalTransformation = filteredTransformation.first;
+      if (!originalTransformation.leftFunctions.isEmpty() && intersect(functionsInExpression, originalTransformation.leftFunctions).isEmpty()) {
         continue;
       }if (sortOperands) {
-        tmp$_3 = new ExpressionSubstitution(originalTransformation.left.cloneWithSortingChildrenForExpressionSubstitutionComparison(), originalTransformation.right.cloneWithSortingChildrenForExpressionSubstitutionComparison(), originalTransformation.weight, originalTransformation.basedOnTaskContext, originalTransformation.code, originalTransformation.nameEn, originalTransformation.nameRu, originalTransformation.comparisonType, originalTransformation.leftFunctions, originalTransformation.matchJumbledAndNested, originalTransformation.priority, originalTransformation.changeOnlyOrder, originalTransformation.simpleAdditional, originalTransformation.isExtending, originalTransformation.normalizationType);
+        tmp$_4 = new ExpressionSubstitution(originalTransformation.left.cloneWithSortingChildrenForExpressionSubstitutionComparison(), originalTransformation.right.cloneWithSortingChildrenForExpressionSubstitutionComparison(), originalTransformation.weight, originalTransformation.basedOnTaskContext, originalTransformation.code, originalTransformation.nameEn, originalTransformation.nameRu, originalTransformation.comparisonType, originalTransformation.leftFunctions, originalTransformation.rightFunctions, originalTransformation.matchJumbledAndNested, originalTransformation.priority, originalTransformation.changeOnlyOrder, originalTransformation.simpleAdditional, originalTransformation.isExtending, originalTransformation.normalizationType);
       } else {
-        tmp$_3 = originalTransformation;
+        tmp$_4 = originalTransformation;
       }
-      var transformation = tmp$_3;
-      if (!normFormsOfExpressionNode.containsKey_11rb$(transformation.normalizationType)) {
+      var transformation_0 = tmp$_4;
+      if (!normFormsOfExpressionNode.containsKey_11rb$(transformation_0.normalizationType)) {
         var l = sortOperands ? left.cloneWithSortingChildrenForExpressionSubstitutionComparison() : left.clone();
         var r = sortOperands ? right.cloneWithSortingChildrenForExpressionSubstitutionComparison() : right.clone();
-        switch (transformation.normalizationType.name) {
+        switch (transformation_0.normalizationType.name) {
           case 'ORIGINAL':
-            var key = transformation.normalizationType;
+            var key = transformation_0.normalizationType;
             var value = new Pair(l, r);
             normFormsOfExpressionNode.put_xwzc9p$(key, value);
             break;
           case 'SORTED':
-            var key_0 = transformation.normalizationType;
+            var key_0 = transformation_0.normalizationType;
             var value_0 = new Pair(left.cloneWithSortingChildrenForExpressionSubstitutionComparison(), right.cloneWithSortingChildrenForExpressionSubstitutionComparison());
             normFormsOfExpressionNode.put_xwzc9p$(key_0, value_0);
             break;
           case 'I_MULTIPLICATED':
-            var key_1 = transformation.normalizationType;
+            var key_1 = transformation_0.normalizationType;
             var value_1 = new Pair(left.cloneWithIMultipleNorm(), right.clone());
             normFormsOfExpressionNode.put_xwzc9p$(key_1, value_1);
             break;
           case 'SORTED_AND_I_MULTIPLICATED':
-            var key_2 = transformation.normalizationType;
+            var key_2 = transformation_0.normalizationType;
             var value_2 = new Pair(left.cloneWithSortingChildrenForExpressionSubstitutionComparison().iMultiplicativeNormForm(), right.cloneWithSortingChildrenForExpressionSubstitutionComparison());
             normFormsOfExpressionNode.put_xwzc9p$(key_2, value_2);
             break;
         }
-      }var l_0 = ensureNotNull(normFormsOfExpressionNode.get_11rb$(transformation.normalizationType)).first.clone();
-      var r_0 = ensureNotNull(normFormsOfExpressionNode.get_11rb$(transformation.normalizationType)).second.clone();
-      var direction = getComparingDirection(expressionChainComparisonType, transformation.comparisonType);
+      }var l_0 = ensureNotNull(normFormsOfExpressionNode.get_11rb$(transformation_0.normalizationType)).first.clone();
+      var r_0 = ensureNotNull(normFormsOfExpressionNode.get_11rb$(transformation_0.normalizationType)).second.clone();
+      var direction = getComparingDirection(expressionChainComparisonType, transformation_0.comparisonType);
       if (direction == null) {
-        log_1.add_jcldl0$(expressionChainComparisonType.string, transformation.comparisonType.string, ExpressionComparator$compareWithTreeTransformationRulesInternal$lambda, ExpressionComparator$compareWithTreeTransformationRulesInternal$lambda_0, ExpressionComparator$compareWithTreeTransformationRulesInternal$lambda_1, void 0, void 0, MessageType$USER_getInstance());
+        log_1.add_jcldl0$(expressionChainComparisonType.string, transformation_0.comparisonType.string, ExpressionComparator$compareWithTreeTransformationRulesInternal$lambda_0, ExpressionComparator$compareWithTreeTransformationRulesInternal$lambda_1, ExpressionComparator$compareWithTreeTransformationRulesInternal$lambda_2, void 0, void 0, MessageType$USER_getInstance());
       }if (!equals(direction, SubstitutionDirection$RIGHT_TO_LEFT_getInstance())) {
-        tmp$_4 = transformation.findAllPossibleSubstitutionPlaces_i8kf4x$(l_0, this);
-      } else {
-        tmp$_4 = emptyList();
-      }
-      if (!equals(direction, SubstitutionDirection$LEFT_TO_RIGHT_getInstance())) {
-        tmp$_5 = transformation.findAllPossibleSubstitutionPlaces_i8kf4x$(r_0, this);
+        tmp$_5 = transformation_0.findAllPossibleSubstitutionPlaces_i8kf4x$(l_0, this);
       } else {
         tmp$_5 = emptyList();
       }
-      var substitutionPlaces = plus(tmp$_4, tmp$_5);
+      if (!equals(direction, SubstitutionDirection$LEFT_TO_RIGHT_getInstance())) {
+        tmp$_6 = transformation_0.findAllPossibleSubstitutionPlaces_i8kf4x$(r_0, this);
+      } else {
+        tmp$_6 = emptyList();
+      }
+      var substitutionPlaces = plus(tmp$_5, tmp$_6);
       var bitMaskCount = 1 << substitutionPlaces.size;
       if (Kotlin.imul(bitMaskCount, transformations.size) > maxBustCount) {
-        transformation.applySubstitution_3grqus$(substitutionPlaces, this);
-        if (this.compareWithTreeTransformationRulesInternal_l7tdci$(l_0, r_0, transformations, maxTransformationWeight - transformation.weight, maxBustCount, minTransformationWeight, expressionChainComparisonType, sortOperands))
+        transformation_0.applySubstitution_3grqus$(substitutionPlaces, this);
+        if (this.compareWithTreeTransformationRulesInternal_l7tdci$(l_0, r_0, transformations, maxTransformationWeight - transformation_0.weight, maxBustCount, minTransformationWeight, expressionChainComparisonType, sortOperands))
           return true;
       } else {
         for (var bitMask = 1; bitMask < bitMaskCount; bitMask++) {
-          transformation.applySubstitutionByBitMask_uet8du$(substitutionPlaces, bitMask);
-          if (this.compareWithTreeTransformationRulesInternal_l7tdci$(l_0.clone(), r_0.clone(), transformations, maxTransformationWeight - transformation.weight, maxBustCount, minTransformationWeight, expressionChainComparisonType, sortOperands))
+          transformation_0.applySubstitutionByBitMask_uet8du$(substitutionPlaces, bitMask);
+          if (this.compareWithTreeTransformationRulesInternal_l7tdci$(l_0.clone(), r_0.clone(), transformations, maxTransformationWeight - transformation_0.weight, maxBustCount, minTransformationWeight, expressionChainComparisonType, sortOperands))
             return true;
         }
       }
@@ -15053,7 +15102,7 @@ if (typeof kotlin === 'undefined') {
         normalizeExpressionToUsualForm($receiver, substitutionSelectionData.compiledConfiguration);
         var resultExpression = $receiver;
         parentOfParent.setChildOnPosition_gk94xr$(inBracketsNodeParent, parentNodeIndex);
-        var swapSubstitution = new ExpressionSubstitution(addRootNodeToExpression(inBracketsNodeParent.clone()), addRootNodeToExpression(newParent), void 0, void 0, subst.code, subst.nameEn, subst.nameRu, void 0, void 0, void 0, subst.priority);
+        var swapSubstitution = new ExpressionSubstitution(addRootNodeToExpression(inBracketsNodeParent.clone()), addRootNodeToExpression(newParent), void 0, void 0, subst.code, subst.nameEn, subst.nameRu, void 0, void 0, void 0, void 0, subst.priority);
         result.add_11rb$(new SubstitutionApplication(swapSubstitution, substitutionSelectionData.originalExpression, inBracketsNodeParent.clone(), resultExpression, newParent, PARENT_BRACKETS_EXPANSION, (tmp$_8 = subst.priority) != null ? tmp$_8 : 1));
       }}return result;
   }
@@ -15097,7 +15146,7 @@ if (typeof kotlin === 'undefined') {
         normalizeExpressionToUsualForm($receiver_1, substitutionSelectionData.compiledConfiguration);
         var resultExpression = $receiver_1;
         parentOfParent.setChildOnPosition_gk94xr$(inBracketsNodeParent, parentNodeIndex);
-        var minusInBracketsSubstitution = new ExpressionSubstitution(addRootNodeToExpression(left), addRootNodeToExpression(newInBracketsNode), void 0, void 0, subst.code, subst.nameEn, subst.nameRu, void 0, void 0, void 0, subst.priority);
+        var minusInBracketsSubstitution = new ExpressionSubstitution(addRootNodeToExpression(left), addRootNodeToExpression(newInBracketsNode), void 0, void 0, subst.code, subst.nameEn, subst.nameRu, void 0, void 0, void 0, void 0, subst.priority);
         result.add_11rb$(new SubstitutionApplication(minusInBracketsSubstitution, originalExpression, left, resultExpression, newInBracketsNode, 'MinusInBrackets', (tmp$_10 = subst.priority) != null ? tmp$_10 : 60));
       } else {
         var $receiver_2 = substitutionSelectionData.compiledConfiguration.createExpressionFunctionNode_twmih4$('-', -1);
@@ -15118,7 +15167,7 @@ if (typeof kotlin === 'undefined') {
           var $receiver_5 = substitutionSelectionData.compiledConfiguration.createExpressionFunctionNode_twmih4$('+', -1);
           $receiver_5.addChild_em03xr$(right.v.clone());
           right.v = $receiver_5;
-        }var minusOutBracketsSubstitution = new ExpressionSubstitution(addRootNodeToExpression(inBracketsNode), addRootNodeToExpression(right.v), void 0, void 0, subst.code, subst.nameEn, subst.nameRu, void 0, void 0, void 0, subst.priority);
+        }var minusOutBracketsSubstitution = new ExpressionSubstitution(addRootNodeToExpression(inBracketsNode), addRootNodeToExpression(right.v), void 0, void 0, subst.code, subst.nameEn, subst.nameRu, void 0, void 0, void 0, void 0, subst.priority);
         result.add_11rb$(new SubstitutionApplication(minusOutBracketsSubstitution, originalExpression_0, inBracketsNode, resultExpression_0, right.v, 'MinusFromBrackets', (tmp$_11 = subst.priority) != null ? tmp$_11 : 60));
       }
     }return result;
@@ -15162,7 +15211,7 @@ if (typeof kotlin === 'undefined') {
           var resultExpression = $receiver;
           firstNodeParent.setChildOnPosition_gk94xr$(firstNode, firstNodeIndex);
           secondNodeParent.setChildOnPosition_gk94xr$(secondNode, secondNodeIndex);
-          var swapSubstitution = new ExpressionSubstitution(addRootNodeToExpression(ensureNotNull(substitutionSelectionData.topOfSelection).clone()), addRootNodeToExpression(swapResult), void 0, void 0, subst.code, subst.nameEn, subst.nameRu, void 0, void 0, void 0, subst.priority);
+          var swapSubstitution = new ExpressionSubstitution(addRootNodeToExpression(ensureNotNull(substitutionSelectionData.topOfSelection).clone()), addRootNodeToExpression(swapResult), void 0, void 0, subst.code, subst.nameEn, subst.nameRu, void 0, void 0, void 0, void 0, subst.priority);
           result.add_11rb$(new SubstitutionApplication(swapSubstitution, originalExpression, ensureNotNull(substitutionSelectionData.topOfSelection).clone(), resultExpression, swapResult, 'Swap', (tmp$_11 = subst.priority) != null ? tmp$_11 : 10));
           swapSubstitutionSuggested = true;
         }}if (substitutionSelectionData.compiledConfiguration.expressionTreeAutogeneratedTransformationRuleIdentifiers.containsKey_11rb$('ArgumentsPermutation')) {
@@ -15181,7 +15230,7 @@ if (typeof kotlin === 'undefined') {
             tmp$_13 = ensureNotNull(substitutionSelectionData.selectedSubtreeTopArgumentsInSelectionOrder);
           }
           var selectedPartTransformationResultInSelectedOrderInBrackets_0 = tmp$_13;
-          addApplicationToResults(true, substitutionSelectionData, simplifyNotSelectedTopArguments, selectedPartTransformationResultInSelectedOrderInBrackets_0, result, new ExpressionSubstitution(addRootNodeToExpression(ensureNotNull(substitutionSelectionData.selectedSubtreeTopArguments).clone()), addRootNodeToExpression(selectedPartTransformationResultInSelectedOrderInBrackets_0), void 0, void 0, subst_0.code, subst_0.nameEn, subst_0.nameRu, void 0, void 0, void 0, subst_0.priority), 'SelectedOrderExtraction', (tmp$_14 = subst_0.priority) != null ? tmp$_14 : 90);
+          addApplicationToResults(true, substitutionSelectionData, simplifyNotSelectedTopArguments, selectedPartTransformationResultInSelectedOrderInBrackets_0, result, new ExpressionSubstitution(addRootNodeToExpression(ensureNotNull(substitutionSelectionData.selectedSubtreeTopArguments).clone()), addRootNodeToExpression(selectedPartTransformationResultInSelectedOrderInBrackets_0), void 0, void 0, subst_0.code, subst_0.nameEn, subst_0.nameRu, void 0, void 0, void 0, void 0, subst_0.priority), 'SelectedOrderExtraction', (tmp$_14 = subst_0.priority) != null ? tmp$_14 : 90);
           if (!equals(ensureNotNull(substitutionSelectionData.selectedSubtreeTopArgumentsInSelectionOrder).toString(), ensureNotNull(substitutionSelectionData.selectedSubtreeTopArguments).toString()) && (substitutionSelectionData.notSelectedSubtreeTopArguments != null && ensureNotNull(substitutionSelectionData.notSelectedSubtreeTopArguments).children.size > 1) && !equals(ensureNotNull(substitutionSelectionData.topOfSelection).toString(), ensureNotNull(substitutionSelectionData.selectedSubtreeTopArguments).toString()) && substitutionSelectionData.compiledConfiguration.expressionTreeAutogeneratedTransformationRuleIdentifiers.containsKey_11rb$('ArgumentsPermutationInOriginalOrder')) {
             subst_0 = ensureNotNull(substitutionSelectionData.compiledConfiguration.expressionTreeAutogeneratedTransformationRuleIdentifiers.get_11rb$('ArgumentsPermutationInOriginalOrder'));
             if (ensureNotNull(substitutionSelectionData.notSelectedSubtreeTopArguments).children.size > 1) {
@@ -15192,7 +15241,7 @@ if (typeof kotlin === 'undefined') {
               tmp$_15 = ensureNotNull(substitutionSelectionData.selectedSubtreeTopArguments);
             }
             var selectedPartTransformationResultInOriginalOrderInBrackets = tmp$_15;
-            addApplicationToResults(true, substitutionSelectionData, simplifyNotSelectedTopArguments, selectedPartTransformationResultInOriginalOrderInBrackets, result, new ExpressionSubstitution(addRootNodeToExpression(ensureNotNull(substitutionSelectionData.selectedSubtreeTopArguments).clone()), addRootNodeToExpression(selectedPartTransformationResultInOriginalOrderInBrackets), void 0, void 0, subst_0.code, subst_0.nameEn, subst_0.nameRu, void 0, void 0, void 0, subst_0.priority), 'OriginalOrderExtraction', (tmp$_16 = subst_0.priority) != null ? tmp$_16 : 90);
+            addApplicationToResults(true, substitutionSelectionData, simplifyNotSelectedTopArguments, selectedPartTransformationResultInOriginalOrderInBrackets, result, new ExpressionSubstitution(addRootNodeToExpression(ensureNotNull(substitutionSelectionData.selectedSubtreeTopArguments).clone()), addRootNodeToExpression(selectedPartTransformationResultInOriginalOrderInBrackets), void 0, void 0, subst_0.code, subst_0.nameEn, subst_0.nameRu, void 0, void 0, void 0, void 0, subst_0.priority), 'OriginalOrderExtraction', (tmp$_16 = subst_0.priority) != null ? tmp$_16 : 90);
           }}}}return result;
   }
   function ExpressionStrictureIdentifierCounter(expressionStrictureIdentifier, count) {
@@ -15266,7 +15315,7 @@ if (typeof kotlin === 'undefined') {
               }
               degNode.addChild_em03xr$(prodNode);
               degNode.addChild_em03xr$(possibleDenominator.clone());
-              addApplicationToResults(true, substitutionSelectionData, simplifyNotSelectedTopArguments, degNode, result, new ExpressionSubstitution(addRootNodeToExpression(ensureNotNull(substitutionSelectionData.selectedSubtreeTopArguments).clone()), addRootNodeToExpression(degNode), void 0, void 0, subst.code, subst.nameEn, subst.nameRu, void 0, void 0, void 0, subst.priority), 'ReduceArithmetic', (tmp$_1 = subst.priority) != null ? tmp$_1 : 5);
+              addApplicationToResults(true, substitutionSelectionData, simplifyNotSelectedTopArguments, degNode, result, new ExpressionSubstitution(addRootNodeToExpression(ensureNotNull(substitutionSelectionData.selectedSubtreeTopArguments).clone()), addRootNodeToExpression(degNode), void 0, void 0, subst.code, subst.nameEn, subst.nameRu, void 0, void 0, void 0, void 0, subst.priority), 'ReduceArithmetic', (tmp$_1 = subst.priority) != null ? tmp$_1 : 5);
             }}}if (equals(ensureNotNull(substitutionSelectionData.selectedSubtreeTopArgumentsInSelectionOrder).value, '*')) {
           var possibleDegree = getOperandsFrom2ArgsNode(first(ensureNotNull(substitutionSelectionData.selectedSubtreeTopArgumentsInSelectionOrder).children), '^', 0, null);
           tmp$_2 = get_lastIndex(ensureNotNull(substitutionSelectionData.selectedSubtreeTopArgumentsInSelectionOrder).children);
@@ -15285,7 +15334,7 @@ if (typeof kotlin === 'undefined') {
               sumNode.addChild_em03xr$(getOperandsFrom2ArgsNode(child_0, '^', 1, new ExpressionNode(NodeType$VARIABLE_getInstance(), '1')).clone());
             }
             degNode_0.addChild_em03xr$(sumNode);
-            addApplicationToResults(true, substitutionSelectionData, simplifyNotSelectedTopArguments, degNode_0, result, new ExpressionSubstitution(addRootNodeToExpression(ensureNotNull(substitutionSelectionData.selectedSubtreeTopArguments).clone()), addRootNodeToExpression(degNode_0), void 0, void 0, subst.code, subst.nameEn, subst.nameRu, void 0, void 0, void 0, subst.priority), 'ReduceArithmetic', (tmp$_4 = subst.priority) != null ? tmp$_4 : 5);
+            addApplicationToResults(true, substitutionSelectionData, simplifyNotSelectedTopArguments, degNode_0, result, new ExpressionSubstitution(addRootNodeToExpression(ensureNotNull(substitutionSelectionData.selectedSubtreeTopArguments).clone()), addRootNodeToExpression(degNode_0), void 0, void 0, subst.code, subst.nameEn, subst.nameRu, void 0, void 0, void 0, void 0, subst.priority), 'ReduceArithmetic', (tmp$_4 = subst.priority) != null ? tmp$_4 : 5);
           }}if (equals(ensureNotNull(substitutionSelectionData.selectedSubtreeTopArgumentsInSelectionOrder).value, '*')) {
           var possibleDegree_0 = getOperandsFrom2ArgsNode(first(ensureNotNull(substitutionSelectionData.selectedSubtreeTopArgumentsInSelectionOrder).children), '^', 1, new ExpressionNode(NodeType$EMPTY_getInstance(), ''));
           if (ensureNotNull(possibleDegree_0).nodeType !== NodeType$EMPTY_getInstance()) {
@@ -15305,7 +15354,7 @@ if (typeof kotlin === 'undefined') {
               }
               degNode_1.addChild_em03xr$(prodNode_0);
               degNode_1.addChild_em03xr$(possibleDegree_0.clone());
-              addApplicationToResults(true, substitutionSelectionData, simplifyNotSelectedTopArguments, degNode_1, result, new ExpressionSubstitution(addRootNodeToExpression(ensureNotNull(substitutionSelectionData.selectedSubtreeTopArguments).clone()), addRootNodeToExpression(degNode_1), void 0, void 0, subst.code, subst.nameEn, subst.nameRu, void 0, void 0, void 0, subst.priority), 'ReduceArithmetic', (tmp$_7 = subst.priority) != null ? tmp$_7 : 5);
+              addApplicationToResults(true, substitutionSelectionData, simplifyNotSelectedTopArguments, degNode_1, result, new ExpressionSubstitution(addRootNodeToExpression(ensureNotNull(substitutionSelectionData.selectedSubtreeTopArguments).clone()), addRootNodeToExpression(degNode_1), void 0, void 0, subst.code, subst.nameEn, subst.nameRu, void 0, void 0, void 0, void 0, subst.priority), 'ReduceArithmetic', (tmp$_7 = subst.priority) != null ? tmp$_7 : 5);
             }}}}}var tmp$_8;
     var set = HashSet_init();
     var list = ArrayList_init();
@@ -15399,7 +15448,7 @@ if (typeof kotlin === 'undefined') {
           handleAdditiveNodeAsReductionPart(plusOperation, dotOperation, dotZero, substitutionSelectionData, ensureNotNull(substitutionSelectionData.selectedSubtreeTopArgumentsInSelectionOrder).children.get_za3lpa$(i_0), possibleMultipliersSet, sumNode, null, useExpanded);
         }
         prodNode.addChild_em03xr$(sumNode);
-        addApplicationToResults(true, substitutionSelectionData, simplifyNotSelectedTopArguments, prodNode, result, new ExpressionSubstitution(addRootNodeToExpression(ensureNotNull(substitutionSelectionData.selectedSubtreeTopArguments).clone()), addRootNodeToExpression(prodNode), void 0, void 0, subst.code, subst.nameEn, subst.nameRu, void 0, void 0, void 0, subst.priority), 'TwoSidesArithmeticReduce', (tmp$_5 = subst.priority) != null ? tmp$_5 : 5);
+        addApplicationToResults(true, substitutionSelectionData, simplifyNotSelectedTopArguments, prodNode, result, new ExpressionSubstitution(addRootNodeToExpression(ensureNotNull(substitutionSelectionData.selectedSubtreeTopArguments).clone()), addRootNodeToExpression(prodNode), void 0, void 0, subst.code, subst.nameEn, subst.nameRu, void 0, void 0, void 0, void 0, subst.priority), 'TwoSidesArithmeticReduce', (tmp$_5 = subst.priority) != null ? tmp$_5 : 5);
       }}return possibleMultipliersSet;
   }
   function generateReduceFractionSubstitutions(substitutionSelectionData, simplifyNotSelectedTopArguments, withReadyApplicationResult, fastestAppropriateVersion, alreadyAddedSubstitutionCodes) {
@@ -15445,7 +15494,7 @@ if (typeof kotlin === 'undefined') {
           var $receiver_0 = substitutionSelectionData.compiledConfiguration.createExpressionFunctionNode_twmih4$('/', -1);
           $receiver_0.addChild_em03xr$(numerator);
           $receiver_0.addChild_em03xr$(denominator);
-          var expressionSubstitution = new ExpressionSubstitution(addRootNodeToExpression($receiver_0), addRootNodeToExpression(new ExpressionNode(NodeType$VARIABLE_getInstance(), '1')), void 0, void 0, subst.code, subst.nameEn, subst.nameRu, void 0, void 0, void 0, subst.priority);
+          var expressionSubstitution = new ExpressionSubstitution(addRootNodeToExpression($receiver_0), addRootNodeToExpression(new ExpressionNode(NodeType$VARIABLE_getInstance(), '1')), void 0, void 0, subst.code, subst.nameEn, subst.nameRu, void 0, void 0, void 0, void 0, subst.priority);
           var applicationPlace = ensureNotNull(substitutionSelectionData.topOfSelection).clone();
           var applicationResultInPlace = normalizeReduceFractionResult(rightBase.clone());
           ensureNotNull(substitutionSelectionData.topOfSelectionParent).setChildOnPosition_gk94xr$(applicationResultInPlace, substitutionSelectionData.topOfSelectionIndex);
@@ -15477,7 +15526,7 @@ if (typeof kotlin === 'undefined') {
             var $receiver_3 = substitutionSelectionData.compiledConfiguration.createExpressionFunctionNode_twmih4$('/', -1);
             $receiver_3.addChild_em03xr$(numerator);
             $receiver_3.addChild_em03xr$(denominator);
-            var expressionSubstitution_0 = new ExpressionSubstitution(addRootNodeToExpression($receiver_3), addRootNodeToExpression(resNode), void 0, void 0, subst.code, subst.nameEn, subst.nameRu, void 0, void 0, void 0, subst.priority);
+            var expressionSubstitution_0 = new ExpressionSubstitution(addRootNodeToExpression($receiver_3), addRootNodeToExpression(resNode), void 0, void 0, subst.code, subst.nameEn, subst.nameRu, void 0, void 0, void 0, void 0, subst.priority);
             var applicationPlace_0 = ensureNotNull(substitutionSelectionData.topOfSelection).clone();
             var $receiver_4 = rightBase.clone();
             if (equals(resNode.value, '/')) {
@@ -15522,7 +15571,7 @@ if (typeof kotlin === 'undefined') {
             var $receiver_9 = substitutionSelectionData.compiledConfiguration.createExpressionFunctionNode_twmih4$('/', -1);
             $receiver_9.addChild_em03xr$(numerator);
             $receiver_9.addChild_em03xr$(denominator);
-            var expressionSubstitution_1 = new ExpressionSubstitution(addRootNodeToExpression($receiver_9), addRootNodeToExpression(resNode_0), void 0, void 0, subst.code, subst.nameEn, subst.nameRu, void 0, void 0, void 0, subst.priority);
+            var expressionSubstitution_1 = new ExpressionSubstitution(addRootNodeToExpression($receiver_9), addRootNodeToExpression(resNode_0), void 0, void 0, subst.code, subst.nameEn, subst.nameRu, void 0, void 0, void 0, void 0, subst.priority);
             var applicationPlace_1 = ensureNotNull(substitutionSelectionData.topOfSelection).clone();
             var $receiver_10 = rightBase.clone();
             if (equals(resNode_0.value, '/')) {
@@ -15548,7 +15597,7 @@ if (typeof kotlin === 'undefined') {
             var $receiver_15 = substitutionSelectionData.compiledConfiguration.createExpressionFunctionNode_twmih4$('/', -1);
             $receiver_15.addChild_em03xr$(numerator);
             $receiver_15.addChild_em03xr$(denominator);
-            var expressionSubstitutionNumerator = new ExpressionSubstitution(addRootNodeToExpression($receiver_15), addRootNodeToExpression(resNodeNumerator), void 0, void 0, subst.code, subst.nameEn, subst.nameRu, void 0, void 0, void 0, subst.priority);
+            var expressionSubstitutionNumerator = new ExpressionSubstitution(addRootNodeToExpression($receiver_15), addRootNodeToExpression(resNodeNumerator), void 0, void 0, subst.code, subst.nameEn, subst.nameRu, void 0, void 0, void 0, void 0, subst.priority);
             var applicationPlaceNumerator = ensureNotNull(substitutionSelectionData.topOfSelection).clone();
             var $receiver_16 = rightBase.clone();
             first($receiver_16.children).addChild_em03xr$(resNodeNumerator.clone());
@@ -15572,7 +15621,7 @@ if (typeof kotlin === 'undefined') {
             var $receiver_22 = substitutionSelectionData.compiledConfiguration.createExpressionFunctionNode_twmih4$('/', -1);
             $receiver_22.addChild_em03xr$(numerator);
             $receiver_22.addChild_em03xr$(denominator);
-            var expressionSubstitutionDenominator = new ExpressionSubstitution(addRootNodeToExpression($receiver_22), addRootNodeToExpression(resNodeDenominator), void 0, void 0, subst.code, subst.nameEn, subst.nameRu, void 0, void 0, void 0, subst.priority);
+            var expressionSubstitutionDenominator = new ExpressionSubstitution(addRootNodeToExpression($receiver_22), addRootNodeToExpression(resNodeDenominator), void 0, void 0, subst.code, subst.nameEn, subst.nameRu, void 0, void 0, void 0, void 0, subst.priority);
             var applicationPlaceDenominator = ensureNotNull(substitutionSelectionData.topOfSelection).clone();
             var $receiver_23 = rightBase.clone();
             last($receiver_23.children).addChild_em03xr$(last(resNodeDenominator.children).clone());
@@ -15844,7 +15893,7 @@ if (typeof kotlin === 'undefined') {
         if (zeroElementFound) {
           if (topNode.children.isEmpty()) {
             topNode = substitutionSelectionData.compiledConfiguration.createExpressionVariableNode_61zpoe$(ensureNotNull(ensureNotNull(ensureNotNull(substitutionSelectionData.topOfSelection).functionStringDefinition).function.fieldAddZero));
-          }var zeroComputationSubstitution = new ExpressionSubstitution(addRootNodeToExpression(ensureNotNull(substitutionSelectionData.topOfSelection).clone()), addRootNodeToExpression(topNode), void 0, void 0, subst.code, subst.nameEn, subst.nameRu, void 0, void 0, void 0, subst.priority);
+          }var zeroComputationSubstitution = new ExpressionSubstitution(addRootNodeToExpression(ensureNotNull(substitutionSelectionData.topOfSelection).clone()), addRootNodeToExpression(topNode), void 0, void 0, subst.code, subst.nameEn, subst.nameRu, void 0, void 0, void 0, void 0, subst.priority);
           var originalExpression = substitutionSelectionData.originalExpression.clone();
           ensureNotNull(substitutionSelectionData.topOfSelectionParent).setChildOnPosition_gk94xr$(topNode, substitutionSelectionData.topOfSelectionIndex);
           tmp$_7 = ensureNotNull(substitutionSelectionData.topOfSelection);
@@ -15879,7 +15928,7 @@ if (typeof kotlin === 'undefined') {
         tmp$_19 = tmp$_20 === true;
       }if (tmp$_19) {
         var topNode_0 = new ExpressionNode(NodeType$VARIABLE_getInstance(), ensureNotNull(ensureNotNull(ensureNotNull(substitutionSelectionData.topOfSelection).functionStringDefinition).function.fieldMulZero));
-        var zeroComputationSubstitution_0 = new ExpressionSubstitution(addRootNodeToExpression(ensureNotNull(substitutionSelectionData.topOfSelection).clone()), addRootNodeToExpression(topNode_0), void 0, void 0, subst.code, subst.nameEn, subst.nameRu, void 0, void 0, void 0, subst.priority);
+        var zeroComputationSubstitution_0 = new ExpressionSubstitution(addRootNodeToExpression(ensureNotNull(substitutionSelectionData.topOfSelection).clone()), addRootNodeToExpression(topNode_0), void 0, void 0, subst.code, subst.nameEn, subst.nameRu, void 0, void 0, void 0, void 0, subst.priority);
         var originalExpression_0 = substitutionSelectionData.originalExpression.clone();
         ensureNotNull(substitutionSelectionData.topOfSelectionParent).setChildOnPosition_gk94xr$(topNode_0, substitutionSelectionData.topOfSelectionIndex);
         tmp$_17 = ensureNotNull(substitutionSelectionData.topOfSelection);
@@ -15934,7 +15983,7 @@ if (typeof kotlin === 'undefined') {
             var child = tmp$_4.next();
             topNode.addChild_em03xr$(child.clone());
           }
-          var expandingSubstitution = new ExpressionSubstitution(addRootNodeToExpression(ensureNotNull(substitutionSelectionData.topOfSelection).clone()), addRootNodeToExpression(topNode), void 0, void 0, subst.code, subst.nameEn, subst.nameRu, void 0, void 0, void 0, subst.priority);
+          var expandingSubstitution = new ExpressionSubstitution(addRootNodeToExpression(ensureNotNull(substitutionSelectionData.topOfSelection).clone()), addRootNodeToExpression(topNode), void 0, void 0, subst.code, subst.nameEn, subst.nameRu, void 0, void 0, void 0, void 0, subst.priority);
           var originalExpression = substitutionSelectionData.originalExpression.clone();
           ensureNotNull(substitutionSelectionData.topOfSelectionParent).setChildOnPosition_gk94xr$(topNode, substitutionSelectionData.topOfSelectionIndex);
           tmp$_5 = ensureNotNull(substitutionSelectionData.topOfSelection);
@@ -15954,7 +16003,7 @@ if (typeof kotlin === 'undefined') {
             powNode.addChild_em03xr$(last(ensureNotNull(substitutionSelectionData.selectedSubtreeTopArgumentsInSelectionOrder).children).clone());
             prodNode.addChild_em03xr$(powNode);
           }
-          addApplicationToResults(true, substitutionSelectionData, simplifyNotSelectedTopArguments, prodNode, result, new ExpressionSubstitution(addRootNodeToExpression(ensureNotNull(substitutionSelectionData.selectedSubtreeTopArguments).clone()), addRootNodeToExpression(prodNode), void 0, void 0, subst.code, subst.nameEn, subst.nameRu, void 0, void 0, void 0, subst.priority), 'OpeningBrackets', (tmp$_8 = subst.priority) != null ? tmp$_8 : 20);
+          addApplicationToResults(true, substitutionSelectionData, simplifyNotSelectedTopArguments, prodNode, result, new ExpressionSubstitution(addRootNodeToExpression(ensureNotNull(substitutionSelectionData.selectedSubtreeTopArguments).clone()), addRootNodeToExpression(prodNode), void 0, void 0, subst.code, subst.nameEn, subst.nameRu, void 0, void 0, void 0, void 0, subst.priority), 'OpeningBrackets', (tmp$_8 = subst.priority) != null ? tmp$_8 : 20);
         }if (equals(ensureNotNull(substitutionSelectionData.selectedSubtreeTopArgumentsInSelectionOrder).value, '^') && equals(last(ensureNotNull(substitutionSelectionData.selectedSubtreeTopArgumentsInSelectionOrder).children).value, '+') && last(ensureNotNull(substitutionSelectionData.selectedSubtreeTopArgumentsInSelectionOrder).children).children.size > 1) {
           var prodNode_0 = substitutionSelectionData.compiledConfiguration.createExpressionFunctionNode_twmih4$('*', -1);
           tmp$_9 = last(ensureNotNull(substitutionSelectionData.selectedSubtreeTopArgumentsInSelectionOrder).children).children.iterator();
@@ -15970,7 +16019,7 @@ if (typeof kotlin === 'undefined') {
             }
             prodNode_0.addChild_em03xr$(powNode_0);
           }
-          addApplicationToResults(true, substitutionSelectionData, simplifyNotSelectedTopArguments, prodNode_0, result, new ExpressionSubstitution(addRootNodeToExpression(ensureNotNull(substitutionSelectionData.selectedSubtreeTopArguments).clone()), addRootNodeToExpression(prodNode_0), void 0, void 0, subst.code, subst.nameEn, subst.nameRu, void 0, void 0, void 0, subst.priority), 'OpeningBrackets', (tmp$_10 = subst.priority) != null ? tmp$_10 : 20);
+          addApplicationToResults(true, substitutionSelectionData, simplifyNotSelectedTopArguments, prodNode_0, result, new ExpressionSubstitution(addRootNodeToExpression(ensureNotNull(substitutionSelectionData.selectedSubtreeTopArguments).clone()), addRootNodeToExpression(prodNode_0), void 0, void 0, subst.code, subst.nameEn, subst.nameRu, void 0, void 0, void 0, void 0, subst.priority), 'OpeningBrackets', (tmp$_10 = subst.priority) != null ? tmp$_10 : 20);
         }}}return result;
   }
   function generateSimpleComputationSubstitutions(substitutionSelectionData, simplifyNotSelectedTopArguments, withReadyApplicationResult, fastestAppropriateVersion) {
@@ -15988,7 +16037,7 @@ if (typeof kotlin === 'undefined') {
         return result;
       }var computed = tmp$_0;
       var computedNode = substitutionSelectionData.compiledConfiguration.createExpressionVariableNode_14dthe$(computed);
-      addApplicationToResults(true, substitutionSelectionData, simplifyNotSelectedTopArguments, computedNode, result, new ExpressionSubstitution(addRootNodeToExpression(ensureNotNull(substitutionSelectionData.selectedSubtreeTopArguments).clone()), addRootNodeToExpression(computedNode), void 0, void 0, void 0, void 0, void 0, void 0, void 0, void 0, 5), TREE_COMPUTATION_DEFAULT, 5);
+      addApplicationToResults(true, substitutionSelectionData, simplifyNotSelectedTopArguments, computedNode, result, new ExpressionSubstitution(addRootNodeToExpression(ensureNotNull(substitutionSelectionData.selectedSubtreeTopArguments).clone()), addRootNodeToExpression(computedNode), void 0, void 0, void 0, void 0, void 0, void 0, void 0, void 0, void 0, 5), TREE_COMPUTATION_DEFAULT, 5);
     }return result;
   }
   function generateNumberTransformationSubstitutions(substitutionSelectionData, simplifyNotSelectedTopArguments, withReadyApplicationResult, fastestAppropriateVersion) {
@@ -16015,7 +16064,7 @@ if (typeof kotlin === 'undefined') {
             var mulTreeNode = new ExpressionNode(NodeType$FUNCTION_getInstance(), '*');
             mulTreeNode.addChild_em03xr$(new ExpressionNode(NodeType$VARIABLE_getInstance(), i.toString()));
             mulTreeNode.addChild_em03xr$(new ExpressionNode(NodeType$VARIABLE_getInstance(), div.toString()));
-            addApplicationToResults(true, substitutionSelectionData, simplifyNotSelectedTopArguments, mulTreeNode, result, new ExpressionSubstitution(addRootNodeToExpression(ensureNotNull(substitutionSelectionData.topOfSelection).clone()), addRootNodeToExpression(mulTreeNode), void 0, void 0, subst.code, subst.nameEn, subst.nameRu, void 0, void 0, void 0, subst.priority), 'NumberTransformation', (tmp$_2 = subst.priority) != null ? tmp$_2 : 50);
+            addApplicationToResults(true, substitutionSelectionData, simplifyNotSelectedTopArguments, mulTreeNode, result, new ExpressionSubstitution(addRootNodeToExpression(ensureNotNull(substitutionSelectionData.topOfSelection).clone()), addRootNodeToExpression(mulTreeNode), void 0, void 0, subst.code, subst.nameEn, subst.nameRu, void 0, void 0, void 0, void 0, subst.priority), 'NumberTransformation', (tmp$_2 = subst.priority) != null ? tmp$_2 : 50);
           }}
       }if (substitutionSelectionData.compiledConfiguration.expressionTreeAutogeneratedTransformationRuleIdentifiers.containsKey_11rb$('PowFactorization')) {
         var subst_0 = ensureNotNull(substitutionSelectionData.compiledConfiguration.expressionTreeAutogeneratedTransformationRuleIdentifiers.get_11rb$('PowFactorization'));
@@ -16031,7 +16080,7 @@ if (typeof kotlin === 'undefined') {
             var degTreeNode = new ExpressionNode(NodeType$FUNCTION_getInstance(), '^');
             degTreeNode.addChild_em03xr$(new ExpressionNode(NodeType$VARIABLE_getInstance(), baseInt.toString()));
             degTreeNode.addChild_em03xr$(new ExpressionNode(NodeType$VARIABLE_getInstance(), i_0.toString()));
-            addApplicationToResults(true, substitutionSelectionData, simplifyNotSelectedTopArguments, degTreeNode, result, new ExpressionSubstitution(addRootNodeToExpression(ensureNotNull(substitutionSelectionData.topOfSelection).clone()), addRootNodeToExpression(degTreeNode), void 0, void 0, subst_0.code, subst_0.nameEn, subst_0.nameRu, void 0, void 0, void 0, subst_0.priority), 'NumberTransformation', (tmp$_3 = subst_0.priority) != null ? tmp$_3 : 50);
+            addApplicationToResults(true, substitutionSelectionData, simplifyNotSelectedTopArguments, degTreeNode, result, new ExpressionSubstitution(addRootNodeToExpression(ensureNotNull(substitutionSelectionData.topOfSelection).clone()), addRootNodeToExpression(degTreeNode), void 0, void 0, subst_0.code, subst_0.nameEn, subst_0.nameRu, void 0, void 0, void 0, void 0, subst_0.priority), 'NumberTransformation', (tmp$_3 = subst_0.priority) != null ? tmp$_3 : 50);
           }}
       }}if (substitutionSelectionData.compiledConfiguration.expressionTreeAutogeneratedTransformationRuleIdentifiers.containsKey_11rb$('DecimalToFraction')) {
       var subst_1 = ensureNotNull(substitutionSelectionData.compiledConfiguration.expressionTreeAutogeneratedTransformationRuleIdentifiers.get_11rb$('DecimalToFraction'));
@@ -16041,30 +16090,30 @@ if (typeof kotlin === 'undefined') {
         var multiplier = Math_0.pow(10.0, xTenPow);
         divTreeNode.addChild_em03xr$(new ExpressionNode(NodeType$VARIABLE_getInstance(), toShortString(currentValue * multiplier)));
         divTreeNode.addChild_em03xr$(new ExpressionNode(NodeType$VARIABLE_getInstance(), toShortString(multiplier)));
-        addApplicationToResults(true, substitutionSelectionData, simplifyNotSelectedTopArguments, divTreeNode, result, new ExpressionSubstitution(addRootNodeToExpression(ensureNotNull(substitutionSelectionData.topOfSelection).clone()), addRootNodeToExpression(divTreeNode), void 0, void 0, subst_1.code, subst_1.nameEn, subst_1.nameRu, void 0, void 0, void 0, subst_1.priority), 'NumberTransformation', (tmp$_4 = subst_1.priority) != null ? tmp$_4 : 60);
+        addApplicationToResults(true, substitutionSelectionData, simplifyNotSelectedTopArguments, divTreeNode, result, new ExpressionSubstitution(addRootNodeToExpression(ensureNotNull(substitutionSelectionData.topOfSelection).clone()), addRootNodeToExpression(divTreeNode), void 0, void 0, subst_1.code, subst_1.nameEn, subst_1.nameRu, void 0, void 0, void 0, void 0, subst_1.priority), 'NumberTransformation', (tmp$_4 = subst_1.priority) != null ? tmp$_4 : 60);
       }}if (substitutionSelectionData.compiledConfiguration.expressionTreeAutogeneratedTransformationRuleIdentifiers.containsKey_11rb$('NumberPlusMinus1')) {
       var subst_2 = ensureNotNull(substitutionSelectionData.compiledConfiguration.expressionTreeAutogeneratedTransformationRuleIdentifiers.get_11rb$('NumberPlusMinus1'));
       var plusTreeNode = new ExpressionNode(NodeType$FUNCTION_getInstance(), '+');
       plusTreeNode.addChild_em03xr$(substitutionSelectionData.compiledConfiguration.createExpressionVariableNode_14dthe$(currentValue - 1));
       plusTreeNode.addChild_em03xr$(new ExpressionNode(NodeType$VARIABLE_getInstance(), '1'));
-      addApplicationToResults(true, substitutionSelectionData, simplifyNotSelectedTopArguments, plusTreeNode, result, new ExpressionSubstitution(addRootNodeToExpression(ensureNotNull(substitutionSelectionData.topOfSelection).clone()), addRootNodeToExpression(plusTreeNode), void 0, void 0, subst_2.code, subst_2.nameEn, subst_2.nameRu, void 0, void 0, void 0, subst_2.priority), 'NumberTransformation', (tmp$_5 = subst_2.priority) != null ? tmp$_5 : 70);
+      addApplicationToResults(true, substitutionSelectionData, simplifyNotSelectedTopArguments, plusTreeNode, result, new ExpressionSubstitution(addRootNodeToExpression(ensureNotNull(substitutionSelectionData.topOfSelection).clone()), addRootNodeToExpression(plusTreeNode), void 0, void 0, subst_2.code, subst_2.nameEn, subst_2.nameRu, void 0, void 0, void 0, void 0, subst_2.priority), 'NumberTransformation', (tmp$_5 = subst_2.priority) != null ? tmp$_5 : 70);
       var minusTreeNode = new ExpressionNode(NodeType$FUNCTION_getInstance(), '+');
       minusTreeNode.addChild_em03xr$(substitutionSelectionData.compiledConfiguration.createExpressionVariableNode_14dthe$(currentValue + 1));
       minusTreeNode.addChild_em03xr$(new ExpressionNode(NodeType$FUNCTION_getInstance(), '-'));
       last(minusTreeNode.children).addChild_em03xr$(new ExpressionNode(NodeType$VARIABLE_getInstance(), '1'));
-      addApplicationToResults(true, substitutionSelectionData, simplifyNotSelectedTopArguments, minusTreeNode, result, new ExpressionSubstitution(addRootNodeToExpression(ensureNotNull(substitutionSelectionData.topOfSelection).clone()), addRootNodeToExpression(minusTreeNode), void 0, void 0, subst_2.code, subst_2.nameEn, subst_2.nameRu, void 0, void 0, void 0, subst_2.priority), 'NumberTransformation', (tmp$_6 = subst_2.priority) != null ? tmp$_6 : 70);
+      addApplicationToResults(true, substitutionSelectionData, simplifyNotSelectedTopArguments, minusTreeNode, result, new ExpressionSubstitution(addRootNodeToExpression(ensureNotNull(substitutionSelectionData.topOfSelection).clone()), addRootNodeToExpression(minusTreeNode), void 0, void 0, subst_2.code, subst_2.nameEn, subst_2.nameRu, void 0, void 0, void 0, void 0, subst_2.priority), 'NumberTransformation', (tmp$_6 = subst_2.priority) != null ? tmp$_6 : 70);
     } else if (currentValue >= 0 && substitutionSelectionData.compiledConfiguration.expressionTreeAutogeneratedTransformationRuleIdentifiers.containsKey_11rb$('PositiveNumberPlusMinus1')) {
       var subst_3 = ensureNotNull(substitutionSelectionData.compiledConfiguration.expressionTreeAutogeneratedTransformationRuleIdentifiers.get_11rb$('PositiveNumberPlusMinus1'));
       if (currentValue >= 1) {
         var plusTreeNode_0 = new ExpressionNode(NodeType$FUNCTION_getInstance(), '+');
         plusTreeNode_0.addChild_em03xr$(substitutionSelectionData.compiledConfiguration.createExpressionVariableNode_14dthe$(currentValue - 1));
         plusTreeNode_0.addChild_em03xr$(new ExpressionNode(NodeType$VARIABLE_getInstance(), '1'));
-        addApplicationToResults(true, substitutionSelectionData, simplifyNotSelectedTopArguments, plusTreeNode_0, result, new ExpressionSubstitution(addRootNodeToExpression(ensureNotNull(substitutionSelectionData.topOfSelection).clone()), addRootNodeToExpression(plusTreeNode_0), void 0, void 0, subst_3.code, subst_3.nameEn, subst_3.nameRu, void 0, void 0, void 0, subst_3.priority), 'NumberTransformation', (tmp$_7 = subst_3.priority) != null ? tmp$_7 : 70);
+        addApplicationToResults(true, substitutionSelectionData, simplifyNotSelectedTopArguments, plusTreeNode_0, result, new ExpressionSubstitution(addRootNodeToExpression(ensureNotNull(substitutionSelectionData.topOfSelection).clone()), addRootNodeToExpression(plusTreeNode_0), void 0, void 0, subst_3.code, subst_3.nameEn, subst_3.nameRu, void 0, void 0, void 0, void 0, subst_3.priority), 'NumberTransformation', (tmp$_7 = subst_3.priority) != null ? tmp$_7 : 70);
       }var minusTreeNode_0 = new ExpressionNode(NodeType$FUNCTION_getInstance(), '+');
       minusTreeNode_0.addChild_em03xr$(substitutionSelectionData.compiledConfiguration.createExpressionVariableNode_14dthe$(currentValue + 1));
       minusTreeNode_0.addChild_em03xr$(new ExpressionNode(NodeType$FUNCTION_getInstance(), '-'));
       last(minusTreeNode_0.children).addChild_em03xr$(new ExpressionNode(NodeType$VARIABLE_getInstance(), '1'));
-      addApplicationToResults(true, substitutionSelectionData, simplifyNotSelectedTopArguments, minusTreeNode_0, result, new ExpressionSubstitution(addRootNodeToExpression(ensureNotNull(substitutionSelectionData.topOfSelection).clone()), addRootNodeToExpression(minusTreeNode_0), void 0, void 0, subst_3.code, subst_3.nameEn, subst_3.nameRu, void 0, void 0, void 0, subst_3.priority), 'NumberTransformation', (tmp$_8 = subst_3.priority) != null ? tmp$_8 : 70);
+      addApplicationToResults(true, substitutionSelectionData, simplifyNotSelectedTopArguments, minusTreeNode_0, result, new ExpressionSubstitution(addRootNodeToExpression(ensureNotNull(substitutionSelectionData.topOfSelection).clone()), addRootNodeToExpression(minusTreeNode_0), void 0, void 0, subst_3.code, subst_3.nameEn, subst_3.nameRu, void 0, void 0, void 0, void 0, subst_3.priority), 'NumberTransformation', (tmp$_8 = subst_3.priority) != null ? tmp$_8 : 70);
     }return result;
   }
   function generateComplicatingExtensionSubstitutions(substitutionSelectionData, simplifyNotSelectedTopArguments, withReadyApplicationResult, fastestAppropriateVersion) {
@@ -16091,7 +16140,7 @@ if (typeof kotlin === 'undefined') {
         additiveTreeNode.addChild_em03xr$(applicationObject.clone());
         additiveTreeNode.addChild_em03xr$(substitutionSelectionData.compiledConfiguration.createExpressionFunctionNode_twmih4$('-', -1));
         last(additiveTreeNode.children).addChild_em03xr$(applicationObject.clone());
-        var additiveSubstitution = new ExpressionSubstitution(addRootNodeToExpression(applicationPlace.clone()), addRootNodeToExpression(additiveTreeNode), void 0, void 0, subst.code, subst.nameEn, subst.nameRu, void 0, void 0, void 0, subst.priority);
+        var additiveSubstitution = new ExpressionSubstitution(addRootNodeToExpression(applicationPlace.clone()), addRootNodeToExpression(additiveTreeNode), void 0, void 0, subst.code, subst.nameEn, subst.nameRu, void 0, void 0, void 0, void 0, subst.priority);
         AddApplicationPlaceExtensionSubstitution(result, substitutionSelectionData, applicationPlace, applicationPlaceParent, applicationPlaceIndex, additiveTreeNode, additiveSubstitution, 'ComplicatingExtension');
       }if (substitutionSelectionData.compiledConfiguration.expressionTreeAutogeneratedTransformationRuleIdentifiers.containsKey_11rb$('MultiplicativeComplicatingExtension') && !substitutionSelectionData.compiledConfiguration.factComparator.expressionComparator.fastProbabilityCheckOnZero_em03xr$(applicationObject)) {
         var subst_0 = ensureNotNull(substitutionSelectionData.compiledConfiguration.expressionTreeAutogeneratedTransformationRuleIdentifiers.get_11rb$('MultiplicativeComplicatingExtension'));
@@ -16100,7 +16149,7 @@ if (typeof kotlin === 'undefined') {
         last(multiplicativeTreeNode.children).addChild_em03xr$(applicationPlace.clone());
         last(multiplicativeTreeNode.children).addChild_em03xr$(applicationObject.clone());
         multiplicativeTreeNode.addChild_em03xr$(applicationObject.clone());
-        var multiplicativeSubstitution = new ExpressionSubstitution(addRootNodeToExpression(applicationPlace.clone()), addRootNodeToExpression(multiplicativeTreeNode), void 0, void 0, subst_0.code, subst_0.nameEn, subst_0.nameRu, void 0, void 0, void 0, subst_0.priority);
+        var multiplicativeSubstitution = new ExpressionSubstitution(addRootNodeToExpression(applicationPlace.clone()), addRootNodeToExpression(multiplicativeTreeNode), void 0, void 0, subst_0.code, subst_0.nameEn, subst_0.nameRu, void 0, void 0, void 0, void 0, subst_0.priority);
         AddApplicationPlaceExtensionSubstitution(result, substitutionSelectionData, applicationPlace, applicationPlaceParent, applicationPlaceIndex, multiplicativeTreeNode, multiplicativeSubstitution, 'ComplicatingExtension');
       }if (substitutionSelectionData.compiledConfiguration.expressionTreeAutogeneratedTransformationRuleIdentifiers.containsKey_11rb$('SetComplicatingExtension')) {
         var subst_1 = ensureNotNull(substitutionSelectionData.compiledConfiguration.expressionTreeAutogeneratedTransformationRuleIdentifiers.get_11rb$('SetComplicatingExtension'));
@@ -16109,14 +16158,14 @@ if (typeof kotlin === 'undefined') {
         andOrTreeNode.addChild_em03xr$(substitutionSelectionData.compiledConfiguration.createExpressionFunctionNode_twmih4$('or', -1));
         last(andOrTreeNode.children).addChild_em03xr$(applicationPlace.clone());
         last(andOrTreeNode.children).addChild_em03xr$(applicationObject.clone());
-        var andOrSubstitution = new ExpressionSubstitution(addRootNodeToExpression(applicationPlace.clone()), addRootNodeToExpression(andOrTreeNode), void 0, void 0, subst_1.code, subst_1.nameEn, subst_1.nameRu, void 0, void 0, void 0, subst_1.priority);
+        var andOrSubstitution = new ExpressionSubstitution(addRootNodeToExpression(applicationPlace.clone()), addRootNodeToExpression(andOrTreeNode), void 0, void 0, subst_1.code, subst_1.nameEn, subst_1.nameRu, void 0, void 0, void 0, void 0, subst_1.priority);
         AddApplicationPlaceExtensionSubstitution(result, substitutionSelectionData, applicationPlace, applicationPlaceParent, applicationPlaceIndex, andOrTreeNode, andOrSubstitution, 'ComplicatingExtension');
         var orAndTreeNode = substitutionSelectionData.compiledConfiguration.createExpressionFunctionNode_twmih4$('or', -1);
         orAndTreeNode.addChild_em03xr$(applicationPlace.clone());
         orAndTreeNode.addChild_em03xr$(substitutionSelectionData.compiledConfiguration.createExpressionFunctionNode_twmih4$('and', -1));
         last(orAndTreeNode.children).addChild_em03xr$(applicationPlace.clone());
         last(orAndTreeNode.children).addChild_em03xr$(applicationObject.clone());
-        var orAndSubstitution = new ExpressionSubstitution(addRootNodeToExpression(applicationPlace.clone()), addRootNodeToExpression(orAndTreeNode), void 0, void 0, subst_1.code, subst_1.nameEn, subst_1.nameRu, void 0, void 0, void 0, subst_1.priority);
+        var orAndSubstitution = new ExpressionSubstitution(addRootNodeToExpression(applicationPlace.clone()), addRootNodeToExpression(orAndTreeNode), void 0, void 0, subst_1.code, subst_1.nameEn, subst_1.nameRu, void 0, void 0, void 0, void 0, subst_1.priority);
         AddApplicationPlaceExtensionSubstitution(result, substitutionSelectionData, applicationPlace, applicationPlaceParent, applicationPlaceIndex, orAndTreeNode, orAndSubstitution, 'ComplicatingExtension');
       }}return result;
   }
@@ -16488,14 +16537,14 @@ if (typeof kotlin === 'undefined') {
             additiveTreeNodePlusMinus.addChild_em03xr$(applicationObject.clone());
             additiveTreeNodePlusMinus.addChild_em03xr$(substitutionSelectionData.compiledConfiguration.createExpressionFunctionNode_twmih4$('-', -1));
             last(additiveTreeNodePlusMinus.children).addChild_em03xr$(applicationObject.clone());
-            var plusMinusSubstitution = new ExpressionSubstitution(addRootNodeToExpression(applicationPlace.clone()), addRootNodeToExpression(additiveTreeNodePlusMinus), void 0, void 0, 'PlusMinusComplicatingExtension', 'Plus Minus', '\u041F\u043B\u044E\u0441 \u043C\u0438\u043D\u0443\u0441', void 0, void 0, void 0, 10);
+            var plusMinusSubstitution = new ExpressionSubstitution(addRootNodeToExpression(applicationPlace.clone()), addRootNodeToExpression(additiveTreeNodePlusMinus), void 0, void 0, 'PlusMinusComplicatingExtension', 'Plus Minus', '\u041F\u043B\u044E\u0441 \u043C\u0438\u043D\u0443\u0441', void 0, void 0, void 0, void 0, 10);
             AddApplicationPlaceExtensionSubstitution(result, substitutionSelectionData, applicationPlace, applicationPlaceParent, applicationPlaceIndex, additiveTreeNodePlusMinus, plusMinusSubstitution, plusMinusSubstitution.code);
             var additiveTreeNodeMinusPlus = substitutionSelectionData.compiledConfiguration.createExpressionFunctionNode_twmih4$('+', -1);
             additiveTreeNodeMinusPlus.addChild_em03xr$(applicationPlace.clone());
             additiveTreeNodeMinusPlus.addChild_em03xr$(substitutionSelectionData.compiledConfiguration.createExpressionFunctionNode_twmih4$('-', -1));
             last(additiveTreeNodeMinusPlus.children).addChild_em03xr$(applicationObject.clone());
             additiveTreeNodeMinusPlus.addChild_em03xr$(applicationObject.clone());
-            var minusPlusSubstitution = new ExpressionSubstitution(addRootNodeToExpression(applicationPlace.clone()), addRootNodeToExpression(additiveTreeNodeMinusPlus), void 0, void 0, 'MinusPlusComplicatingExtension', 'Minus Plus', '\u041C\u0438\u043D\u0443\u0441 \u043F\u043B\u044E\u0441', void 0, void 0, void 0, 11);
+            var minusPlusSubstitution = new ExpressionSubstitution(addRootNodeToExpression(applicationPlace.clone()), addRootNodeToExpression(additiveTreeNodeMinusPlus), void 0, void 0, 'MinusPlusComplicatingExtension', 'Minus Plus', '\u041C\u0438\u043D\u0443\u0441 \u043F\u043B\u044E\u0441', void 0, void 0, void 0, void 0, 11);
             AddApplicationPlaceExtensionSubstitution(result, substitutionSelectionData, applicationPlace, applicationPlaceParent, applicationPlaceIndex, additiveTreeNodeMinusPlus, minusPlusSubstitution, minusPlusSubstitution.code);
           }
           break;
@@ -16506,7 +16555,7 @@ if (typeof kotlin === 'undefined') {
             last(mulDivNode.children).addChild_em03xr$(applicationPlace.clone());
             last(mulDivNode.children).addChild_em03xr$(applicationObject.clone());
             mulDivNode.addChild_em03xr$(applicationObject.clone());
-            var mulDivSubstitution = new ExpressionSubstitution(addRootNodeToExpression(applicationPlace.clone()), addRootNodeToExpression(mulDivNode), void 0, void 0, 'MulDivComplicatingExtension', 'Mul Div', '\u0423\u043C\u043D\u043E\u0436\u0438\u0442\u044C \u043F\u043E\u0434\u0435\u043B\u0438\u0442\u044C', void 0, void 0, void 0, 10);
+            var mulDivSubstitution = new ExpressionSubstitution(addRootNodeToExpression(applicationPlace.clone()), addRootNodeToExpression(mulDivNode), void 0, void 0, 'MulDivComplicatingExtension', 'Mul Div', '\u0423\u043C\u043D\u043E\u0436\u0438\u0442\u044C \u043F\u043E\u0434\u0435\u043B\u0438\u0442\u044C', void 0, void 0, void 0, void 0, 10);
             if (substitutionSelectionData.compiledConfiguration.factComparator.expressionComparator.fastProbabilityCheckOnZero_em03xr$(applicationObject)) {
               tmp$_0 = new SubstitutionApplicationError('object is zero', '\u0434\u0435\u043B\u0435\u043D\u0438\u0435 \u043D\u0430 0', [], applicationObject);
             } else
@@ -16526,7 +16575,7 @@ if (typeof kotlin === 'undefined') {
               powRootNode.addChild_em03xr$(new ExpressionNode(NodeType$FUNCTION_getInstance(), '/'));
               last(powRootNode.children).addChild_em03xr$(new ExpressionNode(NodeType$VARIABLE_getInstance(), '1'));
               last(powRootNode.children).addChild_em03xr$(applicationObject.clone());
-              var powRootSubstitution = new ExpressionSubstitution(addRootNodeToExpression(applicationPlace.clone()), addRootNodeToExpression(powRootNode), void 0, void 0, 'PowRootExtension', 'Pow Root', '\u0412\u043E\u0437\u0432\u0435\u0441\u0442\u0438 \u0438\u0437\u0432\u043B\u0435\u0447\u044C', void 0, void 0, void 0, 9);
+              var powRootSubstitution = new ExpressionSubstitution(addRootNodeToExpression(applicationPlace.clone()), addRootNodeToExpression(powRootNode), void 0, void 0, 'PowRootExtension', 'Pow Root', '\u0412\u043E\u0437\u0432\u0435\u0441\u0442\u0438 \u0438\u0437\u0432\u043B\u0435\u0447\u044C', void 0, void 0, void 0, void 0, 9);
               AddApplicationPlaceExtensionSubstitution(result, substitutionSelectionData, applicationPlace, applicationPlaceParent, applicationPlaceIndex, powRootNode, powRootSubstitution, powRootSubstitution.code);
             }if (applicationObject.isOddNumber() || applicationPlaceMoreZero) {
               var rootPowNode = substitutionSelectionData.compiledConfiguration.createExpressionFunctionNode_twmih4$('^', -1);
@@ -16536,7 +16585,7 @@ if (typeof kotlin === 'undefined') {
               last(last(rootPowNode.children).children).addChild_em03xr$(new ExpressionNode(NodeType$VARIABLE_getInstance(), '1'));
               last(last(rootPowNode.children).children).addChild_em03xr$(applicationObject.clone());
               rootPowNode.addChild_em03xr$(applicationObject.clone());
-              var rootPowSubstitution = new ExpressionSubstitution(addRootNodeToExpression(applicationPlace.clone()), addRootNodeToExpression(rootPowNode), void 0, void 0, 'rootPowExtension', 'Root Pow', '\u0418\u0437\u0432\u043B\u0435\u0447\u044C \u0432\u043E\u0437\u0432\u0435\u0441\u0442\u0438', void 0, void 0, void 0, 10);
+              var rootPowSubstitution = new ExpressionSubstitution(addRootNodeToExpression(applicationPlace.clone()), addRootNodeToExpression(rootPowNode), void 0, void 0, 'rootPowExtension', 'Root Pow', '\u0418\u0437\u0432\u043B\u0435\u0447\u044C \u0432\u043E\u0437\u0432\u0435\u0441\u0442\u0438', void 0, void 0, void 0, void 0, 10);
               AddApplicationPlaceExtensionSubstitution(result, substitutionSelectionData, applicationPlace, applicationPlaceParent, applicationPlaceIndex, rootPowNode, rootPowSubstitution, rootPowSubstitution.code);
             }}
           break;
@@ -16548,7 +16597,7 @@ if (typeof kotlin === 'undefined') {
             last(expLogNode.children).addChild_em03xr$(applicationObject.clone());
             last(expLogNode.children).addChild_em03xr$(applicationPlace.clone());
             expLogNode.addChild_em03xr$(applicationObject.clone());
-            var expLogSubstitution = new ExpressionSubstitution(addRootNodeToExpression(applicationPlace.clone()), addRootNodeToExpression(expLogNode), void 0, void 0, 'logExpExtension', 'Log Exp', 'Log Exp', void 0, void 0, void 0, 9);
+            var expLogSubstitution = new ExpressionSubstitution(addRootNodeToExpression(applicationPlace.clone()), addRootNodeToExpression(expLogNode), void 0, void 0, 'logExpExtension', 'Log Exp', 'Log Exp', void 0, void 0, void 0, void 0, 9);
             AddApplicationPlaceExtensionSubstitution(result, substitutionSelectionData, applicationPlace, applicationPlaceParent, applicationPlaceIndex, expLogNode, expLogSubstitution, expLogSubstitution.code);
             if (applicationPlaceMoreZero_0) {
               var logExpNode = substitutionSelectionData.compiledConfiguration.createExpressionFunctionNode_twmih4$('^', -1);
@@ -16556,7 +16605,7 @@ if (typeof kotlin === 'undefined') {
               last(logExpNode.children).addChild_em03xr$(applicationPlace.clone());
               last(logExpNode.children).addChild_em03xr$(applicationObject.clone());
               logExpNode.addChild_em03xr$(applicationObject.clone());
-              var logExpSubstitution = new ExpressionSubstitution(addRootNodeToExpression(applicationPlace.clone()), addRootNodeToExpression(logExpNode), void 0, void 0, 'expLogExtension', 'Exp Log', 'Exp Log', void 0, void 0, void 0, 10);
+              var logExpSubstitution = new ExpressionSubstitution(addRootNodeToExpression(applicationPlace.clone()), addRootNodeToExpression(logExpNode), void 0, void 0, 'expLogExtension', 'Exp Log', 'Exp Log', void 0, void 0, void 0, void 0, 10);
               AddApplicationPlaceExtensionSubstitution(result, substitutionSelectionData, applicationPlace, applicationPlaceParent, applicationPlaceIndex, logExpNode, logExpSubstitution, logExpSubstitution.code);
             }}
           break;
@@ -16567,14 +16616,14 @@ if (typeof kotlin === 'undefined') {
             andOrTreeNode.addChild_em03xr$(substitutionSelectionData.compiledConfiguration.createExpressionFunctionNode_twmih4$('or', -1));
             last(andOrTreeNode.children).addChild_em03xr$(applicationPlace.clone());
             last(andOrTreeNode.children).addChild_em03xr$(applicationObject.clone());
-            var andOrSubstitution = new ExpressionSubstitution(addRootNodeToExpression(applicationPlace.clone()), addRootNodeToExpression(andOrTreeNode), void 0, void 0, 'OrAndExtension', 'Or And', '\u0418\u043B\u0438 \u0418', void 0, void 0, void 0, 10);
+            var andOrSubstitution = new ExpressionSubstitution(addRootNodeToExpression(applicationPlace.clone()), addRootNodeToExpression(andOrTreeNode), void 0, void 0, 'OrAndExtension', 'Or And', '\u0418\u043B\u0438 \u0418', void 0, void 0, void 0, void 0, 10);
             AddApplicationPlaceExtensionSubstitution(result, substitutionSelectionData, applicationPlace, applicationPlaceParent, applicationPlaceIndex, andOrTreeNode, andOrSubstitution, andOrSubstitution.code);
             var orAndTreeNode = substitutionSelectionData.compiledConfiguration.createExpressionFunctionNode_twmih4$('or', -1);
             orAndTreeNode.addChild_em03xr$(applicationPlace.clone());
             orAndTreeNode.addChild_em03xr$(substitutionSelectionData.compiledConfiguration.createExpressionFunctionNode_twmih4$('and', -1));
             last(orAndTreeNode.children).addChild_em03xr$(applicationPlace.clone());
             last(orAndTreeNode.children).addChild_em03xr$(applicationObject.clone());
-            var orAndSubstitution = new ExpressionSubstitution(addRootNodeToExpression(applicationPlace.clone()), addRootNodeToExpression(orAndTreeNode), void 0, void 0, 'OrAndExtension', 'And Or', '\u0418 \u0418\u043B\u0438', void 0, void 0, void 0, 11);
+            var orAndSubstitution = new ExpressionSubstitution(addRootNodeToExpression(applicationPlace.clone()), addRootNodeToExpression(orAndTreeNode), void 0, void 0, 'OrAndExtension', 'And Or', '\u0418 \u0418\u043B\u0438', void 0, void 0, void 0, void 0, 11);
             AddApplicationPlaceExtensionSubstitution(result, substitutionSelectionData, applicationPlace, applicationPlaceParent, applicationPlaceIndex, orAndTreeNode, orAndSubstitution, orAndSubstitution.code);
           }
           break;
@@ -18487,7 +18536,7 @@ if (typeof kotlin === 'undefined') {
   SubstitutionPlace.prototype.equals = function (other) {
     return this === other || (other !== null && (typeof other === 'object' && (Object.getPrototypeOf(this) === Object.getPrototypeOf(other) && (Kotlin.equals(this.nodeParent, other.nodeParent) && Kotlin.equals(this.nodeChildIndex, other.nodeChildIndex) && Kotlin.equals(this.substitutionInstance, other.substitutionInstance) && Kotlin.equals(this.originalValue, other.originalValue) && Kotlin.equals(this.originalExpression, other.originalExpression)))));
   };
-  function ExpressionSubstitution(left, right, weight, basedOnTaskContext, code, nameEn, nameRu, comparisonType, leftFunctions, matchJumbledAndNested, priority, changeOnlyOrder, simpleAdditional, isExtending, normalizationType, weightInTaskAutoGeneration, useWhenPostprocessGeneratedExpression, isCopy) {
+  function ExpressionSubstitution(left, right, weight, basedOnTaskContext, code, nameEn, nameRu, comparisonType, leftFunctions, rightFunctions, matchJumbledAndNested, priority, changeOnlyOrder, simpleAdditional, isExtending, normalizationType, weightInTaskAutoGeneration, useWhenPostprocessGeneratedExpression, isCopy) {
     ExpressionSubstitution$Companion_getInstance();
     if (weight === void 0)
       weight = 1.0;
@@ -18503,6 +18552,8 @@ if (typeof kotlin === 'undefined') {
       comparisonType = ComparisonType$EQUAL_getInstance();
     if (leftFunctions === void 0)
       leftFunctions = left.getContainedFunctions();
+    if (rightFunctions === void 0)
+      rightFunctions = right.getContainedFunctions();
     if (matchJumbledAndNested === void 0)
       matchJumbledAndNested = false;
     if (priority === void 0)
@@ -18530,6 +18581,7 @@ if (typeof kotlin === 'undefined') {
     this.nameRu = nameRu;
     this.comparisonType = comparisonType;
     this.leftFunctions = leftFunctions;
+    this.rightFunctions = rightFunctions;
     this.matchJumbledAndNested = matchJumbledAndNested;
     this.priority = priority;
     this.changeOnlyOrder = changeOnlyOrder;
@@ -18555,7 +18607,7 @@ if (typeof kotlin === 'undefined') {
       isCopy = false;
     if (newWeightInTaskAutoGeneration === void 0)
       newWeightInTaskAutoGeneration = null;
-    return new ExpressionSubstitution(this.left, this.right, this.weight, this.basedOnTaskContext, this.code, this.nameEn, this.nameRu, this.comparisonType, this.leftFunctions, this.matchJumbledAndNested, this.priority, this.changeOnlyOrder, this.simpleAdditional, this.isExtending, this.normalizationType, newWeightInTaskAutoGeneration != null ? newWeightInTaskAutoGeneration : this.weightInTaskAutoGeneration, this.useWhenPostprocessGeneratedExpression, isCopy);
+    return new ExpressionSubstitution(this.left, this.right, this.weight, this.basedOnTaskContext, this.code, this.nameEn, this.nameRu, this.comparisonType, this.leftFunctions, this.rightFunctions, this.matchJumbledAndNested, this.priority, this.changeOnlyOrder, this.simpleAdditional, this.isExtending, this.normalizationType, newWeightInTaskAutoGeneration != null ? newWeightInTaskAutoGeneration : this.weightInTaskAutoGeneration, this.useWhenPostprocessGeneratedExpression, isCopy);
   };
   ExpressionSubstitution.prototype.computeIdentifier_6taknv$ = function (recomputeIfComputed) {
     if (isBlank(this.identifier) || recomputeIfComputed) {
@@ -21364,7 +21416,7 @@ if (typeof kotlin === 'undefined') {
           }
         }
       }
-      addApplicationToResults_0(originalExpression, transformationNode, transformationNodeParent, transformationNodeIndex, expressionToTransform, notSelectedSubtreeTopArguments, notSelectedSubtreeTopOriginalTree, fullTransformationNode, true, compiledConfiguration, simplifyNotSelectedTopArguments, sumNode, result, new ExpressionSubstitution(addRootNodeToExpression(ensureNotNull(transformationNode).clone()), addRootNodeToExpression(sumNode), void 0, void 0, subst.code, subst.nameEn, subst.nameRu, void 0, void 0, void 0, subst.priority), 'OpeningBrackets', (tmp$_3 = subst.priority) != null ? tmp$_3 : 20);
+      addApplicationToResults_0(originalExpression, transformationNode, transformationNodeParent, transformationNodeIndex, expressionToTransform, notSelectedSubtreeTopArguments, notSelectedSubtreeTopOriginalTree, fullTransformationNode, true, compiledConfiguration, simplifyNotSelectedTopArguments, sumNode, result, new ExpressionSubstitution(addRootNodeToExpression(ensureNotNull(transformationNode).clone()), addRootNodeToExpression(sumNode), void 0, void 0, subst.code, subst.nameEn, subst.nameRu, void 0, void 0, void 0, void 0, subst.priority), 'OpeningBrackets', (tmp$_3 = subst.priority) != null ? tmp$_3 : 20);
     }}
   function addApplicationToResults_0(originalExpression, transformationNode, transformationNodeParent, transformationNodeIndex, expressionToTransform, notSelectedSubtreeTopArguments, notSelectedSubtreeTopOriginalTree, fullTransformationNode, withReadyApplicationResult, compiledConfiguration, simplifyNotSelectedTopArguments, applicationToSelectedPartResult, result, transformation, substitutionType, priority, onSameBracketLevel) {
     if (onSameBracketLevel === void 0)
@@ -28941,7 +28993,7 @@ if (typeof kotlin === 'undefined') {
     log_1.addMessage_cte53e$(checkFactsInMathML$lambda_1, MessageType$USER_getInstance(), 0);
     var error = transformationChainParser.parse();
     if (error != null) {
-      return returnParsingError(error, mathML);
+      return returnParsingErrorMathML(error, mathML);
     } else {
       log_1.addMessage_cte53e$(checkFactsInMathML$lambda_2, MessageType$USER_getInstance(), 0);
       log_1.addMessageWithFactDetail_d1xyjh$(checkFactsInMathML$lambda_3, transformationChainParser.root, MessageType$USER_getInstance());
@@ -29046,16 +29098,16 @@ if (typeof kotlin === 'undefined') {
       return result;
     }
   }
-  function returnParsingError(error, mathML) {
-    return returnParsingError_0(error.description, error.position, error.endPosition, mathML);
+  function returnParsingErrorMathML(error, mathML) {
+    return returnParsingErrorMathML_0(error.description, error.position, error.endPosition, mathML);
   }
-  function returnParsingError$lambda(closure$description) {
+  function returnParsingErrorMathML$lambda(closure$description) {
     return function () {
       return "transformations parsing error: '" + closure$description + "'";
     };
   }
-  function returnParsingError_0(description, start, end, mathML) {
-    log_1.addMessage_cte53e$(returnParsingError$lambda(description), MessageType$USER_getInstance(), 0);
+  function returnParsingErrorMathML_0(description, start, end, mathML) {
+    log_1.addMessage_cte53e$(returnParsingErrorMathML$lambda(description), MessageType$USER_getInstance(), 0);
     var positions = selectPlacesForColoringByFragment(mathML, start, end);
     var endIndex = positions.first;
     var tmp$ = mathML.substring(0, endIndex) + underliningStartMathML;
@@ -29115,7 +29167,7 @@ if (typeof kotlin === 'undefined') {
           tagBracketsStack.add_11rb$(tag);
         } else if (remainingExpressionStartsWith('<msup', mathML, currentPos)) {
           if (tagBracketsStack.isEmpty()) {
-            return returnParsingError_0("Not closed tag: '<msup>'", currentPos - 4 | 0, currentPos + 6 | 0, mathML);
+            return returnParsingErrorMathML_0("Not closed tag: '<msup>'", currentPos - 4 | 0, currentPos + 6 | 0, mathML);
           }if (equals(last(tagBracketsStack), tag)) {
             tagBracketsStack = toMutableList(dropLast_0(tagBracketsStack, 1));
           } else {
@@ -29127,7 +29179,7 @@ if (typeof kotlin === 'undefined') {
           }
         }} else if (mathML.charCodeAt(currentPos) === 40) {
         if (tagBracketsStack.isEmpty()) {
-          return returnParsingError_0("Not closed bracket: '('", currentPos - 4 | 0, currentPos + 6 | 0, mathML);
+          return returnParsingErrorMathML_0("Not closed bracket: '('", currentPos - 4 | 0, currentPos + 6 | 0, mathML);
         }if (equals(last(tagBracketsStack), '(')) {
           tagBracketsStack = toMutableList(dropLast_0(tagBracketsStack, 1));
         } else {
@@ -29335,7 +29387,7 @@ if (typeof kotlin === 'undefined') {
     log_1.addMessage_cte53e$(checkFactsInTex$lambda_1, MessageType$USER_getInstance(), 0);
     var error = transformationChainParser.parse();
     if (error != null) {
-      return new TexVerificationResult(returnParsingError_1(error, texSolution), 'Syntax error (underlined): ' + error.description);
+      return new TexVerificationResult(returnParsingErrorTex(error, texSolution), 'Syntax error (underlined): ' + error.description);
     } else if (transformationChainParser.root.factTransformationChains.isEmpty() && transformationChainParser.root.expressionTransformationChains.isEmpty()) {
       return new TexVerificationResult(texSolution, 'Error: No transformations found');
     } else {
@@ -29404,17 +29456,17 @@ if (typeof kotlin === 'undefined') {
       return new TexVerificationResult(result, '');
     }
   }
-  function returnParsingError_1(error, mathML) {
-    return returnParsingError_2(error.description, error.position, error.endPosition, mathML);
+  function returnParsingErrorTex(error, tex) {
+    return returnParsingErrorTex_0(error.description, error.position, error.endPosition, tex);
   }
-  function returnParsingError$lambda_0(closure$description) {
+  function returnParsingErrorTex$lambda(closure$description) {
     return function () {
       return "transformations parsing error: '" + closure$description + "'";
     };
   }
-  function returnParsingError_2(description, start, end, tex) {
-    log_1.addMessage_cte53e$(returnParsingError$lambda_0(description), MessageType$USER_getInstance(), 0);
-    var endPosition = findClosestPlaceToTargetOnTheSameLevel(tex, start, end);
+  function returnParsingErrorTex_0(description, start, end, tex) {
+    log_1.addMessage_cte53e$(returnParsingErrorTex$lambda(description), MessageType$USER_getInstance(), 0);
+    var endPosition = findClosestPlaceToTargetOnTheSameLevel(tex, start, end, false);
     var tmp$ = tex.substring(0, start) + '\\underline{' + tex.substring(start, endPosition) + '}';
     var endIndex = tex.length;
     var result = tmp$ + tex.substring(endPosition, endIndex);
@@ -32615,29 +32667,45 @@ if (typeof kotlin === 'undefined') {
   function findClosestPlaceToTargetOnTheSameLevel(string, startPosition, targetEndPosition, isMathML) {
     if (isMathML === void 0)
       isMathML = true;
-    var tmp$;
     var pos = startPosition;
     var openTagsCount = 0;
-    var minDist = targetEndPosition - pos | 0;
+    var inTag = false;
+    var minDist = 2147483647;
     var currentResultPos = pos;
-    while (pos < string.length) {
+    var a = string.length;
+    var b = targetEndPosition + targetEndPosition - startPosition | 0;
+    var maxEnd = Math_0.min(a, b);
+    while (pos < maxEnd) {
       if (isMathML && remainingExpressionStartsWith('<\/', string, pos)) {
         openTagsCount = openTagsCount - 1 | 0;
+        pos = pos + 1 | 0;
+        inTag = true;
       } else if (isMathML && string.charCodeAt(pos) === 60) {
         openTagsCount = openTagsCount + 1 | 0;
+        inTag = true;
+      } else if (isMathML && string.charCodeAt(pos) === 62) {
+        inTag = false;
       } else if (isOpenBracket(string.charCodeAt(pos))) {
         openTagsCount = openTagsCount + 1 | 0;
-      } else if (isCloseBracket(string.charCodeAt(pos)))
-        tmp$ = openTagsCount, openTagsCount = tmp$ - 1 | 0;
-      pos = pos + 1 | 0;
-      if (openTagsCount === 0) {
+      } else if (isCloseBracket(string.charCodeAt(pos))) {
+        openTagsCount = openTagsCount - 1 | 0;
+      } else if (!isMathML && remainingExpressionStartsWith('\\left(', string, pos)) {
+        openTagsCount = openTagsCount + 1 | 0;
+        pos = pos + 5 | 0;
+      } else if (!isMathML && remainingExpressionStartsWith('\\right)', string, pos)) {
+        openTagsCount = openTagsCount - 1 | 0;
+        pos = pos + 6 | 0;
+      }pos = pos + 1 | 0;
+      if (openTagsCount === 0 && !inTag) {
         var currentDist = abs(targetEndPosition - pos | 0);
         if (currentDist < minDist) {
           minDist = currentDist;
           currentResultPos = pos;
         } else if (pos > targetEndPosition) {
           break;
-        }}}
+        }} else if (openTagsCount < 0) {
+        return currentResultPos;
+      }}
     return currentResultPos;
   }
   function skipFromRemainingExpressionWhileClosingBracketNotFound(closingBracket, openingBracket, expression, currentPosition) {
@@ -33348,7 +33416,7 @@ if (typeof kotlin === 'undefined') {
     }
     return tmp$(destination);
   }
-  var compareByDescending$lambda_0 = wrapFunction(function () {
+  var compareByDescending$lambda_1 = wrapFunction(function () {
     var compareValues = Kotlin.kotlin.comparisons.compareValues_s00gnj$;
     return function (closure$selector) {
       return function (a, b) {
@@ -33366,7 +33434,7 @@ if (typeof kotlin === 'undefined') {
       };
     };
   });
-  var compareByDescending$lambda_1 = wrapFunction(function () {
+  var compareByDescending$lambda_2 = wrapFunction(function () {
     var compareValues = Kotlin.kotlin.comparisons.compareValues_s00gnj$;
     return function (closure$selector) {
       return function (a, b) {
@@ -33983,7 +34051,7 @@ if (typeof kotlin === 'undefined') {
             }}if (selectedNodeIds.isEmpty()) {
             continue;
           }var applications = findApplicableSubstitutionsInSelectedPlace(currentExpression, copyToArray(selectedNodeIds), compiledConfiguration, void 0, true);
-          tmp$_4 = take(sortedWith(applications, new Comparator(compareByDescending$lambda_0(generateExpressionTransformationTasks$lambda))), expressionTaskGeneratorSettings.widthOfRulesApplicationsOnIteration).iterator();
+          tmp$_4 = take(sortedWith(applications, new Comparator(compareByDescending$lambda_1(generateExpressionTransformationTasks$lambda))), expressionTaskGeneratorSettings.widthOfRulesApplicationsOnIteration).iterator();
           loop_label: while (tmp$_4.hasNext()) {
             var application = tmp$_4.next();
             if (!application.expressionSubstitution.isNormalType()) {
@@ -34118,11 +34186,11 @@ if (typeof kotlin === 'undefined') {
       }
       newCurrentTasks = toMutableList(list);
       if (stepId.v <= (expressionTaskGeneratorSettings.goalCompletionStepsCount / 2 | 0)) {
-        var tmp$_21 = sortedWith(newCurrentTasks, new Comparator(compareByDescending$lambda_0(generateExpressionTransformationTasks$lambda_0)));
+        var tmp$_21 = sortedWith(newCurrentTasks, new Comparator(compareByDescending$lambda_1(generateExpressionTransformationTasks$lambda_0)));
         var a = expressionTaskGeneratorSettings.maxCountSelectedOfTasksOnIteration;
         var b = newCurrentTasks.size;
         var tmp$_22 = take(tmp$_21, Math_0.min(a, b));
-        var tmp$_23 = sortedWith(newCurrentTasks, new Comparator(compareByDescending$lambda_0(generateExpressionTransformationTasks$lambda_1(compiledConfiguration))));
+        var tmp$_23 = sortedWith(newCurrentTasks, new Comparator(compareByDescending$lambda_1(generateExpressionTransformationTasks$lambda_1(compiledConfiguration))));
         var a_0 = expressionTaskGeneratorSettings.maxCountSelectedOfTasksOnIteration;
         var b_0 = newCurrentTasks.size;
         var $receiver_3 = plus(tmp$_22, take(tmp$_23, Math_0.min(a_0, b_0)));
@@ -34138,7 +34206,7 @@ if (typeof kotlin === 'undefined') {
         }
         newCurrentTasks = toMutableList(list_0);
       } else {
-        var tmp$_25 = sortedWith(newCurrentTasks, new Comparator(compareByDescending$lambda_0(generateExpressionTransformationTasks$lambda_2)));
+        var tmp$_25 = sortedWith(newCurrentTasks, new Comparator(compareByDescending$lambda_1(generateExpressionTransformationTasks$lambda_2)));
         var a_1 = expressionTaskGeneratorSettings.maxCountSelectedOfTasksOnIteration;
         var b_1 = newCurrentTasks.size;
         var tmp$_26 = take(tmp$_25, Math_0.min(a_1, b_1));
@@ -34244,7 +34312,7 @@ if (typeof kotlin === 'undefined') {
     resultAllTasks = toMutableList(list_3);
     var $receiver_9 = resultAllTasks;
     if ($receiver_9.size > 1) {
-      sortWith($receiver_9, new Comparator(compareByDescending$lambda_1(generateExpressionTransformationTasks$lambda_4(compiledConfiguration))));
+      sortWith($receiver_9, new Comparator(compareByDescending$lambda_2(generateExpressionTransformationTasks$lambda_4(compiledConfiguration))));
     }var tmp$_37;
     tmp$_37 = resultAllTasks.iterator();
     while (tmp$_37.hasNext()) {
@@ -34407,7 +34475,7 @@ if (typeof kotlin === 'undefined') {
     tmp$ = expressionSubstitutions.iterator();
     while (tmp$.hasNext()) {
       var expressionSubstitution = tmp$.next();
-      swappedExpressionSubstitutions.add_11rb$(new ExpressionSubstitution(expressionSubstitution.right, expressionSubstitution.left, expressionSubstitution.weight, expressionSubstitution.basedOnTaskContext, expressionSubstitution.code, expressionSubstitution.nameEn, expressionSubstitution.nameRu, expressionSubstitution.comparisonType, void 0, expressionSubstitution.matchJumbledAndNested, expressionSubstitution.priority, expressionSubstitution.changeOnlyOrder, expressionSubstitution.simpleAdditional, expressionSubstitution.isExtending, expressionSubstitution.normalizationType, expressionSubstitution.weightInTaskAutoGeneration));
+      swappedExpressionSubstitutions.add_11rb$(new ExpressionSubstitution(expressionSubstitution.right, expressionSubstitution.left, expressionSubstitution.weight, expressionSubstitution.basedOnTaskContext, expressionSubstitution.code, expressionSubstitution.nameEn, expressionSubstitution.nameRu, expressionSubstitution.comparisonType, void 0, void 0, expressionSubstitution.matchJumbledAndNested, expressionSubstitution.priority, expressionSubstitution.changeOnlyOrder, expressionSubstitution.simpleAdditional, expressionSubstitution.isExtending, expressionSubstitution.normalizationType, expressionSubstitution.weightInTaskAutoGeneration));
     }
     return swappedExpressionSubstitutions;
   }
@@ -35063,6 +35131,7 @@ if (typeof kotlin === 'undefined') {
   _.applySubstitution = applySubstitution;
   _.checkSolutionInTex = checkSolutionInTex_JS;
   _.checkSolutionInTexWithCompiledConfiguration = checkSolutionInTexWithCompiledConfiguration_JS;
+  _.createCompiledConfigurationFromITR = createCompiledConfigurationFromITR_JS;
   _.checkSolutionInTexITR = checkSolutionInTexITR_JS;
   _.getParsedExpressionByMathML = getParsedExpressionByMathML;
   _.checkFactsInMathML = checkFactsInMathML;
@@ -35177,7 +35246,8 @@ if (typeof kotlin === 'undefined') {
   package$api.createRulePackLinkITR_rkkr90$ = createRulePackLinkITR;
   package$api.createRulePackITR_3fdfw8$ = createRulePackITR;
   package$api.createTaskITR_55ddg3$ = createTaskITR;
-  package$api.checkSolutionInTexITR_wenfmq$ = checkSolutionInTexITR;
+  package$api.createCompiledConfigurationFromITR_9h82pd$ = createCompiledConfigurationFromITR;
+  package$api.checkSolutionInTexITR_gaewyn$ = checkSolutionInTexITR;
   package$api.checkSolutionInTex_tlsgcf$ = checkSolutionInTex;
   package$api.checkSolutionInTexWithCompiledConfiguration_43fm9k$ = checkSolutionInTexWithCompiledConfiguration;
   package$api.checkChainCorrectnessInTex_puj7f4$ = checkChainCorrectnessInTex;

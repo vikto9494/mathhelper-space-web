@@ -66,8 +66,10 @@ class TaskSetConstructorFormatter {
           "nextRecommendedTasks",
           "otherData",
         ].forEach((key: string) => {
-          if ((task as any)[key] != null) {
-            (taskCopy as any)[key] = JSON.stringify((task as any)[key])
+          const fieldValue = (task as any)[key];
+          if (fieldValue != null) {
+            console.log(`field ${key} is not null and blank, it is: `, fieldValue);
+            (taskCopy as any)[key] = fieldValue
           }
         });
 
@@ -203,11 +205,12 @@ class TaskSetConstructorFormatter {
           "interestingFacts",
           "hints",
         ].forEach((key: string) => {
-          if ((task as any)[key] === "") {
+          const fieldValue = (task as any)[key];
+          if (fieldValue === "") {
             (taskCopy as any)[key] = null;
-          } else if ((task as any)[key] != null) {
-            console.log(`field ${key} is not null and blank, it is: `, (task as any)[key]);
-            (taskCopy as any)[key] = JSON.parse((task as any)[key])
+          } else if (fieldValue != null) {
+            console.log(`field ${key} is not null and blank, it is: `, fieldValue);
+            (taskCopy as any)[key] = fieldValue
           }
         });
 
