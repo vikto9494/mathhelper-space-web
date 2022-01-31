@@ -1,0 +1,19 @@
+@import "../../styles/abstracts/variables";
+@import "../../styles/abstracts/mixins";
+
+.download-report-page-header {
+  padding: 2rem;
+  display: flex;
+  font-weight: 700;
+}
+
+.download-report-btn {
+  display: flex;
+  margin-left: 2rem;
+}
+
+.download-report-page-second-header {
+  justify-content: center;
+  display: flex;
+  font-weight: bold;
+}

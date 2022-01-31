@@ -1,7 +1,7 @@
 // libs and hooks
 import React, { Dispatch, useEffect, useRef, useState } from "react";
 import { FormProvider, useForm } from "react-hook-form";
-import { useParams } from "react-router-dom";
+import { useParams, useHistory } from "react-router-dom";
 import { CSVLink } from "react-csv";
 // custom hooks
 import useCreationMode from "../hooks/useCreationType";
@@ -90,10 +90,7 @@ const NamespaceConstructorComponent = ({
   // watch in order to conditionally render dependent fields
   const grantType: NamespaceGrantType = watch("grantType");
 
-  // ref for csv download link component
-  const csvLinkRef = useRef<CSVLink & HTMLAnchorElement & { link: HTMLAnchorElement }>(null);
-  // namespace report data
-  const [namespaceReportData, setNamespaceReportData] = useState<ReportStatisticsEntity[]>([]);
+  const history = useHistory();
 
   const inputs: ConstructorFormInput[] = [
     {
@@ -247,22 +244,11 @@ const NamespaceConstructorComponent = ({
             type="button"
             className="btn"
             onClick={() => {
-              NamespaceConstructorRequestHandler.getReport(namespaceCode).then((v: ReportStatisticsEntity[]) => {
-                console.log("ReportStatisticsEntity", v);
-                setNamespaceReportData(v);
-                csvLinkRef?.current?.link.click();
-              });
+              history.push(`/download-report/namespace/${namespaceCode}`)
             }}
           >
             Скачать отчет
           </button>
-          <CSVLink
-            className="hidden"
-            target="_blank"
-            data={namespaceReportData}
-            filename={`namespace_${namespaceCode}_report.csv`}
-            ref={csvLinkRef}
-          />
         </form>
       </FormProvider>
     );

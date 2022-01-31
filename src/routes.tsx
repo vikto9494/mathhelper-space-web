@@ -10,6 +10,7 @@ import LevelInfoPage from "./pages/level-info-page/level-info-page";
 import ConstructorMenuPageComponent from "./pages/constructor-menu-page/constructor-menu-page.component";
 import SolveMathPage from "./pages/solve-math-page/solve-math-page";
 import ConstructorPage from "./pages/constructor-page/constructor-page.component";
+import DownloadReportPage from "./pages/download-report-page/download-report-page.component";
 
 const Routes: React.FC = () => {
   return (
@@ -39,6 +40,7 @@ const Routes: React.FC = () => {
         component={SolveMathPage}
       />
       <Route path={"/constructor"} component={ConstructorPage} />
+      <Route path={"/download-report/:entityType/:entityCode"} component={DownloadReportPage} />
     </Switch>
   );
 };

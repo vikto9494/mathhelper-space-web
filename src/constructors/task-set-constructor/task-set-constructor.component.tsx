@@ -1,7 +1,7 @@
 // libs and hooks
 import React, { Dispatch, useEffect, useRef, useState } from "react";
 import { FormProvider, useFieldArray, useForm } from "react-hook-form";
-import { Link, useParams } from "react-router-dom";
+import { Link, useHistory, useParams } from "react-router-dom";
 // custom hooks
 import useCreationMode from "../hooks/useCreationType";
 // custom constants
@@ -152,10 +152,7 @@ const TaskSetConstructor = ({
     creationMode !== ConstructorCreationMode.CREATE
   );
 
-  // ref for csv download link component
-  const csvLinkRef = useRef<CSVLink & HTMLAnchorElement & { link: HTMLAnchorElement }>(null);
-  // taskset report data
-  const [tasksetReportData, setTasksetReportData] = useState<ReportStatisticsEntity[]>([]);
+  const history = useHistory();
 
   const inputs: ConstructorFormInput[] = [
     {
@@ -553,22 +550,11 @@ const TaskSetConstructor = ({
                     type="button"
                     className="btn u-mt-sm"
                     onClick={() => {
-                      TaskSetConstructorRequestsHandler.getReport(taskSetCode).then((v: ReportStatisticsEntity[]) => {
-                        console.log("ReportStatisticsEntity", v);
-                        setTasksetReportData(v);
-                        csvLinkRef?.current?.link.click();
-                      });
+                      history.push(`/download-report/taskset/${taskSetCode}`)
                     }}
                   >
                     Скачать отчет
                   </button>
-                  <CSVLink
-                    className="hidden"
-                    target="_blank"
-                    data={tasksetReportData}
-                    filename={`taskset_${taskSetCode}_report.csv`}
-                    ref={csvLinkRef}
-                  />
                 </form>
               </TasksFieldArrayActionsContext.Provider>
             </FormProvider>

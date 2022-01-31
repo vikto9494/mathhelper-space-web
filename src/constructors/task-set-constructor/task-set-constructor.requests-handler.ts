@@ -12,6 +12,7 @@ import {
 import { TaskContextForm } from "../../pages/solve-math-page/solve-math-page.types";
 import { RulePackConstructorReceivedForm } from "../rule-pack-constructor/rule-pack-constructor.types";
 import { TaskConstructorReceivedForm } from "../task-constructor/task-constructor.types";
+import { getTimestampStringFromDate } from "../../utils/utils";
 
 class TaskSetConstructorRequestsHandler {
   private static url = process.env.REACT_APP_SERVER_API + "/taskset";
@@ -141,6 +142,29 @@ class TaskSetConstructorRequestsHandler {
     });
   }
 
+  public static async getReportByDateInterval(tasksetCode: String, startDate: Date | null, endDate: Date | null): Promise<ReportStatisticsEntity[]> {
+    let url = this.logRootUrl + `statistics_for_report?taskset=${tasksetCode}`;
+    if (startDate !== null && endDate !== null) {
+      url += `&start_date=${getTimestampStringFromDate(startDate)}&end_date=${getTimestampStringFromDate(endDate)}`
+    }
+
+    return axios({
+      method: "get",
+      url: url,
+      headers: {
+        Authorization: "Bearer " + getAuthToken(),
+      },
+    }).then((res: AxiosResponse<ReportStatisticsEntity[]>) => {
+      return res.data;
+    }).catch((e: AxiosError) => {
+      console.error(
+        `Error trying to get taskset report. Taskset code: ${tasksetCode}`,
+        e.response,
+        e.message
+      );
+      throw e;
+    });
+  }
 }
 
 export default TaskSetConstructorRequestsHandler;

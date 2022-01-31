@@ -8,6 +8,7 @@ import {
   NamespaceReceivedForm,
   NamespaceSendForm,
 } from "./namespace-constructor.types";
+import { getTimestampStringFromDate } from "../../utils/utils";
 
 class NamespaceConstructorRequestHandler {
   private static url = process.env.REACT_APP_SERVER_API + "/namespace/";
@@ -80,6 +81,30 @@ class NamespaceConstructorRequestHandler {
     return axios({
       method: "get",
       url: this.logRootUrl + `statistics_for_report?namespace=${namespaceCode}`,
+      headers: {
+        Authorization: "Bearer " + getAuthToken(),
+      },
+    }).then((res: AxiosResponse<ReportStatisticsEntity[]>) => {
+      return res.data;
+    }).catch((e: AxiosError) => {
+      console.error(
+        `Error trying to get namespace report. Namespace code: ${namespaceCode}`,
+        e.response,
+        e.message
+      );
+      throw e;
+    });
+  }
+
+  public static async getReportByDateInterval(namespaceCode: String, startDate: Date | null, endDate: Date | null): Promise<ReportStatisticsEntity[]> {
+    let url = this.logRootUrl + `statistics_for_report?namespace=${namespaceCode}`;
+    if (startDate !== null && endDate !== null) {
+      url += `&start_date=${getTimestampStringFromDate(startDate)}&end_date=${getTimestampStringFromDate(endDate)}`
+    }
+
+    return axios({
+      method: "get",
+      url: url,
       headers: {
         Authorization: "Bearer " + getAuthToken(),
       },
