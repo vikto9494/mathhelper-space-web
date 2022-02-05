@@ -14,7 +14,14 @@ import { RulePackConstructorReceivedForm } from "../rule-pack-constructor/rule-p
 import { TaskConstructorReceivedForm } from "../task-constructor/task-constructor.types";
 import { getTimestampStringFromDate } from "../../utils/utils";
 
-class TaskSetConstructorRequestsHandler {
+export enum GetOneTaskSetMode {
+  PLAY = 0,
+  SOLVE,
+  EDIT,
+  COUNT
+}
+
+export class TaskSetConstructorRequestsHandler {
   private static url = process.env.REACT_APP_SERVER_API + "/taskset";
   private static logRootUrl = process.env.REACT_APP_SERVER_API + "/log/";
 
@@ -61,11 +68,26 @@ class TaskSetConstructorRequestsHandler {
   }
 
   public static async getOne(
-    code: string
+    code: string,
+    mode: GetOneTaskSetMode
   ): Promise<TaskContextForm> {
+    let url = this.url;
+    switch (mode) {
+      case GetOneTaskSetMode.EDIT:
+        url += "/edit/";
+        break;
+      case GetOneTaskSetMode.SOLVE:
+        url += "/solve/SOLVE_MATH_WEB/solve/";
+        break;
+      case GetOneTaskSetMode.PLAY:
+        url += "/play/SOLVE_MATH_WEB/play/";
+        break;
+    }
+    url += code;
+
     return axios({
       method: "get",
-      url: this.url + "/edit/" + code,
+      url: url,
       headers: {
         Authorization: "Bearer " + getAuthToken(),
       },
@@ -166,5 +188,3 @@ class TaskSetConstructorRequestsHandler {
     });
   }
 }
-
-export default TaskSetConstructorRequestsHandler;

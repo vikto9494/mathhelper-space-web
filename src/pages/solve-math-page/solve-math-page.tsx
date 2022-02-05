@@ -4,18 +4,20 @@ import { useParams } from "react-router-dom";
 import axios, { AxiosResponse } from "axios";
 // lib components
 import { Steps } from "antd";
-import { EditableMathField, MathField } from "react-mathquill";
+import { addStyles, EditableMathField, MathField } from "react-mathquill";
 // custom components
 import ServerResponseAlert from "../../components/server-response-alert/server-response-alert.component";
 import ActionButton from "../../components/action-button/action-button.component";
 import AppSpinner from "../../components/app-spinner/app-spinner";
 import TexEditorActionsTab from "../../components/tex-editor-actions-tab/tex-editor-actions-tab";
 // utils
-import {checkTexSolutionInFrontFormat} from "../../utils/kotlin-lib-functions";
+import { checkTexSolutionInFrontFormat } from "../../utils/kotlin-lib-functions";
 import { getAuthToken } from "../../utils/local-storage/auth-token";
-import TaskSetConstructorRequestsHandler from "../../constructors/task-set-constructor/task-set-constructor.requests-handler";
+import {
+  GetOneTaskSetMode,
+  TaskSetConstructorRequestsHandler
+} from "../../constructors/task-set-constructor/task-set-constructor.requests-handler";
 import { TaskSetConstructorReceivedForm } from "../../constructors/task-set-constructor/task-set-constructor.types";
-import { addStyles } from "react-mathquill";
 // types
 import { TaskConstructorReceivedForm } from "../../constructors/task-constructor/task-constructor.types";
 import { SendLogForm, TaskContextForm } from "./solve-math-page.types";
@@ -204,14 +206,14 @@ const SolveMathPage: React.FC = () => {
 
   // fetching taskSet
   useEffect(() => {
-    TaskSetConstructorRequestsHandler.getOne(taskSetCode).then(
+    TaskSetConstructorRequestsHandler.getOne(taskSetCode, GetOneTaskSetMode.SOLVE).then(
       (res: TaskContextForm) => {
         setTaskSet(res.taskset);
         setRulePacks(res.rulePacks);
         setSolutions(
           res.taskset.tasks.map(
             (task: TaskConstructorReceivedForm) =>
-              `${task.originalExpressionTex}=...${task.goalExpressionTex === null || task.goalExpressionTex == '' ? '' : `=${task.goalExpressionTex}`}`
+              `${task.originalExpressionTex}=...${task.goalExpressionTex === null || task.goalExpressionTex === '' ? '' : `=${task.goalExpressionTex}`}`
           )
         );
         setIsTaskSetFetched(true);

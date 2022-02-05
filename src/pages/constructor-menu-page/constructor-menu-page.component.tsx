@@ -1,22 +1,21 @@
 // libs and hooks
 import React, { useEffect, useState } from "react";
 import { useHistory, useParams } from "react-router-dom";
-import axios, { AxiosError } from "axios";
+import { AxiosError } from "axios";
 // components
 import AppModalComponent from "../../components/app-modal/app-modal.component";
 import SelectConstructorItemList from "../../components/filterable-select-list/filterable-select-list.component";
 import ConstructorMenuBlock from "../../components/constructor-menu-block/constructor-menu-block.component";
 // utils
-import TaskSetConstructorRequestsHandler from "../../constructors/task-set-constructor/task-set-constructor.requests-handler";
+import { TaskSetConstructorRequestsHandler } from "../../constructors/task-set-constructor/task-set-constructor.requests-handler";
 import NamespaceConstructorRequestHandler from "../../constructors/namespace-constructor/namespace-constructor.requests-handler";
 import { getLastEditedConstructorItemsFromLocalStorage } from "../../utils/last-edited-constructor-items-local-storage";
 // types
 import { NamespaceReceivedForm } from "../../constructors/namespace-constructor/namespace-constructor.types";
-import { TaskSetConstructorLinkReceivedForm, TaskSetConstructorReceivedForm } from "../../constructors/task-set-constructor/task-set-constructor.types";
+import { TaskSetConstructorLinkReceivedForm } from "../../constructors/task-set-constructor/task-set-constructor.types";
 import { FilterableSelectListItem } from "../../components/filterable-select-list/filterable-select-list.types";
 import { ConstructorMenuBlockProps } from "../../components/constructor-menu-block/constructor-menu-block.types";
 // icons
-import Icon from "@mdi/react";
 import { mdiPencil, mdiPlus } from "@mdi/js";
 // styles
 import "./constructor-menu-page.styles.scss";

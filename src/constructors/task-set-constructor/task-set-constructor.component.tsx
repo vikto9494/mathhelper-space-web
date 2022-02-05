@@ -1,5 +1,5 @@
 // libs and hooks
-import React, { Dispatch, useEffect, useRef, useState } from "react";
+import React, { Dispatch, useEffect, useState } from "react";
 import { FormProvider, useFieldArray, useForm } from "react-hook-form";
 import { Link, useHistory, useParams } from "react-router-dom";
 // custom hooks
@@ -28,10 +28,10 @@ import {
   getLastEditedCreationMode,
   getLastExampleConstructorCode,
   setLastEditedCreationMode,
-  setLastExampleConstructorCode,
+  setLastExampleConstructorCode
 } from "../../utils/local-storage/last-edited-creation-type";
 import NamespaceConstructorRequestHandler from "../namespace-constructor/namespace-constructor.requests-handler";
-import TaskSetConstructorRequestsHandler from "./task-set-constructor.requests-handler";
+import { GetOneTaskSetMode, TaskSetConstructorRequestsHandler } from "./task-set-constructor.requests-handler";
 import TaskSetConstructorFormatter from "./task-set-constructor.formatter";
 import { addLastEditedConstructorItemToLocalStorage } from "../../utils/last-edited-constructor-items-local-storage";
 import RulePackConstructorRequestsHandler from "../rule-pack-constructor/rule-pack-constructor.requests-handler";
@@ -40,24 +40,15 @@ import { makeServerRequestErrorMessage, setConstructorValueDueToCreationMode } f
 import { RulePackConstructorReceivedForm } from "../rule-pack-constructor/rule-pack-constructor.types";
 import { RootState } from "../../redux/root-reducer";
 import { TaskConstructorInputs } from "../task-constructor/task-constructor.types";
-import {
-  ConstructorJSONType,
-  UpdateTaskSetJSONAction,
-} from "../../redux/constructor-jsons/constructor-jsons.types";
-import { ConstructorCreationMode, ReportStatisticsEntity } from "../common-types";
-import {
-  TaskSetConstructorInputs,
-  VisualizationMode,
-} from "./task-set-constructor.types";
+import { ConstructorJSONType, UpdateTaskSetJSONAction } from "../../redux/constructor-jsons/constructor-jsons.types";
+import { ConstructorCreationMode } from "../common-types";
+import { TaskSetConstructorInputs, VisualizationMode } from "./task-set-constructor.types";
 import { NamespaceReceivedForm } from "../namespace-constructor/namespace-constructor.types";
 import { ConstructorFormInput } from "../../components/constructor-form/constructor-form.types";
 import { MathInputFormat } from "../../utils/kotlin-lib-functions";
 import { AddMultipleLinesChangeToHistoryAction } from "../../redux/constructor-history/constructor-history.types";
 // data
-import {
-  mockTaskSetSubjectTypes,
-  taskConstructorDefaultValues,
-} from "./task-set-constructor.data";
+import { taskConstructorDefaultValues } from "./task-set-constructor.data";
 // icons
 import Icon from "@mdi/react";
 import {
@@ -67,14 +58,12 @@ import {
   mdiPlus,
   mdiRobot,
   mdiTableLarge,
-  mdiWrench,
+  mdiWrench
 } from "@mdi/js";
 // styles
 import "./task-set-constructor.styles.scss";
 import { AxiosError } from "axios";
-import translate from "../../translations/translate";
 import AppSpinner from "../../components/app-spinner/app-spinner";
-import { CSVLink } from "react-csv";
 
 // creating context with FieldArray functions that will be used in task constructors
 // @ts-ignore
@@ -309,7 +298,7 @@ const TaskSetConstructor = ({
       updateTaskSetJSON,
       taskSetCode,
       async () => {
-        const res = await TaskSetConstructorRequestsHandler.getOne(taskSetCode);
+        const res = await TaskSetConstructorRequestsHandler.getOne(taskSetCode, GetOneTaskSetMode.EDIT);
         return TaskSetConstructorFormatter.convertReceivedFormToConstructorInputs(
           res.taskset
         );

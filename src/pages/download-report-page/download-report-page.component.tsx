@@ -1,13 +1,12 @@
 import React, { useRef, useState } from "react";
 import { useParams } from "react-router-dom";
-import { ReactDatePicker } from "react-datepicker"
 
 import "./download-report-page.styles.scss"
 import { CSVLink } from "react-csv";
 import { ReportStatisticsEntity } from "../../constructors/common-types";
 import NamespaceConstructorRequestHandler
   from "../../constructors/namespace-constructor/namespace-constructor.requests-handler";
-import TaskSetConstructorRequestsHandler
+import { TaskSetConstructorRequestsHandler }
   from "../../constructors/task-set-constructor/task-set-constructor.requests-handler";
 import { DatePicker } from "antd";
 
@@ -73,7 +72,7 @@ const DownloadReportPage: React.FC = () => {
           <RangePicker
             format="yyyy/MM/dd"
             size="large"
-            onChange={(dates, formatStrings) => {
+            onChange={(dates, _) => {
               // @ts-ignore
               setEndDate(dates.pop().toDate())
               // @ts-ignore
