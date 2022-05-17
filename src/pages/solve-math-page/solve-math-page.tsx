@@ -10,6 +10,7 @@ import ServerResponseAlert from "../../components/server-response-alert/server-r
 import ActionButton from "../../components/action-button/action-button.component";
 import AppSpinner from "../../components/app-spinner/app-spinner";
 import TexEditorActionsTab from "../../components/tex-editor-actions-tab/tex-editor-actions-tab";
+import MathQuillMultyline from "../../components/math-quill-multyline/math-quill-multyline";
 // utils
 import { checkTexSolutionInFrontFormat } from "../../utils/kotlin-lib-functions";
 import { getAuthToken } from "../../utils/local-storage/auth-token";
@@ -45,7 +46,7 @@ const SolveMathPage: React.FC = () => {
   const [errMessages, setErrMessages] = useState<(string | null)[]>([]);
   const [successMessages, setSuccessMessages] = useState<
     ("Правильно!" | null)[]
-  >([]);
+    >([]);
   const [mathField, setMathField] = useState<MathField>();
   const [lastSentLogSolution, setLastSentLogSolution] = useState<string>("");
 
@@ -184,9 +185,9 @@ const SolveMathPage: React.FC = () => {
       for (let idx = 0; idx < solutions.length; idx++) {
         const solution = solutions[idx];
         const checkRes = checkTexSolutionInFrontFormat(
-            solution,
-            taskSet?.tasks[idx],
-            rulePacks
+          solution,
+          taskSet?.tasks[idx],
+          rulePacks
         );
         if (checkRes.errorMessage) {
           await sendLog(prepareDataForLogging("loose", solution, taskSet, idx));
@@ -285,15 +286,27 @@ const SolveMathPage: React.FC = () => {
             </Steps>
           </div>
           <div className="solve-math__tex-solution u-mt-md">
-            {mathField && <TexEditorActionsTab mathField={mathField} />}
-            <EditableMathField
+            {/*mathField && <TexEditorActionsTab mathField={mathField} />*/}
+            {!mathField &&
+              <EditableMathField
+                latex={solutions[currentTaskIdx]}
+                mathquillDidMount={(mathField: MathField) => {
+                  setMathField(mathField);
+                }}
+                style={{
+                  minWidth: "42rem",
+                  maxWidth: window.innerWidth - 100 + "px",
+                }}
+              />
+            }
+            <MathQuillMultyline
               latex={solutions[currentTaskIdx]}
-              mathquillDidMount={(mathField: MathField) => {
-                setMathField(mathField);
-              }}
-              style={{
-                minWidth: "42rem",
-                maxWidth: window.innerWidth - 100 + "px",
+              onChange={(s: string) => {
+                console.log(mathField);
+                console.log("solutionInTex");
+                mathField?.latex(s)
+                //setSolutionInTex(s);
+                console.log(mathField?.latex());
               }}
             />
           </div>
