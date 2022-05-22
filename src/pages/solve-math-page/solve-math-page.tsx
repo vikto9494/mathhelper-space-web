@@ -49,6 +49,7 @@ const SolveMathPage: React.FC = () => {
     >([]);
   const [mathField, setMathField] = useState<MathField>();
   const [lastSentLogSolution, setLastSentLogSolution] = useState<string>("");
+  const [solutionInTex, setSolutionInTex] = useState<string>("");
 
   // UTILS
   const sendLog = (data: SendLogForm): Promise<AxiosResponse> => {
@@ -300,13 +301,14 @@ const SolveMathPage: React.FC = () => {
               />
             }
             <MathQuillMultyline
-              latex={solutions[currentTaskIdx]}
+              latex={solutionInTex.length == 0? solutions[currentTaskIdx]: solutionInTex}
               onChange={(s: string) => {
-                console.log(mathField);
+                //console.log(mathField);
                 console.log("solutionInTex");
-                mathField?.latex(s)
-                //setSolutionInTex(s);
-                console.log(mathField?.latex());
+                //mathField?.latex(s)
+                setSolutionInTex(s);
+                //console.log(mathField?.latex());
+                console.log(s);
               }}
             />
           </div>
@@ -338,7 +340,11 @@ const SolveMathPage: React.FC = () => {
                 className="btn u-mr-sm"
                 onClick={() => {
                   if (mathField) {
-                    onCheckTex(mathField?.latex());
+                    //console.log(mathField?.latex())
+                    //onCheckTex(mathField?.latex());
+                    console.log(solutionInTex);
+                    onCheckTex(solutionInTex);
+                    setSolutionInTex("")
                   }
                 }}
               >
