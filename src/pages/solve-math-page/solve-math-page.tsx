@@ -88,7 +88,7 @@ const SolveMathPage: React.FC = () => {
     taskVersion: 0
   });
 
-  const modes = [0, 1];
+  const modes = ["0", "1"];
   const { mode: modeUrl } = Object.fromEntries(
     useLocation()
       .search.slice(1)
@@ -174,6 +174,7 @@ const SolveMathPage: React.FC = () => {
             setLastSentLogSolution(mathField.latex());
           });
         }
+        console.log(currentMode)
         if (currentMode == 1)
           setSolutions((prevState: string[]) =>
             prevState.map((solution: string, i: number) =>
