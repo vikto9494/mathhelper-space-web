@@ -89,7 +89,7 @@ const SolveMathPage: React.FC = () => {
   });
 
   const modes = [0, 1];
-  const { mode: modeUrl } = Object.fromEntries(
+  const { multiline: modeUrl } = Object.fromEntries(
     useLocation()
       .search.slice(1)
       .split("&")
