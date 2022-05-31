@@ -83,19 +83,6 @@ const MathQuillMultyline: React.FC<MultylineProps> = ({latex,
   console.log("in latex");
   console.log(latex);
 
-  let j = 0;
-  for (let i = 0; i < mathPairs.length; i++) {
-    if (mathPairs[i].id != -1) {
-      if (mathPairs[i].text != "") {
-        j++;
-        if (j > splitted.length)
-        {
-          mathPairs[i].text = "";
-          mathPairs[i]?.mathLine?.latex("");
-        }
-      }
-    }
-  }
   while (splitted.length > 1) {
     // debug
     splitted.map((s)=>{console.log(s)})
@@ -117,19 +104,8 @@ const MathQuillMultyline: React.FC<MultylineProps> = ({latex,
     console.log("start FindOpenTags for s1 tags->");
     console.log(s0);
     console.log(tags2);
-    if (s0 === "")
-    {
-      splitted2.push(s0);
-      splitted = s1.split("\n", 7);
-    }
-    else if(s1 == "")
-    {
-      s0 = s0 + tags;
-      splitted2.push(s0);
-      splitted = s1.split("\n", 7);
-      break;
-    }
-    else if (tags2 && tags2.out && tags2.flagPoss == true && tags2.L == l) {
+
+    if (tags2 && tags2.out && tags2.flagPoss == true && tags2.L == l) {
       s1 = tags2.out + s1;
       s0 = s0 + tags;
       splitted2.push(s0);
