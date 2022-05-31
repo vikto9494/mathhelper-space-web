@@ -88,7 +88,7 @@ const SolveMathPage: React.FC = () => {
     taskVersion: 0
   });
 
-  const modes = ["0", "1"];
+  const modes = [0, 1];
   const { mode: modeUrl } = Object.fromEntries(
     useLocation()
       .search.slice(1)
@@ -98,7 +98,7 @@ const SolveMathPage: React.FC = () => {
       })
   );
   const [currentMode, setCurrentMode] = useState(
-    modes.includes(modeUrl) ? modeUrl : 0
+    modes.includes(parseInt(modeUrl)) ? parseInt(modeUrl) : 0
   );
   // USER ACTIONS
   const onCheckTex = (solutionInTex: string): void => {
