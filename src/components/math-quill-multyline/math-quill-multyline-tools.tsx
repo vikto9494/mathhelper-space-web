@@ -55,7 +55,6 @@ const BeginString = (text: string) => {
           console.log(text[i]);
           console.log(text);
         }
-        ;
         break;
     }
   }
@@ -87,7 +86,6 @@ const FindOpenTags = (tagList: string[], text: string) => {
     }
     // if } -- push
     // if { -- pop
-    //
     switch (text[i]) {
       case "}":
         tagList.push("{");
@@ -180,12 +178,9 @@ const FindOpenTags = (tagList: string[], text: string) => {
             console.log("bad2" + text + "__" + i.toString());
             flagPoss = false;
           }
-
-
         }
     }
   }
-
 };
 
 export { BeginString, EndString, FindOpenTags };

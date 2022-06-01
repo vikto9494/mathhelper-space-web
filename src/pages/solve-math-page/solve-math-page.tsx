@@ -159,8 +159,7 @@ const SolveMathPage: React.FC = () => {
       selectedTaskIdx >= 0 &&
       selectedTaskIdx < taskSet?.tasks.length
     ) {
-      // remove old solution data
-      //setSolutionInTex("");
+
       setCurrentTaskIdx((prevIdx: number) => {
         if (mathField.latex() !== lastSentLogSolution) {
           sendLog(
@@ -178,7 +177,7 @@ const SolveMathPage: React.FC = () => {
         if (currentMode == 1) {
           setSolutions((prevState: string[]) =>
             prevState.map((solution: string, i: number) =>
-              i === prevIdx ? solutionInTex/*mathField.latex()*/ : solution
+              i === prevIdx ? solutionInTex : solution
             )
           );
         } else {
@@ -202,7 +201,7 @@ const SolveMathPage: React.FC = () => {
       if (currentMode == 1) {
         setSolutionInTex("");
       }
-      //setSolutionInTex(solutions[currentTaskIdx]);
+
     }
   };
 
@@ -340,11 +339,9 @@ const SolveMathPage: React.FC = () => {
             }
             {currentMode == 1 &&
               <MathQuillMultyline
-                latex={solutions[currentTaskIdx]}//{solutionInTex.length == 0 ? solutions[currentTaskIdx] : solutionInTex}
+                latex={solutions[currentTaskIdx]}
                 onChange={(s: string[]) => {
-                  //console.log(mathField);
-                  //console.log("solutionInTex");
-                  //mathField?.latex(s)
+
                   if (s.length != 2) {
                     console.error("BAD FUNC CALLED");
                   }
@@ -352,8 +349,7 @@ const SolveMathPage: React.FC = () => {
                   if (s[0] === "1") {
                     solutions[currentTaskIdx] = s[1];
                   }
-                  //console.log(mathField?.latex());
-                  //console.log(s);
+
                 }}
               />}
           </div>
@@ -385,8 +381,7 @@ const SolveMathPage: React.FC = () => {
                 className="btn u-mr-sm"
                 onClick={() => {
                   if (mathField) {
-                    //console.log(mathField?.latex())
-                    //
+
                     if (currentMode == 0) {
                       onCheckTex(mathField?.latex());
                     } else {
