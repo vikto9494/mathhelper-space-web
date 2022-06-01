@@ -416,8 +416,12 @@ const MathQuillMultyline: React.FC<MultylineProps> = ({
                       if (mPair && mPair.text != mPair?.mathLine?.latex())
                         mPair.text = mPair?.mathLine?.latex();
                     if (onChangeRef.current && lockText == false) {
-                      let a = onButtonConcat();
-                      onChangeRef.current(a);
+                      let a = ["0"]
+                      a.push(onButtonConcat())
+                      //let a = onButtonConcat();
+                      if (onChange) { // @ts-ignore
+                        onChangeRef.current(a);
+                      }
                     }
                   }}
                   onFocus={() => {
@@ -598,9 +602,9 @@ const MathQuillMultyline: React.FC<MultylineProps> = ({
                       // Submit changes
                       setLockText(false);
                       UpdateId();
-                      //let a = ["", ""]
-                      //a.push(onButtonConcat())
-                      let a = onButtonConcat();
+                      let a = ["1"]
+                      a.push(onButtonConcat())
+                      //let a = onButtonConcat();
                       if (onChange) { // @ts-ignore
                         onChangeRef.current(a);
                       }
@@ -683,6 +687,16 @@ const MathQuillMultyline: React.FC<MultylineProps> = ({
                                     mathPairs[mathPairsid[currPairid - 1]].shiftCursor = l - l2;
                                 }
                                 onButtonDelLine(mathPairs[mathPairsid[currPairid]].id);
+
+                                // Submit changes
+                                setLockText(false);
+                                UpdateId();
+                                let a = ["1"]
+                                a.push(onButtonConcat())
+                                //let a = onButtonConcat();
+                                if (onChange) { // @ts-ignore
+                                  onChangeRef.current(a);
+                                }
                               } else { // first line
                                 console.log("first line -- do nothing");
                                 /* do nothing
@@ -707,11 +721,7 @@ const MathQuillMultyline: React.FC<MultylineProps> = ({
                           }
                         }
                       }
-                      setLockText(false);
-                      let a = onButtonConcat();
-                      if (onChange) { // @ts-ignore
-                        onChangeRef.current(a);
-                      }
+
                     }
                     if (e.key == "ArrowUp") {
                       console.log(e.key);

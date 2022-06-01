@@ -340,12 +340,18 @@ const SolveMathPage: React.FC = () => {
             }
             {currentMode == 1 &&
               <MathQuillMultyline
-                latex={solutionInTex.length == 0 ? solutions[currentTaskIdx] : solutionInTex}
-                onChange={(s: string) => {
+                latex={solutions[currentTaskIdx]}//{solutionInTex.length == 0 ? solutions[currentTaskIdx] : solutionInTex}
+                onChange={(s: string[]) => {
                   //console.log(mathField);
                   //console.log("solutionInTex");
                   //mathField?.latex(s)
-                  setSolutionInTex(s);
+                  if (s.length != 2) {
+                    console.error("BAD FUNC CALLED");
+                  }
+                  setSolutionInTex(s[1]);
+                  if (s[0] === "1") {
+                    solutions[currentTaskIdx] = s[1];
+                  }
                   //console.log(mathField?.latex());
                   //console.log(s);
                 }}
