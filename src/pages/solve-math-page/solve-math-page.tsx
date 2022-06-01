@@ -174,19 +174,20 @@ const SolveMathPage: React.FC = () => {
             setLastSentLogSolution(mathField.latex());
           });
         }
-        console.log(currentMode)
-        if (currentMode == 1)
+        console.log(currentMode);
+        if (currentMode == 1) {
           setSolutions((prevState: string[]) =>
             prevState.map((solution: string, i: number) =>
               i === prevIdx ? solutionInTex/*mathField.latex()*/ : solution
             )
           );
-        else
+        } else {
           setSolutions((prevState: string[]) =>
             prevState.map((solution: string, i: number) =>
               i === prevIdx ? mathField.latex() : solution
             )
           );
+        }
         let newScrollLeft = selectedTaskIdx * document.getElementsByClassName("ant-steps-item")[0].clientWidth;
         let halfOfOfDiv = tasksRef.current!.clientWidth / 2;
         if (newScrollLeft > halfOfOfDiv) {
@@ -198,8 +199,9 @@ const SolveMathPage: React.FC = () => {
         return selectedTaskIdx;
       });
 
-      if (currentMode == 1)
+      if (currentMode == 1) {
         setSolutionInTex("");
+      }
       //setSolutionInTex(solutions[currentTaskIdx]);
     }
   };
@@ -313,7 +315,7 @@ const SolveMathPage: React.FC = () => {
           </div>
           <div className="solve-math__tex-solution u-mt-md">
             {currentMode == 0 && mathField && <TexEditorActionsTab mathField={mathField} />}
-            {currentMode == 0 &&  <EditableMathField
+            {currentMode == 0 && <EditableMathField
               latex={solutions[currentTaskIdx]}
               mathquillDidMount={(mathField: MathField) => {
                 setMathField(mathField);
@@ -379,9 +381,9 @@ const SolveMathPage: React.FC = () => {
                   if (mathField) {
                     //console.log(mathField?.latex())
                     //
-                    if (currentMode == 0)
+                    if (currentMode == 0) {
                       onCheckTex(mathField?.latex());
-                    else {
+                    } else {
                       console.log(solutionInTex);
                       onCheckTex(solutionInTex.length == 0 ? solutions[currentTaskIdx] : solutionInTex);
                       setSolutionInTex("");
