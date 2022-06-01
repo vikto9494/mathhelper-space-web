@@ -56,7 +56,6 @@ const MathQuillMultyline: React.FC<MultylineProps> = ({
   const [mathPairsid, setMathPairsid] = useState<number[]>([0]);
   const [lockText, setLockText] = useState<boolean>(false);
 
-
   // Reset
   //setLockText(true)
   //setNumLines(1);
@@ -80,7 +79,7 @@ const MathQuillMultyline: React.FC<MultylineProps> = ({
   splitted = [];
   splitted2 = [];
   if (latex)
-    splitted = latex.split("\n", 7);
+    splitted = latex.split("\n");
   else
     splitted = [""];
   console.log("in latex");
@@ -127,7 +126,7 @@ const MathQuillMultyline: React.FC<MultylineProps> = ({
     // empty head, no tags needed
     if (s0 === "") {
       splitted2.push(s0);
-      splitted = s1.split("\n", 7);
+      splitted = s1.split("\n");
     } else if (s1 == "") { // empty tail, end of loop
       s0 = s0 + tags;
       splitted2.push(s0);
@@ -137,10 +136,10 @@ const MathQuillMultyline: React.FC<MultylineProps> = ({
       s1 = tags2.out + s1; // for tail
       s0 = s0 + tags; // for head
       splitted2.push(s0);
-      splitted = s1.split("\n", 7);
+      splitted = s1.split("\n");
     } else if (tags2?.flagPoss == true && tags2.L == 0) {
       splitted2.push(s0); // no tags needed
-      splitted = s1.split("\n", 7);
+      splitted = s1.split("\n");
     } else /*(test2 && test2.flagPoss == false || )*/
     {
       // corrupted or tags not exist
@@ -726,18 +725,19 @@ const MathQuillMultyline: React.FC<MultylineProps> = ({
                     if (e.key == "ArrowUp") {
                       console.log(e.key);
                       if (focusId && focusId != -1) {
-                        let focusedPair = mathPairsid.find((mp: number) => {
-                          return mathPairs[mathPairsid[mp]]?.id == focusId;
+                        let focusedPair = mathPairsid.findIndex((mp: number) => {
+                          return mathPairs[mp]?.id == focusId;
                         });
-                        if (focusedPair && focusedPair > 0)
+                        if (focusedPair && focusedPair >= 0)
                           mathPairs[mathPairsid[focusedPair - 1]]?.mathLine?.focus();
                       }
                     }
                     if (e.key == "ArrowDown") {
                       console.log(e.key);
                       if (focusId && focusId != -1) {
-                        let focusedPair = mathPairsid.find((mp: number) => {
-                          return mathPairs[mathPairsid[mp]].id == focusId;
+                        let focusedPair = mathPairsid.findIndex((mp: number) => {
+                          //console.log(mathPairs[mathPairsid[mp]]);
+                          return mathPairs[mp].id == focusId;
                         });
                         if (focusedPair != null && focusedPair < mathPairsid.length - 1) {
                           console.log(focusedPair);
