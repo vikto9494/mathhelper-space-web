@@ -182,5 +182,70 @@ const FindOpenTags = (tagList: string[], text: string) => {
     }
   }
 };
+const FindChangedText = (text0: string, text1: string) => {
 
-export { BeginString, EndString, FindOpenTags };
+  let newText = text1;
+  let oldText = text0;
+
+  if (newText === "") {
+    return oldText;
+  }
+  if (oldText === "") {
+    return newText;
+  }
+  if (newText && oldText) {
+    let h0 = 0;
+    let h1 = 0;
+    let t0 = oldText.length - 1;
+    let t1 = newText.length - 1;
+    while (h0 != t0 && h1 != t1) {
+      if (oldText[h0] === newText[h1]) {
+        h0++;
+        h1++;
+        if (h0 == t0 || h1 == t1) {
+          break;
+        }
+      }
+      if (oldText[t0] === newText[t1]) {
+        t0--;
+        t1--;
+      }
+      if (oldText[t0] !== newText[t1] && oldText[t0] !== newText[t1])
+        return newText.substr(h1, t1 - h1 + 1);
+    }
+    if (h0 == t0 && h1 == t1) {
+      return "";
+    }
+    if (h0 == t0) {
+      if (oldText[h0] !== newText[h1] && oldText[t0] !== newText[t1]) {
+        return newText.substr(h1, t1 - h1 + 1);
+      }
+      if (oldText[h0] === newText[h1]) {
+        return newText.substr(h1 + 1, t1 - h1 + 1);
+      }
+      if (oldText[t0] === newText[t1]) {
+        return newText.substr(h1, t1 - h1);
+      }
+    }
+    if (h1 == t1) {
+      if (oldText[h0] !== newText[h1] && oldText[t0] !== newText[t1]) {
+        return oldText.substr(h0, t0 - h0 + 1);
+      }
+      if (oldText[h0] === newText[h1]) {
+        return oldText.substr(h0 + 1, t0 - h0 + 1);
+      }
+      if (oldText[t0] === newText[t1]) {
+        return oldText.substr(h0, t0 - h0);
+      }
+    }
+
+  }
+  if (newText) {
+    return newText;
+  }
+  if (oldText) {
+    return oldText;
+  }
+  return "";
+};
+export { BeginString, EndString, FindOpenTags, FindChangedText };

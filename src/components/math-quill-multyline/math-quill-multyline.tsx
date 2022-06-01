@@ -24,7 +24,7 @@ import setminusIcon from "../../assets/math-symbols/setminus.svg";
 
 // tools
 
-import { EndString, BeginString, FindOpenTags } from "./math-quill-multyline-tools";
+import { EndString, BeginString, FindOpenTags, FindChangedText } from "./math-quill-multyline-tools";
 
 
 interface MathPair {
@@ -52,7 +52,7 @@ const MathQuillMultyline: React.FC<MultylineProps> = ({
   const [focusId, setFocusId] = useState<number>(1);
   const [mathPairsid, setMathPairsid] = useState<number[]>([0]);
   const [lockText, setLockText] = useState<boolean>(false);
-
+  const changedText = useRef<string>("");
 
   for (let i = 0; i < mathPairs.length; i++) {
     if (mathPairs[i].id != -1) {
@@ -352,9 +352,21 @@ const MathQuillMultyline: React.FC<MultylineProps> = ({
                     console.log("text1->" + mathField.text());
                   }}
                   onChange={(mathField: MathField) => {
-                    for (let mPair of mathPairs)
-                      if (mPair && mPair.text != mPair?.mathLine?.latex())
+                    for (let mPair of mathPairs) {
+                      if (mPair && mPair.text != mPair?.mathLine?.latex()) {
+                        let oldText = mPair.text;
+                        let newText = mPair?.mathLine?.latex();
+                        let changed = "";
+
+                        console.log(oldText);
+                        console.log(newText);
+                        if ((oldText || oldText == "") && (newText || newText == ""))
+                          changed = FindChangedText(oldText, newText);
+                        if (changedText && changed != "")
+                          changedText.current = changed;
                         mPair.text = mPair?.mathLine?.latex();
+                      }
+                    }
                     if (onChangeRef.current && lockText == false) {
                       let a = ["0"];
                       a.push(onButtonConcat());
@@ -369,6 +381,7 @@ const MathQuillMultyline: React.FC<MultylineProps> = ({
                   }}
                   onKeyDown={(e) => {
                     setLockText(false);
+                    let localText = changedText.current;
                     if (e.key == "Enter") {
                       let textState = lockText;
                       setLockText(true);
@@ -504,9 +517,17 @@ const MathQuillMultyline: React.FC<MultylineProps> = ({
                           console.log("None");
                         }
                         // Optional
-                        else if (!text && mathPairsid.length > 1) {
+                        else if (!text && mathPairsid.length > 1 && localText.length == 0) { // no text and nothing deleted
                           onButtonDelLine(matPair.id);
                           console.log("Delete");
+                          // Submit changes
+                          setLockText(false);
+                          UpdateId();
+                          let a = ["1"];
+                          a.push(onButtonConcat());
+                          if (onChange) { // @ts-ignore
+                            onChangeRef.current(a);
+                          }
                         } else if (text && text.length != 0) {
                           // not empty string
                           console.log("remove text");
@@ -547,7 +568,7 @@ const MathQuillMultyline: React.FC<MultylineProps> = ({
                             for (let i = 0; i < "#1337".length; i++)
                               mathPairs[currPair]?.mathLine?.keystroke("Backspace");
 
-                            if (s0.length == 0) { // cursor on start pos
+                            if (s0.length == 0 && localText.length == 0) { // cursor on start pos and nothing deleted
                               if (currPairid > 0) { // not first line
                                 console.log(mathPairsid.length);
                                 if (mathPairs[mathPairsid[currPairid - 1]].mathLine) {
@@ -615,6 +636,7 @@ const MathQuillMultyline: React.FC<MultylineProps> = ({
                       console.log(mathPairsid);
                       console.log(mathPairs);
                     }
+                    changedText.current = "";
                   }}
                   style={{
                     minWidth: "42rem",
