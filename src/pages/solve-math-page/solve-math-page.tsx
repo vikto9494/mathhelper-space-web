@@ -12,7 +12,7 @@ import AppSpinner from "../../components/app-spinner/app-spinner";
 import TexEditorActionsTab from "../../components/tex-editor-actions-tab/tex-editor-actions-tab";
 import MathQuillMultyline from "../../components/math-quill-multyline/math-quill-multyline";
 // utils
-import { checkTexSolutionInFrontFormat } from "../../utils/kotlin-lib-functions";
+import { checkTexSolutionInFrontFormat, copyAllLogInPlainText } from "../../utils/kotlin-lib-functions";
 import { getAuthToken } from "../../utils/local-storage/auth-token";
 import {
   GetOneTaskSetMode,
@@ -395,7 +395,7 @@ const SolveMathPage: React.FC = () => {
                 Проверить
               </button>
               <button
-                className="btn"
+                className="btn u-mr-sm"
                 onClick={async () => {
                   if (
                     window.confirm(
@@ -408,6 +408,14 @@ const SolveMathPage: React.FC = () => {
               >
                 Завершить
               </button>
+              {/*<button*/}
+              {/*    className="btn"*/}
+              {/*    onClick={async () => {*/}
+              {/*      copyAllLogInPlainText();*/}
+              {/*    }}*/}
+              {/*>*/}
+              {/*  Скопировать лог*/}
+              {/*</button>*/}
             </div>
           </div>
         </div>
