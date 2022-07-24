@@ -24,12 +24,12 @@ const AboutUsSection: React.FC = () => {
     translationPrefix + ".paragraph3",
   ];
   // other
-  const linksIcons: string[] = [mdiFacebook, mdiVk, mdiTelegram, mdiGmail];
+  const linksIcons: string[] = [/*mdiFacebook,*/ mdiVk, mdiTelegram, mdiGmail];
   const linksURLs: string[] = [
+    /*"https://vk.com/club195826752",*/
     "https://vk.com/club195826752",
-    "https://vk.com/club195826752",
-    "https://vk.com/club195826752",
-    "https://vk.com/club195826752",
+    "https://t.me/MathHelperGames",
+    "mailto:mathhelperspace@gmail.com",
   ];
 
   // const [currentImagesUrls, setCurrentImagesUrls] = useState([

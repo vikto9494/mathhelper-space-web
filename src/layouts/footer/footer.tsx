@@ -22,12 +22,12 @@ const Footer: React.FC = () => {
   const aboutTWFWebSiteLinkId = translationPrefix + ".aboutTWFWebSiteLink";
 
   // other
-  const iconsUrls: string[] = [mdiFacebook, mdiVk, mdiTelegram, mdiGmail];
+  const iconsUrls: string[] = [/*mdiFacebook,*/ mdiVk, mdiTelegram, mdiGmail];
   const linksURLs: string[] = [
-    "https://vk.com/club195826752",
-    "https://vk.com/club195826752",
-    "https://vk.com/club195826752",
-    "https://vk.com/club195826752",
+      /*"https://vk.com/club195826752",*/
+      "https://vk.com/club195826752",
+      "https://t.me/MathHelperGames",
+      "mailto:mathhelperspace@gmail.com",
   ];
   const TWFWebSiteUrl: string =
     "https://www.mathhelper.space/twf/prototype/demo.html";
