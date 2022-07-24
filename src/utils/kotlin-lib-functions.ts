@@ -48,7 +48,7 @@ export const convertMathInput = (
         return structureStringToExpression(expression);
       } else if (from === MathInputFormat.TEX) {
         // lib understands '//' as '/' in classic TEX
-        return texToExpression(expression.replace(/\//g, "//"));
+        return texToExpression(expression.replace(/\//g, "//"), "", "Tex");
       }
     })();
     if (expressionInLibFormat.nodeType.name$ === "ERROR") {
