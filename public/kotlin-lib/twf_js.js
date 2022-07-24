@@ -14065,6 +14065,9 @@ var twf_js = function (_, Kotlin) {
   ExpressionComparator.prototype.fastProbabilityEquals_heho5o$ = function (lhs, rhs) {
     return this.fastProbabilityCheckOnIncorrectTransformation_41dun6$(lhs, rhs, ComparisonType$EQUAL_getInstance());
   };
+  function ExpressionComparator$compareWithTreeTransformationRules$lambda() {
+    return 'fastProbabilityCheckOnIncorrectTransformation failed';
+  }
   ExpressionComparator.prototype.compareWithTreeTransformationRules_8lnv8j$ = function (leftOriginal, rightOriginal, transformations, maxTransformationWeight, maxBustCount, minTransformationWeight, expressionChainComparisonType, maxDistBetweenDiffSteps) {
     var tmp$, tmp$_0;
     if (maxTransformationWeight === void 0)
@@ -14122,6 +14125,7 @@ var twf_js = function (_, Kotlin) {
     }
      while (false);
     if (all$result && (expressionChainComparisonType !== ComparisonType$EQUAL_getInstance() || !this.compareAsIs_5gxvt3$(leftOriginal, rightOriginal)) && !this.fastProbabilityCheckOnIncorrectTransformation_41dun6$(leftOriginal, rightOriginal, expressionChainComparisonType, maxBustCount)) {
+      log_1.addMessage_cte53e$(ExpressionComparator$compareWithTreeTransformationRules$lambda);
       return false;
     }
     var resultForOperandsInOriginalOrder = this.compareWithTreeTransformationRulesInternal_l7tdci$(leftOriginal, rightOriginal, transformations, maxTransformationWeight, maxBustCount, minTransformationWeight, expressionChainComparisonType, false, maxDistBetweenDiffSteps);
@@ -30474,7 +30478,7 @@ var twf_js = function (_, Kotlin) {
   function emptyFactSubstitution() {
     return new FactSubstitution(emptyExpression(), emptyExpression(), void 0, void 0, void 0, '', new FactComparator());
   }
-  function TransformationChainParser(originalTransformationChain, nameForRuleDesignationsPossible, functionConfiguration, factsLogicConfiguration, compiledImmediateVariableReplacements, transformationChain, isMathML) {
+  function TransformationChainParser(originalTransformationChain, nameForRuleDesignationsPossible, functionConfiguration, factsLogicConfiguration, compiledImmediateVariableReplacements, transformationChain, format) {
     if (nameForRuleDesignationsPossible === void 0)
       nameForRuleDesignationsPossible = false;
     if (functionConfiguration === void 0)
@@ -30486,15 +30490,15 @@ var twf_js = function (_, Kotlin) {
     }
     if (transformationChain === void 0)
       transformationChain = originalTransformationChain;
-    if (isMathML === void 0)
-      isMathML = true;
+    if (format === void 0)
+      format = '';
     this.originalTransformationChain = originalTransformationChain;
     this.nameForRuleDesignationsPossible = nameForRuleDesignationsPossible;
     this.functionConfiguration = functionConfiguration;
     this.factsLogicConfiguration = factsLogicConfiguration;
     this.compiledImmediateVariableReplacements = compiledImmediateVariableReplacements;
     this.transformationChain = transformationChain;
-    this.isMathML = isMathML;
+    this.format = format;
     this.root = new MainLineAndNode(0, this.transformationChain.length, null);
     this.parserError = null;
     this.somethingUnexpectedCode_0 = 'Something unexpected';
@@ -31773,25 +31777,32 @@ var twf_js = function (_, Kotlin) {
   TransformationChainParser.prototype.parseExpressionComparisonOrExpressionChainFromTransformationChain_0 = function (startPosition, endPosition, currentMainLineNode, expressionChainExpected) {
     if (expressionChainExpected === void 0)
       expressionChainExpected = false;
-    var tmp$, tmp$_0;
+    var tmp$, tmp$_0, tmp$_1;
     var significantPart = this.transformationChain.substring(startPosition, endPosition);
     log_1.add_ww6hhz$(significantPart, TransformationChainParser$parseExpressionComparisonOrExpressionChainFromTransformationChain$lambda, TransformationChainParser$parseExpressionComparisonOrExpressionChainFromTransformationChain$lambda_0, void 0, 1);
     var currentLogLevel = log_1.currentLevel;
     log_1.add_ww6hhz$(expressionChainExpected, TransformationChainParser$parseExpressionComparisonOrExpressionChainFromTransformationChain$lambda_1, TransformationChainParser$parseExpressionComparisonOrExpressionChainFromTransformationChain$lambda_2, currentLogLevel);
     log_1.addMessage_cte53e$(TransformationChainParser$parseExpressionComparisonOrExpressionChainFromTransformationChain$lambda_3(currentLogLevel), void 0, currentLogLevel);
     log_1.addMessage_cte53e$(TransformationChainParser$parseExpressionComparisonOrExpressionChainFromTransformationChain$lambda_4, void 0, currentLogLevel);
-    var allParts = splitBySubstringOnTopLevel(getAllComparisonTypeSignStrings(this.isMathML), this.transformationChain, startPosition, endPosition);
+    var allParts = splitBySubstringOnTopLevel(getAllComparisonTypeSignStrings(equals(this.format, 'MathML')), this.transformationChain, startPosition, endPosition);
     var destination = ArrayList_init();
-    var tmp$_1;
-    tmp$_1 = allParts.iterator();
-    while (tmp$_1.hasNext()) {
-      var element = tmp$_1.next();
+    var tmp$_2;
+    tmp$_2 = allParts.iterator();
+    while (tmp$_2.hasNext()) {
+      var element = tmp$_2.next();
       var tmp$_0_0;
+      var tmp$_3;
       log_1.add_czegqf$(element.startPosition, element.endPosition, toString(element.splittingSubstring), TransformationChainParser$parseExpressionComparisonOrExpressionChainFromTransformationChain$lambda$lambda, TransformationChainParser$parseExpressionComparisonOrExpressionChainFromTransformationChain$lambda$lambda_0, TransformationChainParser$parseExpressionComparisonOrExpressionChainFromTransformationChain$lambda$lambda_1, TransformationChainParser$parseExpressionComparisonOrExpressionChainFromTransformationChain$lambda$lambda_2, currentLogLevel);
       var $receiver = this.transformationChain;
       var startIndex = element.startPosition;
       var endIndex = element.endPosition;
-      var partString = trimmedMathML($receiver.substring(startIndex, endIndex));
+      var partStringOriginal = trimmedMathML($receiver.substring(startIndex, endIndex));
+      if (equals(this.format, 'Tex')) {
+        tmp$_3 = texStringNormalization(partStringOriginal, this.functionConfiguration);
+      }
+       else
+        tmp$_3 = partStringOriginal;
+      var partString = tmp$_3;
       log_1.add_ww6hhz$(partString, TransformationChainParser$parseExpressionComparisonOrExpressionChainFromTransformationChain$lambda$lambda_3, TransformationChainParser$parseExpressionComparisonOrExpressionChainFromTransformationChain$lambda$lambda_4, currentLogLevel);
       if ((tmp$_0_0 = partString.length === 0 ? null : element) != null) {
         destination.add_11rb$(tmp$_0_0);
@@ -31805,11 +31816,11 @@ var twf_js = function (_, Kotlin) {
       var startIndex_0 = parts.get_za3lpa$(0).startPosition;
       var endIndex_0 = parts.get_za3lpa$(0).endPosition;
       var leftPartParser = new ExpressionTreeParser($receiver_0.substring(startIndex_0, endIndex_0), void 0, this.functionConfiguration, this.compiledImmediateVariableReplacements);
-      var tmp$_2 = log_1;
+      var tmp$_4 = log_1;
       var $receiver_1 = this.transformationChain;
       var startIndex_1 = parts.get_za3lpa$(0).startPosition;
       var endIndex_1 = parts.get_za3lpa$(0).endPosition;
-      tmp$_2.add_ww6hhz$($receiver_1.substring(startIndex_1, endIndex_1), TransformationChainParser$parseExpressionComparisonOrExpressionChainFromTransformationChain$lambda_7, TransformationChainParser$parseExpressionComparisonOrExpressionChainFromTransformationChain$lambda_8, currentLogLevel);
+      tmp$_4.add_ww6hhz$($receiver_1.substring(startIndex_1, endIndex_1), TransformationChainParser$parseExpressionComparisonOrExpressionChainFromTransformationChain$lambda_7, TransformationChainParser$parseExpressionComparisonOrExpressionChainFromTransformationChain$lambda_8, currentLogLevel);
       var error = leftPartParser.parse();
       if (error != null) {
         this.parserError = new ParserError(error.position + parts.get_za3lpa$(0).startPosition | 0, error.description, parts.get_za3lpa$(0).endPosition);
@@ -31821,11 +31832,11 @@ var twf_js = function (_, Kotlin) {
       var startIndex_2 = parts.get_za3lpa$(1).startPosition;
       var endIndex_2 = parts.get_za3lpa$(1).endPosition;
       var rightPartParser = new ExpressionTreeParser($receiver_2.substring(startIndex_2, endIndex_2), void 0, this.functionConfiguration, this.compiledImmediateVariableReplacements);
-      var tmp$_3 = log_1;
+      var tmp$_5 = log_1;
       var $receiver_3 = this.transformationChain;
       var startIndex_3 = parts.get_za3lpa$(1).startPosition;
       var endIndex_3 = parts.get_za3lpa$(1).endPosition;
-      tmp$_3.add_ww6hhz$($receiver_3.substring(startIndex_3, endIndex_3), TransformationChainParser$parseExpressionComparisonOrExpressionChainFromTransformationChain$lambda_13, TransformationChainParser$parseExpressionComparisonOrExpressionChainFromTransformationChain$lambda_14, currentLogLevel);
+      tmp$_5.add_ww6hhz$($receiver_3.substring(startIndex_3, endIndex_3), TransformationChainParser$parseExpressionComparisonOrExpressionChainFromTransformationChain$lambda_13, TransformationChainParser$parseExpressionComparisonOrExpressionChainFromTransformationChain$lambda_14, currentLogLevel);
       error = rightPartParser.parse();
       if (error != null) {
         this.parserError = new ParserError(error.position + parts.get_za3lpa$(1).startPosition | 0, error.description, parts.get_za3lpa$(1).endPosition);
@@ -31864,7 +31875,13 @@ var twf_js = function (_, Kotlin) {
         var $receiver_4 = this.transformationChain;
         var startIndex_4 = part.startPosition;
         var endIndex_4 = part.endPosition;
-        var partString_0 = $receiver_4.substring(startIndex_4, endIndex_4);
+        var partStringOriginal_0 = $receiver_4.substring(startIndex_4, endIndex_4);
+        if (equals(this.format, 'Tex')) {
+          tmp$_0 = texStringNormalization(partStringOriginal_0, this.functionConfiguration);
+        }
+         else
+          tmp$_0 = partStringOriginal_0;
+        var partString_0 = tmp$_0;
         log_1.add_ww6hhz$(partString_0, TransformationChainParser$parseExpressionComparisonOrExpressionChainFromTransformationChain$lambda_26, TransformationChainParser$parseExpressionComparisonOrExpressionChainFromTransformationChain$lambda_27, currentLogLevel);
         if (startsWith(partString_0, '<mtext>') && endsWith_0(partString_0, '<\/mtext>')) {
           var endIndex_5 = partString_0.length - 9 | 0;
@@ -31921,11 +31938,11 @@ var twf_js = function (_, Kotlin) {
         }
       }
       if (hasEquality) {
-        tmp$_0 = hasLeftMore ? ComparisonType$LEFT_MORE_OR_EQUAL_getInstance() : hasLeftLess ? ComparisonType$LEFT_LESS_OR_EQUAL_getInstance() : ComparisonType$EQUAL_getInstance();
+        tmp$_1 = hasLeftMore ? ComparisonType$LEFT_MORE_OR_EQUAL_getInstance() : hasLeftLess ? ComparisonType$LEFT_LESS_OR_EQUAL_getInstance() : ComparisonType$EQUAL_getInstance();
       }
        else
-        tmp$_0 = hasLeftMore ? ComparisonType$LEFT_MORE_getInstance() : ComparisonType$LEFT_LESS_getInstance();
-      var sign_1 = tmp$_0;
+        tmp$_1 = hasLeftMore ? ComparisonType$LEFT_MORE_getInstance() : ComparisonType$LEFT_LESS_getInstance();
+      var sign_1 = tmp$_1;
       var result_1 = new ExpressionChain(startPosition, endPosition, sign_1, expressions);
       currentMainLineNode.expressionTransformationChains.add_11rb$(result_1);
       log_1.add_ww6hhz$(result_1.toString(), TransformationChainParser$parseExpressionComparisonOrExpressionChainFromTransformationChain$lambda_47, TransformationChainParser$parseExpressionComparisonOrExpressionChainFromTransformationChain$lambda_48, currentLogLevel);
@@ -32642,7 +32659,7 @@ var twf_js = function (_, Kotlin) {
       return mathML;
     }
     log_1.addMessage_cte53e$(checkFactsInMathML$lambda_0(mathML), void 0, 0);
-    var transformationChainParser = new TransformationChainParser(mathML, false, compiledConfiguration.functionConfiguration, compiledConfiguration.factsLogicConfiguration, compiledConfiguration.compiledImmediateVariableReplacements, void 0, true);
+    var transformationChainParser = new TransformationChainParser(mathML, false, compiledConfiguration.functionConfiguration, compiledConfiguration.factsLogicConfiguration, compiledConfiguration.compiledImmediateVariableReplacements, void 0, 'MathML');
     log_1.addMessage_cte53e$(checkFactsInMathML$lambda_1, MessageType$USER_getInstance(), 0);
     var error = transformationChainParser.parse();
     if (error != null) {
@@ -33073,7 +33090,7 @@ var twf_js = function (_, Kotlin) {
     log_1.addMessage_cte53e$(checkFactsInTex$lambda(originalTexSolution), void 0, 0);
     var texSolution = dropPerformedTexBrushing(originalTexSolution);
     log_1.addMessage_cte53e$(checkFactsInTex$lambda_0(texSolution), void 0, 0);
-    var transformationChainParser = new TransformationChainParser(texSolution, false, compiledConfiguration.functionConfiguration, compiledConfiguration.factsLogicConfiguration, compiledConfiguration.compiledImmediateVariableReplacements, void 0, false);
+    var transformationChainParser = new TransformationChainParser(texSolution, false, compiledConfiguration.functionConfiguration, compiledConfiguration.factsLogicConfiguration, compiledConfiguration.compiledImmediateVariableReplacements, void 0, 'Tex');
     log_1.addMessage_cte53e$(checkFactsInTex$lambda_1, MessageType$USER_getInstance(), 0);
     var error = transformationChainParser.parse();
     if (error != null) {
@@ -36422,7 +36439,9 @@ var twf_js = function (_, Kotlin) {
     while (i < string.length) {
       if (remainingExpressionStartsWith('\\operatorname{', string, i)) {
         i = i + 14 | 0;
-        result.append_s8itvh$(92);
+        if (i < string.length && string.charCodeAt(i) !== 92) {
+          result.append_s8itvh$(92);
+        }
         while (i < string.length && string.charCodeAt(i) !== 125) {
           result.append_s8itvh$(string.charCodeAt(i));
           i = i + 1 | 0;
