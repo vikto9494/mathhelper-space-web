@@ -22,6 +22,7 @@ const AboutUsSection: React.FC = () => {
     translationPrefix + ".paragraph1",
     translationPrefix + ".paragraph2",
     translationPrefix + ".paragraph3",
+    translationPrefix + ".paragraph4",
   ];
   // other
   const linksIcons: string[] = [/*mdiFacebook,*/ mdiVk, mdiTelegram, mdiGmail];

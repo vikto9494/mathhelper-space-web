@@ -1,0 +1,64 @@
+@import "../../../../styles/abstracts/variables";
+@import "../../../../styles/abstracts/mixins";
+
+.main-cooperation-options {
+  background-color: $color-grey-light;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  & > h1 {
+    flex-basis: 100%;
+    order: -3;
+  }
+  &__svg-and-text {
+    width: 40%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    & > img {
+      width: 50rem;
+    }
+    & > p {
+      margin-top: 2rem;
+      font-size: $bg-font-size;
+      text-align: center;
+    }
+    @include respond(tab-port) {
+      width: 100%;
+      order: -2;
+    }
+  }
+  &__texts-with-svg {
+    width: 60%;
+    order: -1;
+    border-radius: 5px;
+    background-color: transparent;
+    @include respond(tab-port) {
+      width: 100%;
+      margin: 0 1rem 2rem 1rem;
+    }
+  }
+  &__text-with-svg {
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    &:not(last-child) {
+      margin-bottom: 2rem;
+    }
+    & > svg {
+      width: 10%;
+      &:nth-child(1) {
+        color: $color-primary-dark;
+      }
+      &:nth-child(2) {
+        color: $color-primary-light;
+      }
+    }
+    & > p {
+      width: 70%;
+      border-radius: 5px;
+      padding: 2rem;
+      text-align: justify;
+    }
+  }
+}

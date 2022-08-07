@@ -2,6 +2,7 @@ import { LOCALES } from "../locale";
 
 import { forPlayersSectionEn } from "./pages/home-page/sections/for-players-section";
 import { forTutorsSectionEn } from "./pages/home-page/sections/for-tutors-section";
+import { mainCooperationOptionsEn } from "./pages/home-page/sections/main-cooperation-options";
 import { heroSectionEn } from "./pages/home-page/sections/hero-section";
 import { navigationBarEn } from "./layouts/navigation-bar";
 import { ratingsSectionEn } from "./pages/home-page/sections/ratings-section";
@@ -32,6 +33,7 @@ export default {
     ...workFieldsGraphEn,
     ...forPlayersSectionEn,
     ...forTutorsSectionEn,
+    ...mainCooperationOptionsEn,
     ...heroSectionEn,
     ...navigationBarEn,
     ...ratingsSectionEn,

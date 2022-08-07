@@ -3,29 +3,34 @@ const prefix = "aboutUsSection";
 const aboutUsSectionEn = {
   [prefix + ".title"]: "About us",
   [prefix + ".paragraph1"]:
-    "We are a group of researchers, postgraduates, students and people who have ever participated" +
-    "in the development of this project. You can join us and help by providing your ideas or by participating in" +
-    " development:)",
+    "Making education fun for everyone!",
   [prefix + ".paragraph2"]:
-    "For now the project is free and we work in our free time solely for the idea and" +
-    " interesting tasks. However, you can learn a lot from us and even more. We solve scientific problems, and their" +
-    " solutions can become the basis of a diploma or some articles. But articles and all this is not the main" +
-    " thing for us, we want to make a thing that  will be used by lots of people!",
+    "We are the group of researchers, students and everybody who want to help us. We solve scientific" +
+    " problems about automatic generation of learning tasks and verification of their solutions. We are" +
+    " looking for playful ways of teaching.",
   [prefix +
-  ".paragraph3"]: "We are waiting for you with feedback and suggestions",
+  ".paragraph3"]:
+  "Also, we learn by ourselves, switching between motivating tasks with different" +
+  " technologies and requirements. Students get their internships and theses; who wish" +
+  " write articles; for some, the project is the part of the life.",
+  [prefix +
+  ".paragraph4"]: "We are waiting for you 😊",
 };
 
 const aboutUsSectionRu = {
   [prefix + ".title"]: "О нас",
   [prefix + ".paragraph1"]:
-    "Мы - группа научных сотрудников, аспирантов, студентов и просто людей, когда-либо помогавших" +
-    " этому проекту. К нам можно присоединяться и помогать как идеями, так и по делу:)",
+    "Делаем образование интересным для всех!",
   [prefix + ".paragraph2"]:
-    "Проект пока бесплатный и мы работаем в свободное время исключительно за идею и интересные" +
-    " задачи. Зато у нас можно многому научиться и не только. Мы решаем научные задачи, их решения могут стать основой" +
-    " дипломной работы или каких-нибудь статей. Но статьи и все это для нас не главное, мы хотим сделать штуку," +
-    " которой много кто будет пользоваться!",
-  [prefix + ".paragraph3"]: "Ждем вас с feedbackом и предложениями",
+    "Мы - группа исследователей, студентов и желающих нам помочь. Решаем научные задачи про" +
+    " автоматическую генерацию задач и проверку их решений. Ищем игровые и другие эффективные" +
+    " способы подачи знаний и навыков.",
+  [prefix + ".paragraph3"]:
+      "Одновременно учимся сами, переключаясь между мотивирующими задачами с разными технологиями" +
+      " и требованиями. Студенты защищают практики и дипломные работы; желающие пишут статьи;" +
+      " для некоторых MathHelper - дело жизни.",
+  [prefix +
+  ".paragraph4"]: "Приходи помогать! И приводи желающих 😊",
 };
 
 export { aboutUsSectionRu, aboutUsSectionEn };

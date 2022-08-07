@@ -2,6 +2,7 @@ import { LOCALES } from "../locale";
 
 import { forPlayersSectionRu } from "./pages/home-page/sections/for-players-section";
 import { forTutorsSectionRu } from "./pages/home-page/sections/for-tutors-section";
+import { mainCooperationOptionsRu } from "./pages/home-page/sections/main-cooperation-options";
 import { heroSectionRu } from "./pages/home-page/sections/hero-section";
 import { navigationBarRu } from "./layouts/navigation-bar";
 import { ratingsSectionRu } from "./pages/home-page/sections/ratings-section";
@@ -31,6 +32,7 @@ export default {
   [LOCALES.RUSSIAN]: {
     ...forPlayersSectionRu,
     ...forTutorsSectionRu,
+    ...mainCooperationOptionsRu,
     ...heroSectionRu,
     ...navigationBarRu,
     ...ratingsSectionRu,
