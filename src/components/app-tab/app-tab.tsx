@@ -32,12 +32,14 @@ const AppTab: React.FC<AppTabProps> = ({
   const hiddenFieldsOfTab: { [fieldName: string]: boolean } =
     hiddenFieldsOfTabs[type];
   // calculating even width for visible fields
-  const fieldWidthPercent: string =
-    100 /
-      fields.filter((field: AppTabField) => {
-        return !hiddenFieldsOfTab[field.name];
-      }).length +
-    "%";
+  const fieldsLength = fields.filter((field: AppTabField) => {
+    return !hiddenFieldsOfTab[field.name];
+  }).length
+  const sm = "1.2rem"
+  const md= "1.7rem";
+
+  const firstFieldWidthPercent: string = fieldsLength > 1 ? "50%" : "100%";
+  const fieldWidthPercent: string = (fieldsLength > 1 ? 50 / fieldsLength : 0) + "%";
 
   return (
     <Link
@@ -53,7 +55,10 @@ const AppTab: React.FC<AppTabProps> = ({
             <div
               key={i}
               className="app-tab__item"
-              style={{ width: fieldWidthPercent }}
+              style={{
+                width: i === 0 ? firstFieldWidthPercent : fieldWidthPercent,
+                fontSize: i === 0 ? md : sm
+            }}
             >
               {value ? value : "-"}
             </div>
