@@ -78,8 +78,9 @@ const AppTabHeader: React.FC<AppTabHeaderProps> = ({
       ? invisibleFields.push(field)
       : visibleFields.push(field);
   });
+  const firstFieldWidthPercent: string = visibleFields.length > 1 ? "50%" : "100%";
   // calculating even width for visible fields
-  const fieldWidthPercent: string = 100 / visibleFields.length + "%";
+  const fieldWidthPercent: string = (visibleFields.length > 1 ? 50 / (visibleFields.length - 1) : 0) + "%";
   // making tab fixed onscroll
   const [scrolled, setScrolled] = useState<boolean>(false);
   const handleScroll = () => {
@@ -102,7 +103,7 @@ const AppTabHeader: React.FC<AppTabHeaderProps> = ({
         return (
           <div
             key={i}
-            style={{ width: fieldWidthPercent }}
+            style={{ width: i == 0 ? firstFieldWidthPercent : fieldWidthPercent }}
             className="app-tab-header__items"
           >
             {withFilter && (
